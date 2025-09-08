@@ -1,0 +1,14 @@
+User-agent: *
+Allow: /
+
+# Sitemaps
+Sitemap: https://yourdomain.com/api/sitemap.xml
+
+# Disallow admin areas
+Disallow: /admin
+Disallow: /api/admin
+
+# Allow all other content
+Allow: /articles
+Allow: /category
+Allow: /api/sitemap.xml

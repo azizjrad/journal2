@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180" width="180" height="180">
+  <defs>
+    <linearGradient id="bgGradientApple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1f2937;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#374151;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#111827;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="textGradientApple" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#d1d5db;stop-opacity:1" />
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge> 
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+  
+  <!-- Background with rounded corners for iOS -->
+  <rect width="180" height="180" rx="40" ry="40" fill="url(#bgGradientApple)" />
+  
+  <!-- Subtle border -->
+  <rect x="2" y="2" width="176" height="176" rx="38" ry="38" fill="none" stroke="#374151" stroke-width="1"/>
+  
+  <!-- Main DJ Text -->
+  <text x="90" y="115" font-family="Arial, sans-serif" font-size="64" font-weight="900" text-anchor="middle" fill="url(#textGradientApple)" letter-spacing="-4px" filter="url(#glow)">DJ</text>
+  
+  <!-- Breaking news indicator -->
+  <circle cx="145" cy="45" r="8" fill="#dc2626" filter="url(#glow)"/>
+  <circle cx="145" cy="45" r="4" fill="#ffffff" opacity="0.9"/>
+  
+  <!-- Decorative elements -->
+  <rect x="30" y="50" width="25" height="2" fill="#6b7280" opacity="0.6"/>
+  <rect x="30" y="55" width="35" height="2" fill="#6b7280" opacity="0.4"/>
+  <rect x="30" y="60" width="20" height="2" fill="#6b7280" opacity="0.3"/>
+  
+  <rect x="125" y="130" width="25" height="2" fill="#6b7280" opacity="0.6"/>
+  <rect x="115" y="135" width="35" height="2" fill="#6b7280" opacity="0.4"/>
+  <rect x="130" y="140" width="20" height="2" fill="#6b7280" opacity="0.3"/>
+</svg>
