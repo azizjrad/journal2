@@ -11,7 +11,7 @@
 [![MongoDB](https://img.shields.io/badge/MongoDB-00ED64?style=for-the-badge&logo=mongodb&logoColor=white)](https://www.mongodb.com/)
 [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)](https://tailwindcss.com/)
 
-[🌐 Live Demo](#) | [📖 Documentation](#installation) | [🚀 Quick Start](#quick-start)
+[🌐 Live Demo](#https://akhbarna.vercel.app/) | [📖 Documentation](#installation) | [🚀 Quick Start](#quick-start)
 
 </div>
 
