@@ -128,8 +128,8 @@ export function HeroCarousel({ articles }: HeroCarouselProps) {
             );
           })}
         </CarouselContent>
-        <CarouselPrevious className="w-10 h-10 md:w-12 md:h-12 bg-red-600 border-0 text-white hover:bg-red-700 transition-colors duration-200" />
-        <CarouselNext className="w-10 h-10 md:w-12 md:h-12 bg-red-600 border-0 text-white hover:bg-red-700 transition-colors duration-200" />
+        <CarouselPrevious className="w-16 h-16 md:w-20 md:h-20 text-red-600 bg-transparent border-0 shadow-none hover:bg-transparent hover:border-0 hover:text-red-600" />
+        <CarouselNext className="w-16 h-16 md:w-20 md:h-20 text-red-600 bg-transparent border-0 shadow-none hover:bg-transparent hover:border-0 hover:text-red-600" />
       </Carousel>
     </div>
   );
