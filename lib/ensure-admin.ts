@@ -29,11 +29,23 @@ async function setupAdmin(): Promise<void> {
 
     console.log("🔍 Checking for existing admin user...");
 
-    // Check if admin already exists - check multiple possible admin accounts
+    // Use environment variables for admin setup
+    const adminEmail = process.env.ADMIN_EMAIL;
+    const adminUsername = process.env.ADMIN_USERNAME;
+    const adminPassword = process.env.ADMIN_PASSWORD;
+
+    if (!adminEmail || !adminUsername || !adminPassword) {
+      console.warn(
+        "⚠️ ADMIN_EMAIL, ADMIN_USERNAME, or ADMIN_PASSWORD env variable missing. Admin setup skipped."
+      );
+      return;
+    }
+
+    // Check if admin already exists
     const existingAdmin = await User.findOne({
       $or: [
-        { email: "admin@journal.com" },
-        { username: "admin" },
+        { email: adminEmail },
+        { username: adminUsername },
         { role: "admin" },
       ],
     });
@@ -42,22 +54,16 @@ async function setupAdmin(): Promise<void> {
       console.log(
         `✅ Admin user found: ${existingAdmin.email} (${existingAdmin.username})`
       );
-      console.log("📧 Login Email: admin@journal.com");
-      console.log("🔑 Login Password: admin123");
-
       // Mark admin setup as complete to prevent future checks
       adminSetupComplete = true;
       return;
     }
 
     console.log("🔧 No admin user found. Creating admin user...");
-
-    // Create admin user
-    const hashedPassword = await bcrypt.hash("admin123", 12);
-
+    const hashedPassword = await bcrypt.hash(adminPassword, 12);
     const adminUser = await User.create({
-      username: "admin",
-      email: "admin@journal.com",
+      username: adminUsername,
+      email: adminEmail,
       password_hash: hashedPassword,
       first_name: "Admin",
       last_name: "User",
@@ -65,19 +71,13 @@ async function setupAdmin(): Promise<void> {
       is_active: true,
       is_verified: true,
     });
-
     console.log("✅ Admin user created successfully");
-    console.log("📧 Email: admin@journal.com");
-    console.log("🔑 Password: admin123");
-
     // Mark admin setup as complete
     adminSetupComplete = true;
   } catch (error: any) {
     // Handle duplicate key errors gracefully
     if (error.code === 11000) {
       console.log("✅ Admin user already exists (duplicate key detected)");
-      console.log("📧 Email: admin@journal.com");
-      console.log("🔑 Password: admin123");
 
       // Mark admin setup as complete
       adminSetupComplete = true;

@@ -48,9 +48,9 @@ export function Footer({ categories }: FooterProps) {
             </Link>
             <p className="text-gray-300 text-sm leading-relaxed">
               {t(
-                "footer_description",
-                "Your trusted source for the latest news and updates from Libya and around the world. Stay informed with accurate, timely reporting.",
-                "مصدرك الموثوق لآخر الأخبار والتحديثات من ليبيا وحول العالم. ابق على اطلاع مع التقارير الدقيقة والمحدثة."
+                "footer_description_long",
+                "Akhbarna is where tomorrow is realized. It is the essential source of information and ideas that make sense of a world in constant transformation. The Akhbarna conversation illuminates how technology is changing every aspect of our lives—from culture to business, science to design. The breakthroughs and innovations that we uncover lead to new ways of thinking, new connections, and new industries.",
+                "أخبارنا هي المكان الذي يتحقق فيه الغد. إنها المصدر الأساسي للمعلومات والأفكار التي تفسر عالماً في تحول مستمر. تسلط محادثة أخبارنا الضوء على كيفية تغيير التكنولوجيا لكل جانب من جوانب حياتنا — من الثقافة إلى الأعمال، ومن العلوم إلى التصميم. الاكتشافات والابتكارات التي نكشف عنها تقود إلى طرق تفكير جديدة، وصلات جديدة، وصناعات جديدة."
               )}
             </p>
 
@@ -253,7 +253,7 @@ export function Footer({ categories }: FooterProps) {
             <div className="flex gap-6 text-xs text-gray-400">
               <a
                 href="/advertise"
-                className="hover:text-red-400 transition-colors duration-200 hover:underline font-medium"
+                className="hover:text-red-400 transition-colors duration-200 hover:underline"
               >
                 {t("advertise", "Advertise with Akhbarna", "أعلن مع أخبارنا")}
               </a>
@@ -274,12 +274,6 @@ export function Footer({ categories }: FooterProps) {
                 className="hover:text-red-400 transition-colors duration-200 hover:underline"
               >
                 {t("cookies", "Cookie Policy", "سياسة ملفات تعريف الارتباط")}
-              </a>
-              <a
-                href="/account"
-                className="hover:text-red-400 transition-colors duration-200 hover:underline"
-              >
-                {t("account", "Account", "الحساب")}
               </a>
             </div>
           </div>

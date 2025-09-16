@@ -4,9 +4,14 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/user-auth";
 import { NewsletterSection } from "@/components/home/newsletter-section";
+import { NewsletterSubscriptionOptions } from "@/components/newsletter-subscription-options";
+import { NewsletterSubscriptionPopup } from "@/components/newsletter-subscription-popup";
 import { NewsletterManagement } from "@/components/newsletter-management";
+import { AnnualDigitalFeatures } from "@/components/annual-digital-features";
 import { CategoryInterface } from "@/lib/db";
 import { Loader2 } from "lucide-react";
+import { Footer } from "@/components/footer";
+import { NewsletterFAQ } from "@/components/newsletter-faq";
 
 interface NewsletterPageContentProps {
   categories: CategoryInterface[];
@@ -34,6 +39,7 @@ export function NewsletterPageContent({
   const router = useRouter();
   const [subscription, setSubscription] = useState(null);
   const [subscriptionLoading, setSubscriptionLoading] = useState(true);
+  const [selectedPlan, setSelectedPlan] = useState("annual");
 
   useEffect(() => {
     if (user?.id) {
@@ -59,11 +65,34 @@ export function NewsletterPageContent({
 
   return (
     <>
+      {/* White navbar with centered Akhbarna logo */}
+      <nav className="w-full bg-white border-b border-gray-200 py-2 flex items-center justify-center">
+        <a href="/" className="block">
+          <div className="text-4xl font-black text-red-700 tracking-tight hover:text-red-800 transition-colors duration-300 text-center">
+            Akhbarna
+          </div>
+        </a>
+      </nav>
       {isAuthenticated && user && subscription ? (
         <NewsletterManagement user={user} subscription={subscription} />
       ) : (
-        <NewsletterSection />
+        <>
+          <div className="min-h-screen bg-gray-50 flex items-center justify-center pt-4 pb-12">
+            <div className="w-full max-w-2xl">
+              <div className="mb-8">
+                <NewsletterSubscriptionOptions
+                  selected={selectedPlan}
+                  setSelected={setSelectedPlan}
+                />
+              </div>
+            </div>
+          </div>
+          <AnnualDigitalFeatures />
+          <NewsletterSubscriptionPopup selectedPlan={selectedPlan} />
+        </>
       )}
+      <NewsletterFAQ />
+      <Footer categories={categories} />
     </>
   );
 }
