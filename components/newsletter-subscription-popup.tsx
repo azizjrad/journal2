@@ -1,5 +1,6 @@
 import { useEffect, useState, useRef } from "react";
 import { useLanguage } from "@/lib/language-context";
+import { useRouter } from "next/navigation";
 
 interface NewsletterSubscriptionPopupProps {
   selectedPlan: string;
@@ -13,6 +14,7 @@ export function NewsletterSubscriptionPopup({
   const [sessionHidden, setSessionHidden] = useState(false);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const { t } = useLanguage();
+  const router = useRouter();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -95,7 +97,10 @@ export function NewsletterSubscriptionPopup({
             {t("first_month_free", "First month FREE", "الشهر الأول مجانًا")}
           </div>
         </div>
-        <button className="ml-4 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition">
+        <button
+          className="ml-4 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition"
+          onClick={() => router.push(`/payment?plan=${selectedPlan}`)}
+        >
           {t("get_access", "Get Digital Access", "احصل على الوصول الرقمي")}
         </button>
       </div>

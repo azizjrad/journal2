@@ -1,12 +1,13 @@
 import { Dispatch, SetStateAction } from "react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/lib/language-context";
+import { useRouter } from "next/navigation";
 
 const paymentLogos = [
-  { src: "/payment/card.svg", alt: "Card" },
-  { src: "/payment/applepay.svg", alt: "Apple Pay" },
-  { src: "/payment/googlepay.svg", alt: "Google Pay" },
-  { src: "/payment/paypal.svg", alt: "PayPal" },
+  { src: "/credit-card.png", alt: "Card" },
+  { src: "/apple-pay.png", alt: "Apple Pay" },
+  { src: "/google-pay.png", alt: "Google Pay" },
+  { src: "/paypal.png", alt: "PayPal" },
 ];
 
 interface NewsletterSubscriptionOptionsProps {
@@ -19,6 +20,7 @@ export function NewsletterSubscriptionOptions({
   setSelected,
 }: NewsletterSubscriptionOptionsProps) {
   const { language, t } = useLanguage();
+  const router = useRouter();
   return (
     <div className="max-w-xl mx-auto bg-white rounded-2xl shadow-lg p-8 border border-gray-200 mt-12">
       <h2 className="text-3xl font-bold text-center mb-2 text-gray-900">
@@ -136,7 +138,10 @@ export function NewsletterSubscriptionOptions({
           />
         ))}
       </div>
-      <Button className="w-full py-4 text-lg font-bold bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-xl shadow-xl transition-all duration-300">
+      <Button
+        className="w-full py-4 text-lg font-bold bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-xl shadow-xl transition-all duration-300"
+        onClick={() => router.push(`/payment?plan=${selected}`)}
+      >
         {t("get_access", "Get Digital Access", "احصل على الوصول الرقمي")}
       </Button>
       <p className="text-xs text-gray-500 text-center mt-2 font-light">
