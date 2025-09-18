@@ -169,6 +169,189 @@ export default function PaymentPage() {
     },
   };
 
+  function renderStep3() {
+    return (
+      <div className="w-full flex flex-col md:flex-row gap-8 min-h-[500px]">
+        {/* Review Card (left) */}
+        <div className="flex-1 min-w-[340px] max-w-2xl bg-white rounded-xl p-8 flex flex-col gap-4 shadow border border-gray-100 order-1 md:order-none">
+          <h2 className="text-2xl font-bold text-gray-900 mb-0">
+            {t("review", "Review", "مراجعة")}
+          </h2>
+          <div className="text-gray-500 text-sm mb-1 flex items-center gap-2">
+            <Image
+              src="/padlock-check.png"
+              alt="Padlock check"
+              width={16}
+              height={16}
+              className="w-4 h-4 object-contain"
+              priority
+            />
+            {t(
+              "secure_encrypted",
+              "All transactions are secure and encrypted.",
+              "جميع المعاملات آمنة ومشفرة."
+            )}
+          </div>
+          <div className="bg-gray-50 rounded-lg p-6 border border-gray-100 mt-0">
+            <div className="text-xs text-gray-500 mb-1">
+              {t("subscription_plan", "Subscription Plan", "خطة الاشتراك")}
+            </div>
+            <div className="text-lg font-semibold text-gray-900 mb-1">
+              {planDetails[plan].title}{" "}
+              {t("auto_renews", "(auto-renews)", "(تجدد تلقائي)")}
+            </div>
+            <div className="flex items-center gap-2 mb-1">
+              {planDetails[plan].oldPrice && (
+                <span className="text-gray-400 line-through text-base">
+                  {planDetails[plan].oldPrice}
+                </span>
+              )}
+              <span className="text-lg font-bold text-gray-900">
+                {planDetails[plan].price}
+              </span>
+            </div>
+            <div className="italic text-gray-600 text-sm mb-2">
+              {planDetails[plan].desc}
+            </div>
+            <hr className="my-3 border-dashed border-gray-200" />
+            <div className="flex justify-between items-center text-base font-semibold mb-1">
+              <span>{t("due_now", "Due now", "المستحق الآن")}</span>
+              <span className="text-gray-900">{planDetails[plan].price}</span>
+            </div>
+            <hr className="my-3 border-dashed border-gray-200" />
+            <div className="text-xs text-gray-500 mb-1">
+              {t("payment_method", "Payment Method", "طريقة الدفع")}
+            </div>
+            <div className="flex items-center gap-2 text-base font-medium text-gray-900 mb-2">
+              {paymentMethod === "paypal" && (
+                <>
+                  <span>PayPal</span>
+                  <Image
+                    src="/paypal2.png"
+                    alt="PayPal"
+                    width={22}
+                    height={22}
+                  />
+                </>
+              )}
+              {paymentMethod === "card" && (
+                <>
+                  <span>{t("credit_card", "Credit Card", "بطاقة مصرفية")}</span>
+                  <Image
+                    src="/card-icon.png"
+                    alt="Card"
+                    width={22}
+                    height={22}
+                  />
+                </>
+              )}
+            </div>
+            <hr className="my-3 border-dashed border-gray-200" />
+            <div className="text-xs text-gray-500 mb-1">
+              {t(
+                "subscription_account",
+                "Subscription account",
+                "حساب الاشتراك"
+              )}
+            </div>
+            <div className="text-base text-gray-900">{email}</div>
+          </div>
+        </div>
+        {/* Legal and payment (right) */}
+        <div className="flex flex-col gap-3 flex-1 min-w-[340px] max-w-xl justify-start">
+          <div className="bg-yellow-50 border border-yellow-300 rounded-lg p-4 text-sm text-gray-900">
+            <span className="font-semibold text-gray-800">
+              {t(
+                "auto_renewal_title",
+                "Automatic renewal and cancellation",
+                "التجديد التلقائي والإلغاء"
+              )}
+            </span>
+            <br />
+            {t(
+              "auto_renewal_desc",
+              "After your free trial, your subscription will continue and you will be charged the annual rate unless you cancel. To cancel before your free trial ends, or for future renewals, manage your subscription online or contact support. Payments are non-refundable unless you cancel within 14 days of the charge.",
+              "بعد انتهاء الفترة التجريبية، سيستمر اشتراكك وسيتم تحصيل الرسوم السنوية ما لم تقم بالإلغاء. لإلغاء الاشتراك قبل انتهاء الفترة التجريبية أو للتجديدات المستقبلية، قم بإدارة اشتراكك عبر الإنترنت أو اتصل بالدعم. المدفوعات غير قابلة للاسترداد إلا إذا ألغيت خلال 14 يومًا من التحصيل."
+            )}
+          </div>
+          <div className="flex items-center gap-2 mt-1">
+            <span className="relative inline-flex items-center w-5 h-5 min-w-[1.25rem] min-h-[1.25rem] max-w-[1.25rem] max-h-[1.25rem] flex-shrink-0">
+              <input
+                type="checkbox"
+                className="peer appearance-none w-5 h-5 border border-gray-300 rounded bg-white checked:bg-red-600 checked:border-red-600 focus:ring-2 focus:ring-red-400 transition-colors duration-200 align-middle"
+                style={{ display: "inline-block", verticalAlign: "middle" }}
+                id="legalAgree"
+              />
+              {/* Custom checkmark SVG */}
+              <svg
+                className="pointer-events-none absolute left-0 top-0 w-5 h-5 opacity-0 peer-checked:opacity-100 transition-opacity duration-200"
+                viewBox="0 0 20 20"
+                fill="none"
+                stroke="white"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <polyline points="5 11 9 15 15 7" />
+              </svg>
+            </span>
+            <label
+              htmlFor="legalAgree"
+              className="text-xs text-gray-700 align-middle flex items-center h-5"
+            >
+              {t(
+                "agree_terms",
+                "I agree to the Automatic Renewal and Cancellation terms above",
+                "أوافق على شروط التجديد التلقائي والإلغاء أعلاه"
+              )}
+            </label>
+          </div>
+          <div className="text-xs text-gray-500 mt-1">
+            {t(
+              "by_subscribing",
+              "By subscribing, I also agree to the",
+              "بالاشتراك، أوافق أيضًا على "
+            )}
+            <a
+              href="/user-agreement"
+              className="underline text-gray-700 hover:text-red-700 mx-1"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t("user_agreement", "user agreement", "اتفاقية المستخدم")}
+            </a>
+            {t("and", "and", "و")}
+            <a
+              href="/privacy"
+              className="underline text-gray-700 hover:text-red-700 mx-1"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {t("privacy_policy", "privacy policy", "سياسة الخصوصية")}
+            </a>
+          </div>
+          <Button
+            className="w-full py-3 text-lg font-bold bg-gray-900 hover:bg-gray-800 text-white rounded-xl shadow-xl transition-all duration-300 flex items-center justify-center gap-2 mt-2"
+            onClick={() => {
+              /* handle payment submit */
+            }}
+          >
+            {paymentMethod === "paypal"
+              ? t("pay_with_paypal", "Pay with PayPal", "ادفع عبر PayPal")
+              : t("pay_now", "Pay Now", "ادفع الآن")}
+          </Button>
+          <div className="text-xs text-gray-500 text-center mt-1">
+            {t(
+              "cancel_anytime",
+              "Cancel or pause anytime.",
+              "يمكنك الإلغاء أو الإيقاف المؤقت في أي وقت."
+            )}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col items-center py-0 px-2">
       {/* Logo */}
@@ -913,7 +1096,7 @@ export default function PaymentPage() {
               <div className="bg-white rounded-xl p-6 shadow flex flex-col gap-4">
                 <div className="flex items-center justify-between">
                   <span className="text-lg font-semibold text-gray-900">
-                    Due now
+                    {t("due_now", "Due now", "المستحق الآن")}
                   </span>
                   <span className="text-2xl font-bold text-gray-900">
                     {planDetails[plan].price}
@@ -942,6 +1125,7 @@ export default function PaymentPage() {
             </div>
           </div>
         )}
+        {step === 3 && renderStep3()}
       </div>
       <Footer categories={[]} />
     </div>

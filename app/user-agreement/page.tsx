@@ -3,14 +3,14 @@ import Header from "@/components/header";
 import { Breadcrumb } from "@/components/breadcrumb";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy - Akhbarna",
-  description: "Privacy policy for Akhbarna website",
+  title: "User Agreement - Akhbarna",
+  description: "User agreement for Akhbarna website",
 };
 
-export default function PrivacyPage() {
+export default function UserAgreementPage() {
   const breadcrumbItems = [
     { label: "Home", href: "/" },
-    { label: "Privacy Policy" },
+    { label: "User Agreement" },
   ];
 
   return (
@@ -21,76 +21,76 @@ export default function PrivacyPage() {
         <div className="max-w-4xl mx-auto px-4">
           <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
             <h1 className="text-4xl font-bold text-gray-900 mb-8">
-              Privacy Policy
+              User Agreement
             </h1>
 
             <div className="prose prose-lg max-w-none space-y-8">
               <div>
                 <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                  Information We Collect
+                  Acceptance of Terms
                 </h2>
                 <p className="text-gray-600 leading-relaxed">
-                  We collect information you provide directly to us, such as
-                  when you create an account, subscribe to our newsletter, or
-                  contact us. This may include your name, email address, and any
-                  other information you choose to provide.
+                  By accessing or using Akhbarna, you agree to be bound by this
+                  User Agreement and all applicable laws and regulations. If you
+                  do not agree with any of these terms, you are prohibited from
+                  using or accessing this site.
                 </p>
               </div>
 
               <div>
                 <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                  How We Use Your Information
+                  Use of Service
                 </h2>
                 <p className="text-gray-600 leading-relaxed">
-                  We use the information we collect to provide, maintain, and
-                  improve our services, send you newsletters and updates,
-                  respond to your inquiries, and communicate with you about our
-                  services.
+                  You agree to use Akhbarna only for lawful purposes and in a
+                  way that does not infringe the rights of, restrict, or inhibit
+                  anyone else's use and enjoyment of the site.
                 </p>
               </div>
 
               <div>
                 <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                  Information Sharing
+                  Account Registration
                 </h2>
                 <p className="text-gray-600 leading-relaxed">
-                  We do not sell, trade, or otherwise transfer your personal
-                  information to third parties without your consent, except as
-                  described in this policy or as required by law.
+                  You may be required to create an account to access certain
+                  features. You are responsible for maintaining the
+                  confidentiality of your account information and for all
+                  activities that occur under your account.
                 </p>
               </div>
 
               <div>
                 <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                  Data Security
+                  Intellectual Property
                 </h2>
                 <p className="text-gray-600 leading-relaxed">
-                  We implement appropriate security measures to protect your
-                  personal information against unauthorized access, alteration,
-                  disclosure, or destruction.
+                  All content on Akhbarna, including text, graphics, logos, and
+                  images, is the property of Akhbarna or its licensors and is
+                  protected by copyright and other intellectual property laws.
                 </p>
               </div>
 
               <div>
                 <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                  Cookies
+                  Termination
                 </h2>
                 <p className="text-gray-600 leading-relaxed">
-                  We use cookies and similar technologies to enhance your
-                  browsing experience, analyze site traffic, and personalize
-                  content. You can control cookie settings through your browser
-                  preferences.
+                  We reserve the right to suspend or terminate your access to
+                  Akhbarna at any time, without notice, for conduct that we
+                  believe violates this User Agreement or is harmful to other
+                  users of the site.
                 </p>
               </div>
 
               <div>
                 <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                  Your Rights
+                  Changes to Agreement
                 </h2>
                 <p className="text-gray-600 leading-relaxed">
-                  You have the right to access, update, or delete your personal
-                  information. You may also opt out of receiving promotional
-                  communications from us at any time.
+                  Akhbarna may revise this User Agreement at any time without
+                  notice. By using this site, you agree to be bound by the
+                  then-current version of the agreement.
                 </p>
               </div>
 
@@ -99,7 +99,7 @@ export default function PrivacyPage() {
                   Contact Us
                 </h2>
                 <p className="text-gray-600 leading-relaxed">
-                  If you have any questions about this Privacy Policy, please
+                  If you have any questions about this User Agreement, please
                   contact us at{" "}
                   <a
                     href="mailto:contact@akhbarna.com"
