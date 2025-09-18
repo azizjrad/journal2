@@ -1,0 +1,38 @@
+import { getNewsletterSubscribers } from "@/lib/db";
+import { sendEmail } from "@/lib/email";
+import { SentNewsletter } from "@/lib/models/SentNewsletter";
+
+export async function sendNewsletterToSubscribers(
+  subject: string,
+  content: string,
+  subscriberIds: string[]
+): Promise<{ success: boolean; error?: string }> {
+  try {
+    // Get all subscribers (with emails)
+    const allSubscribers = await getNewsletterSubscribers({ limit: 10000 });
+    const selected = allSubscribers.filter((s: any) =>
+      subscriberIds.includes(s._id)
+    );
+    if (selected.length === 0) {
+      return { success: false, error: "No valid subscribers selected" };
+    }
+    // Send email to each selected subscriber
+    for (const sub of selected) {
+      await sendEmail({
+        to: sub.email,
+        subject,
+        html: content,
+      });
+    }
+    // Store sent newsletter in DB for history
+    await SentNewsletter.create({
+      subject,
+      content,
+      recipientIds: selected.map((s: any) => s._id),
+      recipientCount: selected.length,
+    });
+    return { success: true };
+  } catch (err) {
+    return { success: false, error: (err as Error).message };
+  }
+}

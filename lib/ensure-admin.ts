@@ -102,9 +102,10 @@ export async function ensureAdmin(
     // For development, allow access if in development mode
     // Removed development mode bypass for better security
 
-    // Get the admin session cookie from request
+    // Get cookies from request
     const cookieHeader = request.headers.get("cookie");
     if (!cookieHeader) {
+      console.warn("[ensureAdmin] No cookie header found");
       return { isAdmin: false };
     }
 
@@ -116,35 +117,39 @@ export async function ensureAdmin(
       }
       return acc;
     }, {} as Record<string, string>);
+    console.log("[ensureAdmin] Cookies:", cookies);
 
-    const adminSessionCookie = cookies["admin-session"];
-    if (!adminSessionCookie) {
-      return { isAdmin: false };
+    // Only accept 'admin-token' for admin JWT authentication
+    const jwtToken = cookies["admin-token"];
+    if (jwtToken) {
+      try {
+        const { verifyToken } = await import("@/lib/auth");
+        const payload = verifyToken(jwtToken);
+        console.log("[ensureAdmin] Decoded JWT payload:", payload);
+        if (payload && payload.userId && payload.role === "admin") {
+          const user = await User.findById(payload.userId);
+          console.log("[ensureAdmin] User from JWT:", user);
+          if (user && user.role === "admin" && user.is_active) {
+            return {
+              isAdmin: true,
+              user: {
+                id: user._id,
+                email: user.email,
+                username: user.username,
+                role: user.role,
+              },
+            };
+          }
+        }
+      } catch (err) {
+        console.warn("[ensureAdmin] JWT auth error:", err);
+      }
     }
 
-    // Parse the session data
-    const sessionData = JSON.parse(adminSessionCookie);
-
-    if (!sessionData.userId || !sessionData.email) {
-      return { isAdmin: false };
-    }
-
-    // Verify the user exists and is an admin
-    const user = await User.findById(sessionData.userId);
-
-    if (!user || user.role !== "admin" || !user.is_active) {
-      return { isAdmin: false };
-    }
-
-    return {
-      isAdmin: true,
-      user: {
-        id: user._id,
-        email: user.email,
-        username: user.username,
-        role: user.role,
-      },
-    };
+    console.warn(
+      "[ensureAdmin] Admin check failed. No valid admin session or JWT."
+    );
+    return { isAdmin: false };
   } catch (error) {
     console.error("Admin authentication error:", error);
     return { isAdmin: false };

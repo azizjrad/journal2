@@ -139,9 +139,28 @@ export function EditArticleForm({
           meta_keywords_ar: articleData.meta_keywords_ar || "",
         };
 
+        // Ensure the article's category is present in the categories list
+        let updatedCategories = categoriesData;
+        if (
+          formattedData.category_id &&
+          !categoriesData.some(
+            (cat: Category) => cat.id === formattedData.category_id
+          )
+        ) {
+          // Add a fallback category using the article's category info if available
+          updatedCategories = [
+            ...categoriesData,
+            {
+              id: formattedData.category_id,
+              name_en: articleData.category_name_en || "(Deleted Category)",
+              name_ar: articleData.category_name_ar || "(تصنيف محذوف)",
+            },
+          ];
+        }
+
         setFormData(formattedData);
-        setOriginalData({ ...formattedData }); // Create a deep copy to avoid reference equality
-        setCategories(categoriesData);
+        setOriginalData({ ...formattedData });
+        setCategories(updatedCategories);
 
         // Set image preview if exists
         if (articleData.image_url) {
@@ -339,6 +358,11 @@ export function EditArticleForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    // Client-side validation for category_id
+    if (!formData.category_id) {
+      toast.error("Please select a category before submitting.");
+      return;
+    }
     setLoading(true);
 
     try {

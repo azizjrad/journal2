@@ -32,6 +32,7 @@ import { AnalyticsDashboard } from "@/components/analytics-dashboard";
 import { ArticleReports } from "@/components/article-reports";
 import { UserManagement } from "@/components/user-management";
 import { NewsletterSubscribers } from "@/components/newsletter-subscribers";
+import NewsletterAdmin from "@/components/newsletter-admin";
 import { ContactMessages } from "@/components/contact-messages";
 import { LogoutButton } from "@/components/logout-button";
 import { AnalyticsData } from "@/lib/db";
@@ -363,6 +364,13 @@ export function AdminDashboard({
                 >
                   <Mail className="h-4 w-4 mr-2" />
                   Newsletter
+                </TabsTrigger>
+                <TabsTrigger
+                  value="newsletter-send"
+                  className="data-[state=active]:bg-fuchsia-600/20 data-[state=active]:text-white data-[state=active]:border-b-2 data-[state=active]:border-fuchsia-400 rounded-none border-b-2 border-transparent px-8 py-4 font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-200"
+                >
+                  <Mail className="h-4 w-4 mr-2" />
+                  Send Newsletter
                 </TabsTrigger>
                 {isAdmin && (
                   <TabsTrigger
@@ -798,6 +806,12 @@ export function AdminDashboard({
             <TabsContent value="newsletter" className="p-0">
               <div className="p-8">
                 <NewsletterSubscribers />
+              </div>
+            </TabsContent>
+            {/* Send Newsletter Tab */}
+            <TabsContent value="newsletter-send" className="p-0">
+              <div className="p-8">
+                <NewsletterAdmin />
               </div>
             </TabsContent>
             {/* Contact Messages Tab */}

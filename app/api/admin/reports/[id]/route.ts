@@ -126,16 +126,12 @@ export async function DELETE(
 
     const success = await deleteReport(id);
 
-    if (!success) {
-      return NextResponse.json(
-        { error: "Report not found or failed to delete" },
-        { status: 404 }
-      );
-    }
-
+    // Treat missing report as success (idempotent delete)
     return NextResponse.json({
       success: true,
-      message: "Report deleted successfully",
+      message: success
+        ? "Report deleted successfully"
+        : "Report not found (already deleted)",
     });
   } catch (error) {
     console.error("Error deleting report:", error);

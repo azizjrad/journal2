@@ -298,13 +298,16 @@ export function ArticleReports() {
             Error Loading Reports
           </h3>
           <p className="text-gray-300 mb-4">{error}</p>
-          <Button
-            onClick={fetchReports}
-            variant="outline"
-            className="text-white border-white/20"
-          >
-            Try Again
-          </Button>
+          <div className="flex justify-center">
+            <Button
+              onClick={fetchReports}
+              variant="outline"
+              size="lg"
+              className="text-white border-white/30 bg-red-600/80 hover:bg-red-700/90 font-bold text-base px-8 py-3 rounded-xl shadow-lg focus-visible:ring-2 focus-visible:ring-red-400"
+            >
+              Try Again
+            </Button>
+          </div>
         </div>
       </div>
     );
