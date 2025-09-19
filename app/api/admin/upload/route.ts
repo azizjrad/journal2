@@ -4,6 +4,16 @@ import path from "path";
 
 export async function POST(request: NextRequest) {
   try {
+    // Require admin authentication
+    const { ensureAdmin } = await import("@/lib/ensure-admin");
+    const adminCheck = await ensureAdmin(request);
+    if (!adminCheck.isAdmin) {
+      return NextResponse.json(
+        { error: "Unauthorized. Admin access required." },
+        { status: 401 }
+      );
+    }
+
     const data = await request.formData();
     const file: File | null = data.get("file") as unknown as File;
 

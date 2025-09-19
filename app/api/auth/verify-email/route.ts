@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     // Validation
     if (!token) {
       return NextResponse.json(
-        { success: false, message: "Verification token is required" },
+        { success: false, message: "Invalid credentials or request" },
         { status: 400 }
       );
     }
@@ -25,16 +25,16 @@ export async function POST(request: NextRequest) {
 
     if (!verificationToken) {
       return NextResponse.json(
-        { success: false, message: "Invalid or expired verification token" },
+        { success: false, message: "Invalid credentials or request" },
         { status: 400 }
       );
     }
 
     // Get user
     const user = await getUserById(verificationToken.user_id);
-    if (!user) {
+    if (!user || user.is_verified === undefined) {
       return NextResponse.json(
-        { success: false, message: "User not found" },
+        { success: false, message: "Invalid credentials or request" },
         { status: 404 }
       );
     }
@@ -42,14 +42,14 @@ export async function POST(request: NextRequest) {
     if (user.is_verified) {
       return NextResponse.json({
         success: true,
-        message: "Email is already verified",
+        message: "Request already completed.",
       });
     }
 
     // Update user as verified
     if (!user.id) {
       return NextResponse.json(
-        { success: false, message: "User ID is missing" },
+        { success: false, message: "Request failed. Please try again." },
         { status: 500 }
       );
     }
@@ -71,14 +71,14 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      message: "Email verified successfully. Your account is now active.",
+      message: "Request completed successfully.",
     });
   } catch (error) {
     console.error("Email verification error:", error);
     return NextResponse.json(
       {
         success: false,
-        message: "Email verification failed. Please try again.",
+        message: "Request failed. Please try again.",
       },
       { status: 500 }
     );

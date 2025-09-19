@@ -24,7 +24,7 @@ import Contact, { ContactInterface } from "./models/Contact";
 import { Types } from "mongoose";
 
 // Direct database connection function
-async function dbConnect() {
+export async function dbConnect() {
   const MONGODB_URI = process.env.MONGODB_URI!;
 
   if (!MONGODB_URI) {

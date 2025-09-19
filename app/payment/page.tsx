@@ -357,16 +357,19 @@ export default function PaymentPage() {
       {/* Logo */}
       <div className="w-full flex justify-center pt-8 pb-6">
         <a href="/" className="block">
-          <div className="text-4xl font-black text-red-700 tracking-tight hover:text-red-800 transition-colors duration-300 text-center">
+          <div className="text-3xl sm:text-4xl font-black text-red-700 tracking-tight hover:text-red-800 transition-colors duration-300 text-center">
             Akhbarna
           </div>
         </a>
       </div>
       {/* Stepper */}
-      <div className="w-full max-w-6xl px-12 flex items-center justify-between pb-4 mx-auto">
-        <div className="w-full flex items-center justify-between">
+      <div
+        className="relative w-full max-w-xs sm:max-w-3xl md:max-w-4xl lg:max-w-6xl px-0 sm:px-2 md:px-6 flex items-center justify-between pb-2 sm:pb-4 mx-auto overflow-x-auto z-10"
+        style={{ minHeight: "36px" }}
+      >
+        <div className="w-full flex items-center justify-between min-w-[120px] sm:min-w-[300px]">
           {/* Step 1: Add account (left aligned) */}
-          <div className="flex flex-col items-center -ml-6">
+          <div className="flex flex-col items-center">
             <button
               type="button"
               disabled={step <= 1}
@@ -375,7 +378,7 @@ export default function PaymentPage() {
               tabIndex={step > 1 ? 0 : -1}
             >
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg border-4 ${
+                className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center font-bold text-base sm:text-lg border-2 sm:border-4 ${
                   step > 1
                     ? "bg-green-500 border-green-200 text-white cursor-pointer hover:opacity-80"
                     : step === 1
@@ -403,7 +406,7 @@ export default function PaymentPage() {
               </div>
             </button>
             <span
-              className={`text-xs mt-2 font-semibold ${
+              className={`hidden sm:inline text-xs mt-2 font-semibold ${
                 step > 1
                   ? "text-green-700"
                   : step === 1
@@ -416,7 +419,7 @@ export default function PaymentPage() {
           </div>
           {/* Stepper line 1 */}
           <div
-            className={`h-0.5 flex-1 mx-2 mt-4 ${
+            className={`h-0.5 flex-1 mx-1 sm:mx-2 mt-3 sm:mt-4 ${
               step > 1 ? "bg-green-400" : "bg-gray-300"
             }`}
           />
@@ -430,7 +433,7 @@ export default function PaymentPage() {
               tabIndex={step > 2 ? 0 : -1}
             >
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg border-4 ${
+                className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center font-bold text-base sm:text-lg border-2 sm:border-4 ${
                   step > 2
                     ? "bg-green-500 border-green-200 text-white cursor-pointer hover:opacity-80"
                     : step === 2
@@ -458,7 +461,7 @@ export default function PaymentPage() {
               </div>
             </button>
             <span
-              className={`text-xs mt-2 font-semibold ${
+              className={`hidden sm:inline text-xs mt-2 font-semibold ${
                 step === 2 ? "text-gray-700" : "text-gray-400"
               }`}
             >
@@ -467,12 +470,12 @@ export default function PaymentPage() {
           </div>
           {/* Stepper line 2 */}
           <div
-            className={`h-0.5 flex-1 mx-2 mt-4 ${
+            className={`h-0.5 flex-1 mx-1 sm:mx-2 mt-3 sm:mt-4 ${
               step > 2 ? "bg-green-400" : "bg-gray-300"
             }`}
           />
           {/* Step 3: Review (right aligned) */}
-          <div className="flex flex-col items-center -mr-6">
+          <div className="flex flex-col items-center">
             <button
               type="button"
               disabled={step <= 3}
@@ -481,7 +484,7 @@ export default function PaymentPage() {
               tabIndex={step > 3 ? 0 : -1}
             >
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg border-4 ${
+                className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center font-bold text-base sm:text-lg border-2 sm:border-4 ${
                   step > 3
                     ? "bg-green-500 border-green-200 text-white cursor-pointer hover:opacity-80"
                     : step === 3
@@ -509,7 +512,7 @@ export default function PaymentPage() {
               </div>
             </button>
             <span
-              className={`text-xs mt-2 font-semibold ${
+              className={`hidden sm:inline text-xs mt-2 font-semibold ${
                 step === 3 ? "text-gray-700" : "text-gray-400"
               }`}
             >
@@ -519,11 +522,11 @@ export default function PaymentPage() {
         </div>
       </div>
       {/* Main Card */}
-      <div className="w-full max-w-6xl bg-white rounded-2xl shadow-lg p-12 flex flex-col md:flex-row gap-12 min-h-[520px]">
+      <div className="w-full max-w-2xl sm:max-w-3xl md:max-w-4xl lg:max-w-6xl bg-white rounded-2xl shadow-lg p-2 sm:p-4 md:p-8 lg:p-12 flex flex-col md:flex-row gap-4 md:gap-8 lg:gap-12 min-h-[520px]">
         {step === 1 && (
           <>
             {/* Account/Email Section */}
-            <div className="flex-1 min-w-[360px] max-w-2xl px-8">
+            <div className="flex-1 min-w-[220px] sm:min-w-[300px] md:min-w-[340px] max-w-2xl px-0 sm:px-4 md:px-8">
               <h2 className="text-2xl font-bold mb-2 text-gray-900">
                 {t(
                   "subscribe_with_account",
@@ -640,7 +643,7 @@ export default function PaymentPage() {
               </p>
             </div>
             {/* Plan Details Section */}
-            <div className="flex-1 min-w-[340px] max-w-xl flex flex-col justify-between px-8">
+            <div className="flex-1 min-w-[220px] sm:min-w-[300px] md:min-w-[340px] max-w-xl flex flex-col justify-between px-0 sm:px-4 md:px-8 mt-8 md:mt-0">
               <div className="bg-gray-100 rounded-xl p-6 mb-6">
                 <div className="mb-1">
                   <span className="text-lg font-semibold text-gray-900">
@@ -673,9 +676,9 @@ export default function PaymentPage() {
           </>
         )}
         {step === 2 && (
-          <div className="w-full flex flex-col md:flex-row gap-8 min-h-[400px]">
+          <div className="w-full flex flex-col md:flex-row gap-4 md:gap-8 min-h-[400px]">
             {/* Payment Method Selection */}
-            <div className="flex-1 min-w-[340px] max-w-2xl bg-gray-50 rounded-xl p-8 flex flex-col gap-6 shadow-sm">
+            <div className="flex-1 min-w-[220px] sm:min-w-[300px] md:min-w-[340px] max-w-2xl bg-gray-50 rounded-xl p-4 sm:p-6 md:p-8 flex flex-col gap-4 sm:gap-6 shadow-sm">
               <h2 className="text-2xl font-bold mb-2 text-gray-900">
                 {t(
                   "select_payment_method",
@@ -1072,8 +1075,8 @@ export default function PaymentPage() {
               </div>
             </div>
             {/* Plan Summary and Due Now */}
-            <div className="flex flex-col gap-6 flex-1 min-w-[340px] max-w-xl">
-              <div className="bg-gray-100 rounded-xl p-6">
+            <div className="flex flex-col gap-4 sm:gap-6 flex-1 min-w-[220px] sm:min-w-[300px] md:min-w-[340px] max-w-xl mt-8 md:mt-0">
+              <div className="bg-gray-100 rounded-xl p-4 sm:p-6">
                 <div className="mb-1 flex items-center justify-between">
                   <span className="text-lg font-semibold text-gray-900">
                     {planDetails[plan].title}
@@ -1093,7 +1096,7 @@ export default function PaymentPage() {
                   {planDetails[plan].desc}
                 </div>
               </div>
-              <div className="bg-white rounded-xl p-6 shadow flex flex-col gap-4">
+              <div className="bg-white rounded-xl p-4 sm:p-6 shadow flex flex-col gap-4">
                 <div className="flex items-center justify-between">
                   <span className="text-lg font-semibold text-gray-900">
                     {t("due_now", "Due now", "المستحق الآن")}

@@ -3,6 +3,16 @@ import { getAnalyticsData } from "@/lib/db";
 
 export async function GET(request: NextRequest) {
   try {
+    // Require admin authentication
+    const { ensureAdmin } = await import("@/lib/ensure-admin");
+    const adminCheck = await ensureAdmin(request);
+    if (!adminCheck.isAdmin) {
+      return NextResponse.json(
+        { error: "Unauthorized. Admin access required." },
+        { status: 401 }
+      );
+    }
+
     const { searchParams } = new URL(request.url);
     const days = parseInt(searchParams.get("days") || "30");
 

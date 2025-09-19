@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, memo } from "react";
+import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -182,6 +183,25 @@ export function AdminDashboard({
   // Since we're in AdminSessionGuard, we know user is authenticated as admin
   const isAdmin = true;
 
+  // Sidebar state for mobile
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  // Tabs list for sidebar and tab rendering
+  const tabList = [
+    { value: "articles", label: "Articles", icon: FileText },
+    { value: "scheduled", label: "Scheduled", icon: Clock },
+    { value: "categories", label: "Categories", icon: Tag },
+    ...(isAdmin ? [{ value: "users", label: "Users", icon: Users }] : []),
+    { value: "analytics", label: "Analytics", icon: BarChart3 },
+    { value: "reports", label: "Reports", icon: AlertTriangle },
+    { value: "newsletter", label: "Newsletter", icon: Mail },
+    { value: "newsletter-send", label: "Send Newsletter", icon: Mail },
+    ...(isAdmin
+      ? [{ value: "contacts", label: "Contact Messages", icon: Mail }]
+      : []),
+  ];
+  // Track active tab for sidebar
+  const [activeTabValue, setActiveTabValue] = useState("articles");
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
       {/* Background Pattern - matching website hero */}
@@ -191,25 +211,25 @@ export function AdminDashboard({
         <div className="absolute bottom-0 left-1/3 w-96 h-96 bg-red-700 rounded-full mix-blend-multiply filter blur-xl"></div>
       </div>
 
-      <div className="container mx-auto px-6 py-8 relative z-10">
+      <div className="container mx-auto px-2 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8 relative z-10">
         {/* Enhanced Header with Brand Identity */}
-        <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl mb-8">
-          <div className="px-8 py-6 border-b border-white/10">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center space-x-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-red-600 to-red-700 rounded-xl flex items-center justify-center shadow-lg">
-                  <FileText className="w-6 h-6 text-white" />
+        <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl mb-4 sm:mb-8">
+          <div className="px-3 py-3 sm:px-6 sm:py-4 md:px-8 md:py-6 border-b border-white/10">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div className="flex items-center space-x-3 sm:space-x-4">
+                <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-red-600 to-red-700 rounded-xl flex items-center justify-center shadow-lg">
+                  <FileText className="w-5 h-5 sm:w-6 sm:h-6 text-white" />
                 </div>
                 <div>
-                  <h1 className="text-3xl font-black text-white tracking-tight">
+                  <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
                     Akhbarna Dashboard
                   </h1>
-                  <p className="text-red-300 mt-1 font-medium">
+                  <p className="text-red-300 mt-1 font-medium text-sm sm:text-base">
                     Content Management System
                   </p>
                 </div>
-              </div>{" "}
-              <div className="flex items-center gap-3">
+              </div>
+              <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
                 <Link href="/profile">
                   <Button
                     variant="outline"
@@ -224,7 +244,7 @@ export function AdminDashboard({
                     className="text-white border-white/20 bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:text-white transition-all duration-200"
                   >
                     <Eye className="h-4 w-4 mr-2" />
-                    Preview Site
+                    <span className="hidden xs:inline">Preview Site</span>
                   </Button>
                 </Link>
                 <LogoutButton />
@@ -233,15 +253,15 @@ export function AdminDashboard({
           </div>
 
           {/* Enhanced Stats Grid */}
-          <div className="p-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 hover:bg-white/15 transition-all duration-300 shadow-lg">
+          <div className="p-3 sm:p-6 md:p-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 md:gap-6">
+              <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-3 sm:p-4 md:p-6 hover:bg-white/15 transition-all duration-300 shadow-lg">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-300 mb-1">
                       Total Articles
                     </p>
-                    <p className="text-3xl font-bold text-white">
+                    <p className="text-2xl sm:text-3xl font-bold text-white">
                       {currentArticles.length}
                     </p>
                     <p className="text-sm text-gray-400 mt-1">
@@ -254,13 +274,13 @@ export function AdminDashboard({
                 </div>
               </div>
 
-              <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 hover:bg-white/15 transition-all duration-300 shadow-lg">
+              <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-3 sm:p-4 md:p-6 hover:bg-white/15 transition-all duration-300 shadow-lg">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-300 mb-1">
                       Published
                     </p>
-                    <p className="text-3xl font-bold text-white">
+                    <p className="text-2xl sm:text-3xl font-bold text-white">
                       {currentArticles.filter((a) => a.is_published).length}
                     </p>
                     <p className="text-sm text-gray-400 mt-1">Live articles</p>
@@ -271,13 +291,13 @@ export function AdminDashboard({
                 </div>
               </div>
 
-              <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 hover:bg-white/15 transition-all duration-300 shadow-lg">
+              <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-3 sm:p-4 md:p-6 hover:bg-white/15 transition-all duration-300 shadow-lg">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-300 mb-1">
                       Featured
                     </p>
-                    <p className="text-3xl font-bold text-white">
+                    <p className="text-2xl sm:text-3xl font-bold text-white">
                       {currentArticles.filter((a) => a.is_featured).length}
                     </p>
                     <p className="text-sm text-gray-400 mt-1">
@@ -290,13 +310,13 @@ export function AdminDashboard({
                 </div>
               </div>
 
-              <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 hover:bg-white/15 transition-all duration-300 shadow-lg">
+              <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-3 sm:p-4 md:p-6 hover:bg-white/15 transition-all duration-300 shadow-lg">
                 <div className="flex items-center justify-between">
                   <div>
                     <p className="text-sm font-medium text-gray-300 mb-1">
                       Categories
                     </p>
-                    <p className="text-3xl font-bold text-white">
+                    <p className="text-2xl sm:text-3xl font-bold text-white">
                       {currentCategories.length}
                     </p>
                     <p className="text-sm text-gray-400 mt-1">Content groups</p>
@@ -310,113 +330,119 @@ export function AdminDashboard({
           </div>
         </div>{" "}
         {/* Enhanced Tabbed Interface */}
-        <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl">
-          <Tabs defaultValue="articles" className="w-full">
-            <div className="border-b border-white/10 bg-gradient-to-r from-red-600/10 to-red-700/10 rounded-t-2xl">
-              <TabsList className="h-auto p-0 bg-transparent w-full justify-start rounded-none">
-                <TabsTrigger
-                  value="articles"
-                  className="data-[state=active]:bg-red-600/20 data-[state=active]:text-white data-[state=active]:border-b-2 data-[state=active]:border-red-400 rounded-none border-b-2 border-transparent px-8 py-4 font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-200"
+        <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl overflow-x-auto relative">
+          {/* Mobile sidebar toggle */}
+          <div className="sm:hidden flex items-center px-3 py-2 border-b border-white/10 bg-gradient-to-r from-red-600/10 to-red-700/10 rounded-t-2xl">
+            <button
+              className="text-white focus:outline-none"
+              aria-label="Open sidebar"
+              onClick={() => setSidebarOpen(true)}
+            >
+              <Menu className="h-7 w-7" />
+            </button>
+            <span className="ml-3 font-bold text-white text-lg">
+              Dashboard Menu
+            </span>
+          </div>
+          {/* Sidebar overlay */}
+          {sidebarOpen && (
+            <div
+              className="fixed inset-0 z-40 bg-black/40 sm:hidden"
+              onClick={() => setSidebarOpen(false)}
+            ></div>
+          )}
+          {/* Sidebar drawer */}
+          <div
+            className={`fixed top-0 left-0 h-full w-64 bg-white/10 backdrop-blur-xl border border-white/20 z-50 shadow-2xl transform transition-transform duration-200 ease-in-out sm:hidden ${
+              sidebarOpen ? "translate-x-0" : "-translate-x-full"
+            }`}
+            style={{ willChange: "transform" }}
+          >
+            <div className="flex items-center justify-between px-4 py-4 border-b border-white/10">
+              <span className="font-bold text-white text-lg">Menu</span>
+              <button
+                className="text-white focus:outline-none"
+                aria-label="Close sidebar"
+                onClick={() => setSidebarOpen(false)}
+              >
+                <X className="h-7 w-7" />
+              </button>
+            </div>
+            <nav className="flex flex-col gap-1 p-4">
+              {tabList.map((tab) => (
+                <button
+                  key={tab.value}
+                  className={`flex items-center gap-3 px-3 py-2 rounded-lg text-left text-white font-medium transition-colors duration-150 ${
+                    activeTabValue === tab.value
+                      ? "bg-red-700/80"
+                      : "hover:bg-white/10"
+                  }`}
+                  onClick={() => {
+                    setActiveTabValue(tab.value);
+                    setSidebarOpen(false);
+                  }}
                 >
-                  <FileText className="h-4 w-4 mr-2" />
-                  Articles
-                </TabsTrigger>
-                <TabsTrigger
-                  value="scheduled"
-                  className="data-[state=active]:bg-orange-600/20 data-[state=active]:text-white data-[state=active]:border-b-2 data-[state=active]:border-orange-400 rounded-none border-b-2 border-transparent px-8 py-4 font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-200"
-                >
-                  <Clock className="h-4 w-4 mr-2" />
-                  Scheduled
-                </TabsTrigger>
-                <TabsTrigger
-                  value="categories"
-                  className="data-[state=active]:bg-purple-600/20 data-[state=active]:text-white data-[state=active]:border-b-2 data-[state=active]:border-purple-400 rounded-none border-b-2 border-transparent px-8 py-4 font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-200"
-                >
-                  <Tag className="h-4 w-4 mr-2" />
-                  Categories
-                </TabsTrigger>
-                {isAdmin && (
+                  <tab.icon className="h-5 w-5" />
+                  {tab.label}
+                </button>
+              ))}
+            </nav>
+          </div>
+          {/* Tabs for desktop and as content controller */}
+          <Tabs
+            value={activeTabValue}
+            onValueChange={setActiveTabValue}
+            className="w-full"
+          >
+            <div className="border-b border-white/10 bg-gradient-to-r from-red-600/10 to-red-700/10 rounded-t-2xl overflow-x-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent hidden sm:block">
+              <TabsList className="h-auto p-0 bg-transparent w-max min-w-0 flex-nowrap flex overflow-x-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent rounded-none">
+                {tabList.map((tab) => (
                   <TabsTrigger
-                    value="users"
-                    className="data-[state=active]:bg-blue-600/20 data-[state=active]:text-white data-[state=active]:border-b-2 data-[state=active]:border-blue-400 rounded-none border-b-2 border-transparent px-8 py-4 font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-200"
+                    key={tab.value}
+                    value={tab.value}
+                    className={`data-[state=active]:bg-red-600/20 data-[state=active]:text-white data-[state=active]:border-b-2 data-[state=active]:border-red-400 rounded-none border-b-2 border-transparent px-8 py-4 font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-200 flex items-center`}
                   >
-                    <Users className="h-4 w-4 mr-2" />
-                    Users
+                    <tab.icon className="h-4 w-4 mr-2" />
+                    {tab.label}
                   </TabsTrigger>
-                )}
-                <TabsTrigger
-                  value="analytics"
-                  className="data-[state=active]:bg-green-600/20 data-[state=active]:text-white data-[state=active]:border-b-2 data-[state=active]:border-green-400 rounded-none border-b-2 border-transparent px-8 py-4 font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-200"
-                >
-                  <BarChart3 className="h-4 w-4 mr-2" />
-                  Analytics
-                </TabsTrigger>
-                <TabsTrigger
-                  value="reports"
-                  className="data-[state=active]:bg-yellow-600/20 data-[state=active]:text-white data-[state=active]:border-b-2 data-[state=active]:border-yellow-400 rounded-none border-b-2 border-transparent px-8 py-4 font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-200"
-                >
-                  <AlertTriangle className="h-4 w-4 mr-2" />
-                  Reports
-                </TabsTrigger>
-                <TabsTrigger
-                  value="newsletter"
-                  className="data-[state=active]:bg-pink-600/20 data-[state=active]:text-white data-[state=active]:border-b-2 data-[state=active]:border-pink-400 rounded-none border-b-2 border-transparent px-8 py-4 font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-200"
-                >
-                  <Mail className="h-4 w-4 mr-2" />
-                  Newsletter
-                </TabsTrigger>
-                <TabsTrigger
-                  value="newsletter-send"
-                  className="data-[state=active]:bg-fuchsia-600/20 data-[state=active]:text-white data-[state=active]:border-b-2 data-[state=active]:border-fuchsia-400 rounded-none border-b-2 border-transparent px-8 py-4 font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-200"
-                >
-                  <Mail className="h-4 w-4 mr-2" />
-                  Send Newsletter
-                </TabsTrigger>
-                {isAdmin && (
-                  <TabsTrigger
-                    value="contacts"
-                    className="data-[state=active]:bg-cyan-600/20 data-[state=active]:text-white data-[state=active]:border-b-2 data-[state=active]:border-cyan-400 rounded-none border-b-2 border-transparent px-8 py-4 font-medium text-gray-300 hover:text-white hover:bg-white/5 transition-all duration-200"
-                  >
-                    <Mail className="h-4 w-4 mr-2" />
-                    Contact Messages
-                  </TabsTrigger>
-                )}
+                ))}
               </TabsList>
             </div>
             {/* Articles Tab */}
             <TabsContent value="articles" className="p-0">
-              <div className="p-8">
-                <div className="flex items-center justify-between mb-6">
+              <div className="p-3 sm:p-6 md:p-8">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 sm:mb-6">
                   <div>
-                    <h2 className="text-xl font-bold text-white">
+                    <h2 className="text-lg sm:text-xl font-bold text-white">
                       Article Management
                     </h2>
-                    <p className="text-gray-300 mt-1">
+                    <p className="text-gray-300 mt-1 text-sm sm:text-base">
                       Create, edit, and manage your news articles
                     </p>
                   </div>
                   <Link href="/admin/articles/new">
-                    <Button className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200">
+                    <Button className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200 w-full sm:w-auto">
                       <Plus className="h-4 w-4 mr-2" />
-                      New Article
+                      <span className="hidden xs:inline">New Article</span>
+                      <span className="inline xs:hidden">New</span>
                     </Button>
                   </Link>
                 </div>
 
                 {/* Search Bar */}
-                <div className="mb-6">
-                  <div className="relative max-w-md">
+                <div className="mb-4 sm:mb-6">
+                  <div className="relative max-w-full sm:max-w-md">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                     <Input
                       type="text"
                       placeholder="Search articles by title or category..."
                       value={articleSearchQuery}
                       onChange={(e) => handleArticleSearch(e.target.value)}
-                      className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-red-400 focus:ring-red-400/20"
+                      className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-red-400 focus:ring-red-400/20 text-sm sm:text-base"
                     />
                   </div>
                   {articleSearchQuery && (
-                    <div className="mt-2 text-sm text-gray-300">
+                    <div className="mt-2 text-xs sm:text-sm text-gray-300">
                       {filteredArticles.length === 0
                         ? "No articles found matching your search."
                         : `Found ${filteredArticles.length} article${
@@ -426,7 +452,7 @@ export function AdminDashboard({
                   )}
                 </div>
 
-                <div className="space-y-4">
+                <div className="space-y-3 sm:space-y-4">
                   {filteredArticles.length === 0 ? (
                     <div className="text-center py-16 border-2 border-dashed border-white/20 rounded-xl bg-white/5 backdrop-blur-sm">
                       {articleSearchQuery ? (
@@ -471,20 +497,20 @@ export function AdminDashboard({
                         {paginatedArticles.map((article) => (
                           <div
                             key={article.id}
-                            className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 hover:bg-white/15 transition-all duration-300 shadow-lg"
+                            className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-3 sm:p-4 md:p-6 hover:bg-white/15 transition-all duration-300 shadow-lg"
                           >
-                            <div className="flex items-start justify-between">
+                            <div className="flex flex-col sm:flex-row items-start justify-between gap-2 sm:gap-4">
                               <div className="flex-1">
-                                <div className="flex items-start gap-4">
+                                <div className="flex flex-col gap-2">
                                   <div className="flex-1">
-                                    <h3 className="text-lg font-semibold text-white mb-2">
+                                    <h3 className="text-base sm:text-lg font-semibold text-white mb-1 sm:mb-2">
                                       {article.title_en}
                                     </h3>
-                                    <p className="text-gray-300 font-arabic mb-4 leading-relaxed">
+                                    <p className="text-gray-300 font-arabic mb-2 sm:mb-4 leading-relaxed text-sm sm:text-base">
                                       {article.title_ar}
                                     </p>
 
-                                    <div className="flex items-center gap-3 mb-3">
+                                    <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2 sm:mb-3">
                                       {article.is_published ? (
                                         <Badge className="bg-green-500/20 text-green-300 border-green-400/30 backdrop-blur-sm">
                                           Published
@@ -521,7 +547,7 @@ export function AdminDashboard({
                                   </div>
                                 </div>
                               </div>
-                              <div className="flex items-center gap-2 ml-6">
+                              <div className="flex items-center gap-1 sm:gap-2 ml-0 sm:ml-6 mt-2 sm:mt-0">
                                 <Link
                                   href={`/admin/articles/${article.id}/edit`}
                                 >
@@ -545,7 +571,7 @@ export function AdminDashboard({
                       </div>
 
                       {/* Enhanced Pagination */}
-                      <div className="mt-8">
+                      <div className="mt-4 sm:mt-8">
                         <Pagination
                           currentPage={articlesCurrentPage}
                           totalPages={totalArticlePages}

@@ -445,7 +445,7 @@ export function CategoryManagement({
               {paginatedCategories.map((category) => (
                 <div
                   key={category.id}
-                  className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 hover:bg-white/15 transition-all duration-300 shadow-lg"
+                  className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl p-6 hover:bg-white/15 transition-all duration-300 shadow-lg"
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex-1">
@@ -480,8 +480,9 @@ export function CategoryManagement({
                           </p>
                         </div>
                       </div>
-                    </div>{" "}
-                    <div className="flex items-center gap-2 ml-6">
+                    </div>
+                    {/* Edit/Delete Buttons: always visible, wrap on mobile */}
+                    <div className="flex flex-row flex-wrap gap-2 ml-0 sm:ml-6 mt-4 sm:mt-0 w-full sm:w-auto justify-end">
                       <Dialog
                         open={editingCategory?.id === category.id}
                         onOpenChange={(open) => {

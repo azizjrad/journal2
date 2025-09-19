@@ -335,9 +335,9 @@ export function ArticleReports() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 px-2 sm:px-4">
         <Card className="bg-blue-500/10 border-blue-400/20">
-          <CardContent className="p-6">
+          <CardContent className="p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-300">In Progress</p>
@@ -351,7 +351,7 @@ export function ArticleReports() {
         </Card>
 
         <Card className="bg-green-500/10 border-green-400/20">
-          <CardContent className="p-6">
+          <CardContent className="p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-300">Resolved</p>
@@ -365,7 +365,7 @@ export function ArticleReports() {
         </Card>
 
         <Card className="bg-red-500/10 border-red-400/20">
-          <CardContent className="p-6">
+          <CardContent className="p-4 sm:p-6">
             <div className="flex items-center justify-between">
               <div>
                 <p className="text-sm font-medium text-gray-300">Dismissed</p>
@@ -381,22 +381,33 @@ export function ArticleReports() {
 
       {/* Reports Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-        <TabsList className="bg-white/10 border-white/20">
+        <TabsList
+          className="bg-white/10 border-0 rounded-xl flex-nowrap overflow-x-auto whitespace-nowrap scrollbar-none px-0 h-10 sm:h-12 mt-2 mb-1 w-full"
+          style={{
+            boxShadow: "0 1px 4px 0 rgba(0,0,0,0.04)",
+            marginRight: "-8px",
+            scrollbarWidth: "none", // Firefox
+            msOverflowStyle: "none", // IE/Edge
+          }}
+        >
           <TabsTrigger
             value="in_progress"
-            className="text-white hover:text-white data-[state=active]:text-white data-[state=active]:bg-blue-600/20 hover:bg-blue-600/10"
+            className="text-white text-xs sm:text-sm hover:text-white data-[state=active]:text-white data-[state=active]:bg-blue-600/20 hover:bg-blue-600/10 min-w-[90px] sm:min-w-[120px] px-2 sm:px-3 h-10 sm:h-12 rounded-xl"
+            style={{ marginLeft: 0, marginRight: 4 }}
           >
             In Progress ({groupedReports.in_progress.length})
           </TabsTrigger>
           <TabsTrigger
             value="resolved"
-            className="text-white hover:text-white data-[state=active]:text-white data-[state=active]:bg-green-600/20 hover:bg-green-600/10"
+            className="text-white text-xs sm:text-sm hover:text-white data-[state=active]:text-white data-[state=active]:bg-green-600/20 hover:bg-green-600/10 min-w-[90px] sm:min-w-[120px] px-2 sm:px-3 h-10 sm:h-12 rounded-xl"
+            style={{ marginLeft: 0, marginRight: 4 }}
           >
             Resolved ({groupedReports.resolved.length})
           </TabsTrigger>
           <TabsTrigger
             value="dismissed"
-            className="text-white hover:text-white data-[state=active]:text-white data-[state=active]:bg-red-600/20 hover:bg-red-600/10"
+            className="text-white text-xs sm:text-sm hover:text-white data-[state=active]:text-white data-[state=active]:bg-red-600/20 hover:bg-red-600/10 min-w-[90px] sm:min-w-[120px] px-2 sm:px-3 h-10 sm:h-12 rounded-xl"
+            style={{ marginLeft: 0, marginRight: 0 }}
           >
             Dismissed ({groupedReports.dismissed.length})
           </TabsTrigger>

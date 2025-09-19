@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          message: "Username, email, and password are required",
+          message: "Invalid credentials or request",
         },
         { status: 400 }
       );
@@ -55,7 +55,7 @@ export async function POST(request: NextRequest) {
 
     if (!isValidEmail(email)) {
       return NextResponse.json(
-        { success: false, message: "Invalid email format" },
+        { success: false, message: "Invalid credentials or request" },
         { status: 400 }
       );
     }
@@ -65,8 +65,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          message: "Password requirements not met",
-          errors: passwordValidation.errors,
+          message: "Invalid credentials or request",
         },
         { status: 400 }
       );
@@ -78,16 +77,9 @@ export async function POST(request: NextRequest) {
       getUserByUsername(username),
     ]);
 
-    if (existingUserByEmail) {
+    if (existingUserByEmail || existingUserByUsername) {
       return NextResponse.json(
-        { success: false, message: "User with this email already exists" },
-        { status: 409 }
-      );
-    }
-
-    if (existingUserByUsername) {
-      return NextResponse.json(
-        { success: false, message: "Username is already taken" },
+        { success: false, message: "Invalid credentials or request" },
         { status: 409 }
       );
     }
@@ -171,7 +163,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Registration error:", error);
     return NextResponse.json(
-      { success: false, message: "Registration failed. Please try again." },
+      { success: false, message: "Request failed. Please try again." },
       { status: 500 }
     );
   }

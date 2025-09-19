@@ -1,96 +1,6 @@
-import dbConnect from "@/lib/dbConnect";
-import { User } from "@/lib/models/User";
-import bcrypt from "bcryptjs";
 import { NextRequest } from "next/server";
-
-// Global flag to track if admin setup has been completed
-let adminSetupComplete = false;
-let adminSetupPromise: Promise<void> | null = null;
-
-export async function ensureAdminExists(): Promise<void> {
-  // If admin setup is already complete, return immediately
-  if (adminSetupComplete) {
-    console.log("✅ Admin user verification skipped (already confirmed)");
-    return;
-  }
-
-  // Use a singleton pattern to ensure this only runs once
-  if (adminSetupPromise) {
-    return adminSetupPromise;
-  }
-
-  adminSetupPromise = setupAdmin();
-  return adminSetupPromise;
-}
-
-async function setupAdmin(): Promise<void> {
-  try {
-    await dbConnect();
-
-    console.log("🔍 Checking for existing admin user...");
-
-    // Use environment variables for admin setup
-    const adminEmail = process.env.ADMIN_EMAIL;
-    const adminUsername = process.env.ADMIN_USERNAME;
-    const adminPassword = process.env.ADMIN_PASSWORD;
-
-    if (!adminEmail || !adminUsername || !adminPassword) {
-      console.warn(
-        "⚠️ ADMIN_EMAIL, ADMIN_USERNAME, or ADMIN_PASSWORD env variable missing. Admin setup skipped."
-      );
-      return;
-    }
-
-    // Check if admin already exists
-    const existingAdmin = await User.findOne({
-      $or: [
-        { email: adminEmail },
-        { username: adminUsername },
-        { role: "admin" },
-      ],
-    });
-
-    if (existingAdmin) {
-      console.log(
-        `✅ Admin user found: ${existingAdmin.email} (${existingAdmin.username})`
-      );
-      // Mark admin setup as complete to prevent future checks
-      adminSetupComplete = true;
-      return;
-    }
-
-    console.log("🔧 No admin user found. Creating admin user...");
-    const hashedPassword = await bcrypt.hash(adminPassword, 12);
-    const adminUser = await User.create({
-      username: adminUsername,
-      email: adminEmail,
-      password_hash: hashedPassword,
-      first_name: "Admin",
-      last_name: "User",
-      role: "admin",
-      is_active: true,
-      is_verified: true,
-    });
-    console.log("✅ Admin user created successfully");
-    // Mark admin setup as complete
-    adminSetupComplete = true;
-  } catch (error: any) {
-    // Handle duplicate key errors gracefully
-    if (error.code === 11000) {
-      console.log("✅ Admin user already exists (duplicate key detected)");
-
-      // Mark admin setup as complete
-      adminSetupComplete = true;
-      return;
-    }
-
-    console.error("❌ Failed to create admin user:", error.message);
-    // Don't throw error for admin setup failures in production
-    if (process.env.NODE_ENV !== "production") {
-      console.warn("⚠️ Admin setup failed, but continuing...");
-    }
-  }
-}
+import { dbConnect } from "@/lib/db";
+import { User } from "@/lib/models/User";
 
 // Function to check if the current request is from an authenticated admin
 export async function ensureAdmin(
@@ -110,17 +20,23 @@ export async function ensureAdmin(
     }
 
     // Parse cookies manually
-    const cookies = cookieHeader.split(";").reduce((acc, cookie) => {
-      const [key, value] = cookie.trim().split("=");
-      if (key && value) {
-        acc[key] = decodeURIComponent(value);
-      }
-      return acc;
-    }, {} as Record<string, string>);
+    const cookies = cookieHeader
+      .split(";")
+      .reduce((acc: Record<string, string>, cookie: string) => {
+        const [key, value] = cookie.trim().split("=");
+        if (key && value) {
+          acc[key] = decodeURIComponent(value);
+        }
+        return acc;
+      }, {} as Record<string, string>);
     console.log("[ensureAdmin] Cookies:", cookies);
 
     // Only accept 'admin-token' for admin JWT authentication
     const jwtToken = cookies["admin-token"];
+    console.log(
+      "[ensureAdmin] admin-token value:",
+      jwtToken ? jwtToken.slice(0, 12) + "..." : null
+    );
     if (jwtToken) {
       try {
         const { verifyToken } = await import("@/lib/auth");

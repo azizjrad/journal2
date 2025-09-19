@@ -528,8 +528,16 @@ export function UserManagement() {
     };
 
     const config = roleConfig[role as keyof typeof roleConfig];
+    if (!config) {
+      // fallback for unknown/missing role
+      return (
+        <Badge className="bg-gray-500/20 text-gray-300 border-gray-400/30 flex items-center gap-1 backdrop-blur-sm">
+          <UserIcon className="w-3 h-3" />
+          {role ? role : "Unknown"}
+        </Badge>
+      );
+    }
     const Icon = config.icon;
-
     return (
       <Badge
         className={`${config.color} flex items-center gap-1 backdrop-blur-sm`}

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { getCookie } from "@/lib/cookie-util";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -87,12 +88,21 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
     setLoginError("");
 
     try {
-      // First, try to authenticate with the unified login system
+      // Always fetch CSRF token before login
+      await fetch("/api/auth/csrf-token", { credentials: "include" });
+      const csrfToken = getCookie("csrf-token");
+      if (!csrfToken) {
+        setLoginError("CSRF token missing. Please refresh and try again.");
+        setLoginLoading(false);
+        return;
+      }
       const response = await fetch("/api/auth/unified-login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "x-csrf-token": csrfToken,
         },
+        credentials: "include",
         body: JSON.stringify({
           email: loginEmail,
           password: loginPassword,

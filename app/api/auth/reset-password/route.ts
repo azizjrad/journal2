@@ -18,7 +18,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          message: "Reset token and new password are required",
+          message: "Invalid credentials or request",
         },
         { status: 400 }
       );
@@ -30,8 +30,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          message: "Password requirements not met",
-          errors: passwordValidation.errors,
+          message: "Invalid credentials or request",
         },
         { status: 400 }
       );
@@ -42,24 +41,17 @@ export async function POST(request: NextRequest) {
 
     if (!resetToken) {
       return NextResponse.json(
-        { success: false, message: "Invalid or expired reset token" },
+        { success: false, message: "Invalid credentials or request" },
         { status: 400 }
       );
     }
 
     // Get user
     const user = await getUserById(resetToken.user_id);
-    if (!user || !user.id) {
+    if (!user || !user.id || !user.is_active) {
       return NextResponse.json(
-        { success: false, message: "User not found" },
+        { success: false, message: "Invalid credentials or request" },
         { status: 404 }
-      );
-    }
-
-    if (!user.is_active) {
-      return NextResponse.json(
-        { success: false, message: "Account is deactivated" },
-        { status: 403 }
       );
     }
 
@@ -91,7 +83,7 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Password reset error:", error);
     return NextResponse.json(
-      { success: false, message: "Password reset failed. Please try again." },
+      { success: false, message: "Request failed. Please try again." },
       { status: 500 }
     );
   }

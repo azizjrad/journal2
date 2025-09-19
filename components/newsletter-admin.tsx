@@ -303,16 +303,16 @@ export default function NewsletterAdmin() {
           )}
         </CardContent>
       </Card>
-      <Card className="backdrop-blur-lg bg-white/10 border border-white/20 shadow-2xl rounded-2xl overflow-hidden">
-        <CardHeader>
-          <CardTitle className="text-2xl font-bold text-white">
+      <Card className="backdrop-blur-lg bg-white/10 border border-white/20 shadow-2xl rounded-2xl overflow-hidden px-2 sm:px-6">
+        <CardHeader className="px-2 py-3 sm:px-6 sm:py-6">
+          <CardTitle className="text-lg sm:text-2xl font-bold text-white">
             Sent Newsletters
           </CardTitle>
-          <CardDescription className="text-base text-white/80">
+          <CardDescription className="text-sm sm:text-base text-white/80">
             View history of sent newsletters. Search by subject or content.
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="px-2 py-3 sm:px-6 sm:py-6">
           <div className="mb-4 flex flex-col md:flex-row md:items-center gap-2 md:gap-4">
             <Input
               placeholder="Search newsletters..."
@@ -323,8 +323,8 @@ export default function NewsletterAdmin() {
               }}
               className="max-w-xs bg-white/30 border border-transparent text-white placeholder:text-white/60 focus:border-red-500 focus:ring-red-400/20"
             />
-            <div className="flex items-center gap-2">
-              <label className="text-white/80 text-sm">From</label>
+            <div className="flex items-center gap-1 sm:gap-2">
+              <label className="text-white/80 text-xs sm:text-sm">From</label>
               <input
                 type="date"
                 value={historyStartDate || ""}
@@ -332,10 +332,10 @@ export default function NewsletterAdmin() {
                   setHistoryPage(1);
                   setHistoryStartDate(e.target.value || null);
                 }}
-                className="rounded-md px-2 py-1 bg-white/30 border border-transparent text-white focus:border-red-500 focus:ring-red-400/20 outline-none"
-                style={{ minWidth: 120 }}
+                className="rounded-md px-1.5 py-0.5 sm:px-2 sm:py-1 bg-white/30 border border-transparent text-white text-xs sm:text-sm focus:border-red-500 focus:ring-red-400/20 outline-none"
+                style={{ minWidth: 80, maxWidth: 110 }}
               />
-              <label className="text-white/80 text-sm">To</label>
+              <label className="text-white/80 text-xs sm:text-sm">To</label>
               <input
                 type="date"
                 value={historyEndDate || ""}
@@ -343,8 +343,8 @@ export default function NewsletterAdmin() {
                   setHistoryPage(1);
                   setHistoryEndDate(e.target.value || null);
                 }}
-                className="rounded-md px-2 py-1 bg-white/30 border border-transparent text-white focus:border-red-500 focus:ring-red-400/20 outline-none"
-                style={{ minWidth: 120 }}
+                className="rounded-md px-1.5 py-0.5 sm:px-2 sm:py-1 bg-white/30 border border-transparent text-white text-xs sm:text-sm focus:border-red-500 focus:ring-red-400/20 outline-none"
+                style={{ minWidth: 80, maxWidth: 110 }}
               />
             </div>
           </div>

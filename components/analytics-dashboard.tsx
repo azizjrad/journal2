@@ -241,19 +241,22 @@ export function AnalyticsDashboard({ initialData }: AnalyticsDashboardProps) {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 sm:gap-0">
         <div>
           <h1 className="text-3xl font-bold text-white">Analytics Dashboard</h1>
           <p className="text-gray-300 mt-1">
             Monitor your content performance and engagement
           </p>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 w-full sm:w-auto">
           <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-            <SelectTrigger className="w-[140px] bg-white/10 backdrop-blur-xl border-white/20 text-white hover:bg-white/20 transition-all duration-200 rounded-lg">
+            <SelectTrigger className="w-full sm:w-[140px] h-8 sm:h-10 text-xs sm:text-sm bg-white/10 backdrop-blur-xl border-white/20 text-white hover:bg-white/20 transition-all duration-200 rounded-lg px-1.5 sm:px-4 py-0">
               <SelectValue placeholder="Select period" />
             </SelectTrigger>
-            <SelectContent className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl shadow-2xl">
+            <SelectContent
+              className="w-full sm:w-[140px] bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl shadow-2xl z-[100]"
+              position="item-aligned"
+            >
               <SelectItem
                 value="7"
                 className="text-white hover:bg-white/20 focus:bg-white/20 cursor-pointer"
@@ -279,7 +282,7 @@ export function AnalyticsDashboard({ initialData }: AnalyticsDashboardProps) {
             disabled={loading}
             variant="outline"
             size="sm"
-            className="bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm"
+            className="w-full sm:w-auto h-8 sm:h-10 text-xs sm:text-sm bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm"
           >
             <RefreshCw
               className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`}

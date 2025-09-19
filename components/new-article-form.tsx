@@ -294,7 +294,7 @@ export function NewArticleForm({
                 Back to Articles
               </Button>
               <div className="h-6 w-px bg-slate-600"></div>
-              <h1 className="text-xl font-semibold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent">
+              <h1 className="text-xl font-semibold bg-gradient-to-r from-blue-400 to-emerald-400 bg-clip-text text-transparent hidden sm:block">
                 Create New Article
               </h1>
             </div>
@@ -354,8 +354,8 @@ export function NewArticleForm({
       </div>
 
       {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <form onSubmit={handleSubmit} className="space-y-8">
+      <div className="max-w-7xl mx-auto px-2 sm:px-4 lg:px-8 py-4 sm:py-8 w-full">
+        <form onSubmit={handleSubmit} className="space-y-8 w-full">
           {/* Image Upload Section */}
           <Card className="bg-slate-800/50 border border-slate-700/50 shadow-xl backdrop-blur-sm">
             <CardHeader className="bg-gradient-to-r from-slate-800/80 to-slate-700/80 border-b border-slate-600/50">
@@ -402,7 +402,7 @@ export function NewArticleForm({
           </Card>
 
           {/* Bilingual Content - Side by Side */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 w-full">
             {/* English Content */}
             <Card className="bg-slate-800/50 border border-slate-700/50 shadow-xl backdrop-blur-sm hover:shadow-2xl transition-all duration-300">
               <CardHeader className="bg-gradient-to-r from-blue-900/50 to-blue-800/50 border-b border-blue-700/30">
@@ -837,22 +837,22 @@ export function NewArticleForm({
           </Card>
 
           {/* Submit Section */}
-          <div className="flex justify-between items-center pt-8 border-t border-slate-700/50">
+          <div className="flex flex-col sm:flex-row justify-between items-stretch sm:items-center pt-8 border-t border-slate-700/50 gap-4 sm:gap-0 w-full">
             <Button
               type="button"
               onClick={handleBackClick}
               variant="outline"
-              className="group border-slate-600 bg-slate-800/50 text-slate-300 hover:bg-gradient-to-r hover:from-slate-700 hover:to-slate-600 hover:text-white hover:border-slate-500 flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl backdrop-blur-sm"
+              className="group border-slate-600 bg-slate-800/50 text-slate-300 hover:bg-gradient-to-r hover:from-slate-700 hover:to-slate-600 hover:text-white hover:border-slate-500 flex items-center gap-2 transition-all duration-300 shadow-lg hover:shadow-xl backdrop-blur-sm w-full sm:w-auto"
             >
               <ArrowLeft className="h-4 w-4 group-hover:transform group-hover:-translate-x-1 transition-transform duration-300" />
               Back to Dashboard
             </Button>
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto">
               <Button
                 type="button"
                 onClick={handleCancelClick}
                 variant="outline"
-                className="border-red-600 bg-red-900/20 text-red-400 hover:bg-red-800/50 hover:text-red-300 hover:border-red-500 flex items-center gap-2 transition-all duration-200 shadow-lg hover:shadow-xl"
+                className="border-red-600 bg-red-900/20 text-red-400 hover:bg-red-800/50 hover:text-red-300 hover:border-red-500 flex items-center gap-2 transition-all duration-200 shadow-lg hover:shadow-xl w-full sm:w-auto"
               >
                 <XCircle className="h-4 w-4" />
                 Cancel
@@ -860,7 +860,7 @@ export function NewArticleForm({
               <Button
                 type="submit"
                 disabled={loading}
-                className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-8 shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-semibold"
+                className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-8 shadow-lg hover:shadow-xl transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-semibold w-full sm:w-auto"
               >
                 {loading ? "Creating..." : "Create Article"}
               </Button>

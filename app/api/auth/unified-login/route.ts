@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { generateCsrfToken, setCsrfCookie, validateCsrf } from "@/lib/csrf";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
@@ -33,6 +34,13 @@ async function connectDB() {
 }
 
 export async function POST(request: NextRequest) {
+  // CSRF protection for state-changing requests
+  if (!validateCsrf(request)) {
+    return NextResponse.json(
+      { success: false, message: "Invalid CSRF token" },
+      { status: 403 }
+    );
+  }
   try {
     await connectDB();
 
@@ -48,7 +56,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          message: "Email and password are required",
+          message: "Invalid credentials or request",
         },
         { status: 400 }
       );
@@ -59,24 +67,12 @@ export async function POST(request: NextRequest) {
       email: email.toLowerCase(),
       is_active: true,
     });
-
     if (!user) {
+      // Always return a generic error message
       return NextResponse.json(
         {
           success: false,
-          message: "Invalid email or password",
-        },
-        { status: 401 }
-      );
-    }
-
-    // Check if this is a Google user trying to login with password
-    if (user.auth_provider === "google" && !user.password_hash) {
-      return NextResponse.json(
-        {
-          success: false,
-          message:
-            "This account uses Google Sign-In. Please use the 'Sign in with Google' button.",
+          message: "Invalid credentials or request",
         },
         { status: 401 }
       );
@@ -88,28 +84,27 @@ export async function POST(request: NextRequest) {
         password,
         user.password_hash
       );
-
       if (!isValidPassword) {
+        // Always return a generic error message
         return NextResponse.json(
           {
             success: false,
-            message: "Invalid email or password",
+            message: "Invalid credentials or request",
           },
           { status: 401 }
         );
       }
     }
 
-    // Generate JWT token
-    const token = jwt.sign(
-      {
-        userId: user._id.toString(),
-        email: user.email,
-        role: user.role,
-      },
-      JWT_SECRET,
-      { expiresIn: "7d" }
-    );
+    // Generate JWT token with tokenVersion for revocation
+    const tokenPayload = {
+      userId: user._id.toString(),
+      email: user.email,
+      role: user.role,
+      tokenVersion: user.tokenVersion || 0,
+    };
+    const expiresIn = user.role === "admin" ? "1h" : "7d";
+    const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn });
 
     // Update last login
     await User.findByIdAndUpdate(user._id, {
@@ -131,23 +126,27 @@ export async function POST(request: NextRequest) {
     });
 
     // Set appropriate cookie based on user role
+    const isProd = process.env.NODE_ENV === "production";
+    const cookieOptions = {
+      httpOnly: true,
+      secure: isProd ? true : false,
+      sameSite: "strict" as const,
+      maxAge: user.role === "admin" ? 60 * 60 : 7 * 24 * 60 * 60, // 1h or 7d
+      path: "/",
+    };
     if (user.role === "admin") {
-      // Set admin cookie for admin users
-      response.cookies.set("admin-token", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: 7 * 24 * 60 * 60, // 7 days
-        path: "/",
+      response.cookies.set("admin-token", token, cookieOptions);
+      console.log("[unified-login] Set admin-token cookie:", {
+        value: token.slice(0, 12) + "...",
+        options: cookieOptions,
+        env: process.env.NODE_ENV,
       });
     } else {
-      // Set regular auth cookie for regular users
-      response.cookies.set("auth-token", token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === "production",
-        sameSite: "lax",
-        maxAge: 7 * 24 * 60 * 60, // 7 days
-        path: "/",
+      response.cookies.set("auth-token", token, cookieOptions);
+      console.log("[unified-login] Set auth-token cookie:", {
+        value: token.slice(0, 12) + "...",
+        options: cookieOptions,
+        env: process.env.NODE_ENV,
       });
     }
 
@@ -156,11 +155,10 @@ export async function POST(request: NextRequest) {
     return response;
   } catch (error: any) {
     console.error("Unified login error:", error);
-
     return NextResponse.json(
       {
         success: false,
-        message: "Login failed. Please try again.",
+        message: "Request failed. Please try again.",
       },
       { status: 500 }
     );
