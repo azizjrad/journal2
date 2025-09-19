@@ -160,42 +160,6 @@ export default function Error({ error, reset }: ErrorProps) {
             </Link>
           </div>
 
-          {/* Help Section */}
-          <div className="bg-white rounded-xl p-8 shadow-lg border border-gray-100 max-w-2xl mx-auto">
-            <h2 className="text-2xl font-bold text-gray-800 mb-4">
-              {t("need_help", "Need Help?", "تحتاج مساعدة؟")}
-            </h2>
-            <p className="text-gray-600 mb-6">
-              {t(
-                "help_description",
-                "If the problem persists, please contact our support team with the error details.",
-                "إذا استمرت المشكلة، يرجى الاتصال بفريق الدعم مع تفاصيل الخطأ."
-              )}
-            </p>
-
-            <div className="grid md:grid-cols-2 gap-4">
-              <div className="bg-gray-50 rounded-lg p-4 text-center">
-                <Mail className="w-8 h-8 text-red-600 mx-auto mb-2" />
-                <h3 className="font-semibold text-gray-800 mb-1">
-                  {t("email_support", "Email Support", "الدعم عبر البريد")}
-                </h3>
-                <p className="text-sm text-gray-600">
-                  support@digitaljournal.com
-                </p>
-              </div>
-
-              <div className="bg-gray-50 rounded-lg p-4 text-center">
-                <Clock className="w-8 h-8 text-red-600 mx-auto mb-2" />
-                <h3 className="font-semibold text-gray-800 mb-1">
-                  {t("response_time", "Response Time", "وقت الاستجابة")}
-                </h3>
-                <p className="text-sm text-gray-600">
-                  {t("within_24_hours", "Within 24 hours", "خلال 24 ساعة")}
-                </p>
-              </div>
-            </div>
-          </div>
-
           {/* Footer */}
           <div className="text-center py-8 mt-8 border-t border-gray-200">
             <p className="text-xs text-gray-400">
