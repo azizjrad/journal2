@@ -55,7 +55,7 @@ function MetricCard({
   };
 
   return (
-    <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 hover:bg-white/15 transition-all duration-300 shadow-lg">
+    <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 md:p-6 hover:bg-white/15 transition-all duration-300 shadow-lg h-full flex flex-col justify-between">
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-medium text-gray-300 mb-1">{title}</p>
@@ -250,11 +250,12 @@ export function AnalyticsDashboard({ initialData }: AnalyticsDashboardProps) {
         </div>
         <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3 w-full sm:w-auto">
           <Select value={selectedPeriod} onValueChange={setSelectedPeriod}>
-            <SelectTrigger className="w-full sm:w-[140px] h-8 sm:h-10 text-xs sm:text-sm bg-white/10 backdrop-blur-xl border-white/20 text-white hover:bg-white/20 transition-all duration-200 rounded-lg px-1.5 sm:px-4 py-0">
+            <SelectTrigger className="w-full sm:w-auto min-w-[110px] h-8 sm:h-10 text-xs sm:text-sm bg-white/10 backdrop-blur-xl border-white/20 text-white hover:bg-white/20 transition-all duration-200 rounded-lg px-1.5 sm:px-4 py-0">
               <SelectValue placeholder="Select period" />
             </SelectTrigger>
             <SelectContent
-              className="w-full sm:w-[140px] bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl shadow-2xl z-[100]"
+              position="popper"
+              className="min-w-[110px] w-auto bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl shadow-2xl z-[100]"
               position="item-aligned"
             >
               <SelectItem
@@ -282,7 +283,7 @@ export function AnalyticsDashboard({ initialData }: AnalyticsDashboardProps) {
             disabled={loading}
             variant="outline"
             size="sm"
-            className="w-full sm:w-auto h-8 sm:h-10 text-xs sm:text-sm bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm"
+            className="w-full sm:w-auto min-w-[110px] h-8 sm:h-10 text-xs sm:text-sm bg-white/10 border-white/20 text-white hover:bg-white/20 backdrop-blur-sm"
           >
             <RefreshCw
               className={`h-4 w-4 mr-2 ${loading ? "animate-spin" : ""}`}
@@ -293,7 +294,7 @@ export function AnalyticsDashboard({ initialData }: AnalyticsDashboardProps) {
       </div>
 
       {/* Key Metrics */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 items-stretch">
         <MetricCard
           title="Total Views"
           value={formatNumber(data.totalViews)}

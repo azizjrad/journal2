@@ -590,33 +590,37 @@ export function UserManagement() {
 
     return (
       <div
-        className={`bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 hover:bg-white/15 transition-all duration-300 shadow-lg ${
+        className={`bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 sm:p-6 hover:bg-white/15 transition-all duration-300 shadow-lg ${
           !user.is_active ? "border-red-400/30 bg-red-500/10" : ""
         }`}
       >
-        <div className="flex items-start justify-between">
-          <div className="flex items-start space-x-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold shadow-lg">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="flex flex-col xs:flex-row items-start gap-2 xs:gap-4 w-full">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center text-white font-semibold shadow-lg text-lg sm:text-xl">
               {(fullName || user.username).charAt(0).toUpperCase()}
             </div>
-            <div className="flex-1 min-w-0">
+            <div className="flex-1 min-w-0 mt-2 xs:mt-0">
               <div className="flex items-center gap-2 mb-1">
-                <h3 className="font-semibold text-white truncate text-lg">
+                <h3 className="font-semibold text-white truncate text-base sm:text-lg">
                   {fullName || user.username}
                 </h3>
                 {user.is_verified && (
                   <CheckCircle className="w-4 h-4 text-green-400" />
                 )}
               </div>
-              <p className="text-gray-300 truncate">{user.email}</p>
-              <p className="text-sm text-gray-400">@{user.username}</p>
+              <p className="text-gray-300 truncate text-xs sm:text-sm">
+                {user.email}
+              </p>
+              <p className="text-xs sm:text-sm text-gray-400">
+                @{user.username}
+              </p>
 
-              <div className="flex items-center gap-2 mt-3">
+              <div className="flex flex-wrap items-center gap-2 mt-2 sm:mt-3">
                 {getRoleBadge(user.role)}
                 {getStatusBadge(user)}
               </div>
 
-              <div className="flex items-center gap-4 mt-3 text-sm text-gray-400">
+              <div className="flex flex-wrap items-center gap-2 sm:gap-4 mt-2 sm:mt-3 text-xs sm:text-sm text-gray-400">
                 <span className="flex items-center gap-1">
                   <Calendar className="w-3 h-3" />
                   Joined {formatDate(user.created_at)}
@@ -631,7 +635,7 @@ export function UserManagement() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2 mt-4 sm:mt-0">
             {/* Role Selector */}
             <Select
               value={user.role}
@@ -730,7 +734,7 @@ export function UserManagement() {
     const fullName = `${user.first_name || ""} ${user.last_name || ""}`.trim();
 
     return (
-      <div className="bg-white/10 backdrop-blur-sm border border-yellow-400/30 rounded-xl p-6 hover:bg-white/15 transition-all duration-300 shadow-lg bg-gradient-to-br from-yellow-500/10 to-orange-500/10">
+      <div className="bg-white/10 backdrop-blur-sm border border-yellow-400/30 rounded-xl p-4 sm:p-6 hover:bg-white/15 transition-all duration-300 shadow-lg bg-gradient-to-br from-yellow-500/10 to-orange-500/10">
         <div className="flex items-start justify-between">
           <div className="flex items-start space-x-4">
             <div className="w-12 h-12 bg-gradient-to-br from-yellow-500 to-orange-600 rounded-full flex items-center justify-center text-white font-semibold shadow-lg">
@@ -793,16 +797,16 @@ export function UserManagement() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 max-w-full overflow-x-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold text-white">User Management</h2>
           <p className="text-gray-300">
             Manage users, writers, and permissions
           </p>
         </div>
-        <div className="flex items-center gap-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4 w-full">
           <Dialog open={showCreateDialog} onOpenChange={setShowCreateDialog}>
             <DialogTrigger asChild>
               <Button className="bg-blue-600 hover:bg-blue-700 text-white">
@@ -953,7 +957,7 @@ export function UserManagement() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
         <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 hover:bg-white/15 transition-all duration-300 shadow-lg">
           <div className="flex items-center justify-between">
             <div>
@@ -1040,7 +1044,10 @@ export function UserManagement() {
             <SelectTrigger className="w-32 bg-white/10 backdrop-blur-xl border-white/20 text-white hover:bg-white/20 transition-all duration-200 rounded-lg">
               <SelectValue placeholder="Role" />
             </SelectTrigger>
-            <SelectContent className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl shadow-2xl">
+            <SelectContent
+              position="popper"
+              className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl shadow-2xl"
+            >
               <SelectItem
                 value="all"
                 className="text-white hover:bg-white/20 focus:bg-white/20 cursor-pointer"
@@ -1072,7 +1079,10 @@ export function UserManagement() {
             <SelectTrigger className="w-32 bg-white/10 backdrop-blur-xl border-white/20 text-white hover:bg-white/20 transition-all duration-200 rounded-lg">
               <SelectValue placeholder="Status" />
             </SelectTrigger>
-            <SelectContent className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl shadow-2xl">
+            <SelectContent
+              position="popper"
+              className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl shadow-2xl"
+            >
               <SelectItem
                 value="all"
                 className="text-white hover:bg-white/20 focus:bg-white/20 cursor-pointer"
@@ -1110,16 +1120,16 @@ export function UserManagement() {
 
       {/* Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab}>
-        <TabsList className="grid w-full grid-cols-4 bg-white/10 backdrop-blur-sm border border-white/20">
+        <TabsList className="flex w-full overflow-x-auto no-scrollbar bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg">
           <TabsTrigger
             value="all"
-            className="data-[state=active]:bg-blue-600/20 data-[state=active]:text-white text-gray-300"
+            className="flex-1 min-w-[120px] px-2 py-2 sm:px-4 data-[state=active]:bg-blue-600/20 data-[state=active]:text-white text-gray-300 text-xs sm:text-sm whitespace-nowrap"
           >
             All Users
           </TabsTrigger>
           <TabsTrigger
             value="pending"
-            className="data-[state=active]:bg-yellow-600/20 data-[state=active]:text-white text-gray-300"
+            className="flex-1 min-w-[120px] px-2 py-2 sm:px-4 data-[state=active]:bg-yellow-600/20 data-[state=active]:text-white text-gray-300 text-xs sm:text-sm whitespace-nowrap"
           >
             Pending Writers
             {getPendingWriters().length > 0 && (
@@ -1130,13 +1140,13 @@ export function UserManagement() {
           </TabsTrigger>
           <TabsTrigger
             value="writers"
-            className="data-[state=active]:bg-green-600/20 data-[state=active]:text-white text-gray-300"
+            className="flex-1 min-w-[120px] px-2 py-2 sm:px-4 data-[state=active]:bg-green-600/20 data-[state=active]:text-white text-gray-300 text-xs sm:text-sm whitespace-nowrap"
           >
             Active Writers
           </TabsTrigger>
           <TabsTrigger
             value="rejected"
-            className="data-[state=active]:bg-red-600/20 data-[state=active]:text-white text-gray-300"
+            className="flex-1 min-w-[120px] px-2 py-2 sm:px-4 data-[state=active]:bg-red-600/20 data-[state=active]:text-white text-gray-300 text-xs sm:text-sm whitespace-nowrap"
           >
             Rejected
           </TabsTrigger>

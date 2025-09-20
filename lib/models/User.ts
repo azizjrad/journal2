@@ -25,20 +25,7 @@ const userSchema = new mongoose.Schema(
     },
     password_hash: {
       type: String,
-      required: function () {
-        // Password is required only if google_id is not provided
-        return !this.google_id;
-      },
-    },
-    google_id: {
-      type: String,
-      unique: true,
-      sparse: true, // Allows null values while maintaining uniqueness
-    },
-    auth_provider: {
-      type: String,
-      enum: ["local", "google"],
-      default: "local",
+      required: true,
     },
     first_name: {
       type: String,

@@ -305,7 +305,12 @@ export function NewsletterSubscribers({
           <SelectTrigger className="w-[140px] bg-white/10 backdrop-blur-xl border-white/20 text-white hover:bg-white/20 transition-all duration-200 rounded-lg">
             <SelectValue placeholder="All Plans" />
           </SelectTrigger>
-          <SelectContent className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl shadow-2xl">
+          <SelectContent
+            position="popper"
+            side="bottom"
+            force-portal="true"
+            className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl shadow-2xl"
+          >
             <SelectItem
               value="all"
               className="text-white hover:bg-white/20 focus:bg-white/20 cursor-pointer"
@@ -336,7 +341,10 @@ export function NewsletterSubscribers({
           <SelectTrigger className="w-[140px] bg-white/10 backdrop-blur-xl border-white/20 text-white hover:bg-white/20 transition-all duration-200 rounded-lg">
             <SelectValue placeholder="All Status" />
           </SelectTrigger>
-          <SelectContent className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl shadow-2xl">
+          <SelectContent
+            position="popper"
+            className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl shadow-2xl"
+          >
             <SelectItem
               value="all"
               className="text-white hover:bg-white/20 focus:bg-white/20 cursor-pointer"

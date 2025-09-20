@@ -203,7 +203,7 @@ export function AdminDashboard({
   const [activeTabValue, setActiveTabValue] = useState("articles");
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900">
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 w-full overflow-x-hidden">
       {/* Background Pattern - matching website hero */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-0 left-0 w-96 h-96 bg-red-500 rounded-full mix-blend-multiply filter blur-xl transform -translate-x-1/2 -translate-y-1/2"></div>
@@ -211,7 +211,7 @@ export function AdminDashboard({
         <div className="absolute bottom-0 left-1/3 w-96 h-96 bg-red-700 rounded-full mix-blend-multiply filter blur-xl"></div>
       </div>
 
-      <div className="container mx-auto px-2 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8 relative z-10">
+      <div className="w-full px-2 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8 relative z-10 overflow-x-hidden">
         {/* Enhanced Header with Brand Identity */}
         <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl mb-4 sm:mb-8">
           <div className="px-3 py-3 sm:px-6 sm:py-4 md:px-8 md:py-6 border-b border-white/10">
@@ -330,7 +330,7 @@ export function AdminDashboard({
           </div>
         </div>{" "}
         {/* Enhanced Tabbed Interface */}
-        <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl overflow-x-auto relative">
+        <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl relative">
           {/* Mobile sidebar toggle */}
           <div className="sm:hidden flex items-center px-3 py-2 border-b border-white/10 bg-gradient-to-r from-red-600/10 to-red-700/10 rounded-t-2xl">
             <button
@@ -392,7 +392,7 @@ export function AdminDashboard({
           <Tabs
             value={activeTabValue}
             onValueChange={setActiveTabValue}
-            className="w-full"
+            className="w-full max-w-full overflow-x-hidden"
           >
             <div className="border-b border-white/10 bg-gradient-to-r from-red-600/10 to-red-700/10 rounded-t-2xl overflow-x-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent hidden sm:block">
               <TabsList className="h-auto p-0 bg-transparent w-max min-w-0 flex-nowrap flex overflow-x-auto scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent rounded-none">
