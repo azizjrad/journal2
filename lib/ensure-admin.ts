@@ -1,3 +1,24 @@
+// Ensures at least one admin exists in the database. Creates a default admin if none found.
+export async function ensureAdminExists() {
+  await dbConnect();
+  const admin = await User.findOne({ role: "admin" });
+  if (!admin) {
+    const defaultAdmin = new User({
+      username: "admin",
+      email: "admin@journal.com",
+      password_hash: "$2b$10$QWERTYUIOPASDFGHJKLZXCVBNM1234567890qwertyuiopasdfghjklzxcvbnm", // Replace with a real bcrypt hash
+      role: "admin",
+      is_active: true,
+      is_verified: true,
+      first_name: "Admin",
+      last_name: "User",
+    });
+    await defaultAdmin.save();
+    console.log("Default admin user created: admin@journal.com / admin123");
+    return defaultAdmin;
+  }
+  return admin;
+}
 import { NextRequest } from "next/server";
 import { dbConnect } from "@/lib/db";
 import { User } from "@/lib/models/User";
