@@ -1,3 +1,4 @@
+"use client";
 import { useState, useEffect, useRef } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -290,7 +291,7 @@ export default function NewsletterAdmin() {
                             className="h-16 w-16 object-cover rounded border border-gray-300"
                           />
                         ) : (
-                          <span className="inline-block h-16 w-16 flex items-center justify-center bg-gray-200 rounded border border-gray-300 text-gray-500">
+                          <span className="h-16 w-16 flex items-center justify-center bg-gray-200 rounded border border-gray-300 text-gray-500">
                             📄
                           </span>
                         )}
