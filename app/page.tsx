@@ -26,7 +26,7 @@ export default async function HomePage() {
           .filter((cat) => typeof cat.id === "string" && cat.id !== undefined)
           .map((cat) => ({
             ...cat,
-            id: Number(cat.id),
+            id: cat.id,
           }))}
         articles={featuredArticles
           .filter(
@@ -35,7 +35,7 @@ export default async function HomePage() {
           )
           .map((article) => ({
             ...article,
-            id: Number(article.id),
+            id: article.id,
           }))}
       />
       <div style={{ paddingTop: "140px" }}>

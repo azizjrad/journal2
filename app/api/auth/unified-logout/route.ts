@@ -8,22 +8,24 @@ export async function POST(request: NextRequest) {
       message: "Logged out successfully",
     });
 
-    // Clear both admin and regular user cookies
-    response.cookies.set("admin-token", "", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 0, // Expire immediately
-      path: "/",
-    });
-
-    response.cookies.set("auth-token", "", {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      maxAge: 0, // Expire immediately
-      path: "/",
-    });
+    // List of possible auth/session cookies to clear
+    const cookieNames = [
+      "admin-token",
+      "auth-token",
+      "token",
+      "session",
+      "user-token",
+      "writer-token",
+    ];
+    for (const name of cookieNames) {
+      response.cookies.set(name, "", {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 0,
+        path: "/",
+      });
+    }
 
     console.log("✅ Unified logout successful");
 
