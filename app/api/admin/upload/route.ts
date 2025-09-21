@@ -4,12 +4,12 @@ import path from "path";
 
 export async function POST(request: NextRequest) {
   try {
-    // Require admin authentication
-    const { ensureAdmin } = await import("@/lib/ensure-admin");
-    const adminCheck = await ensureAdmin(request);
-    if (!adminCheck.isAdmin) {
+    // Require admin or writer authentication
+    const { ensureAdminOrWriter } = await import("@/lib/ensure-admin");
+    const authCheck = await ensureAdminOrWriter(request);
+    if (!authCheck.isAdmin && !authCheck.isWriter) {
       return NextResponse.json(
-        { error: "Unauthorized. Admin access required." },
+        { error: "Unauthorized. Admin or writer access required." },
         { status: 401 }
       );
     }

@@ -15,12 +15,32 @@ export async function sendEmail({
   console.log(`[MOCK EMAIL] To: ${to}, Subject: ${subject}`);
 }
 
-export async function sendPasswordResetEmail({ email, resetToken, userName }: { email: string; resetToken: string; userName?: string; }): Promise<boolean> {
-  console.log(`[MOCK EMAIL] Password reset for: ${email}, token: ${resetToken}`);
+export async function sendPasswordResetEmail({
+  email,
+  resetToken,
+  userName,
+}: {
+  email: string;
+  resetToken: string;
+  userName?: string;
+}): Promise<boolean> {
+  console.log(
+    `[MOCK EMAIL] Password reset for: ${email}, token: ${resetToken}`
+  );
   return true;
 }
 
-export async function sendEmailVerification({ email, verificationToken, userName }: { email: string; verificationToken: string; userName?: string; }): Promise<boolean> {
-  console.log(`[MOCK EMAIL] Email verification for: ${email}, token: ${verificationToken}`);
+export async function sendEmailVerification({
+  email,
+  verificationToken,
+  userName,
+}: {
+  email: string;
+  verificationToken: string;
+  userName?: string;
+}): Promise<boolean> {
+  console.log(
+    `[MOCK EMAIL] Email verification for: ${email}, token: ${verificationToken}`
+  );
   return true;
 }

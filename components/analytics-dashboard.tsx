@@ -256,7 +256,6 @@ export function AnalyticsDashboard({ initialData }: AnalyticsDashboardProps) {
             <SelectContent
               position="popper"
               className="min-w-[110px] w-auto bg-white/10 backdrop-blur-xl border border-white/20 rounded-xl shadow-2xl z-[100]"
-              position="item-aligned"
             >
               <SelectItem
                 value="7"

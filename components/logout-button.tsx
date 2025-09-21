@@ -10,8 +10,10 @@ export function LogoutButton() {
   const handleLogout = async () => {
     try {
       await logout();
-      // Force a hard refresh to ensure all state is cleared
-      window.location.reload();
+      // Use Next.js router to reload the current route for a smooth UI update
+      if (typeof window !== "undefined") {
+        window.location.href = "/";
+      }
     } catch (error) {
       console.error("Logout failed:", error);
       // Fallback: redirect to auth page

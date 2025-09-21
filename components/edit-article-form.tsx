@@ -121,6 +121,8 @@ export function EditArticleForm({
         ]);
 
         // Set form data with existing article data
+
+        // Always treat category_id as string
         const formattedData = {
           title_en: articleData.title_en || "",
           title_ar: articleData.title_ar || "",
@@ -129,7 +131,9 @@ export function EditArticleForm({
           excerpt_en: articleData.excerpt_en || "",
           excerpt_ar: articleData.excerpt_ar || "",
           image_url: articleData.image_url || "",
-          category_id: articleData.category_id || "",
+          category_id: articleData.category_id
+            ? String(articleData.category_id)
+            : "",
           is_featured: articleData.is_featured || false,
           is_published: articleData.is_published || false,
           scheduled_for: articleData.scheduled_for || "",
@@ -139,17 +143,21 @@ export function EditArticleForm({
           meta_keywords_ar: articleData.meta_keywords_ar || "",
         };
 
-        // Ensure the article's category is present in the categories list
-        let updatedCategories = categoriesData;
-        if (
-          formattedData.category_id &&
-          !categoriesData.some(
-            (cat: Category) => cat.id === formattedData.category_id
-          )
-        ) {
-          // Add a fallback category using the article's category info if available
+        // Add fallback only if not present by id or name, then deduplicate
+        let updatedCategories: Category[] = categoriesData.map(
+          (cat: Category) => ({ ...cat, id: String(cat.id) })
+        );
+        const hasCategoryId = updatedCategories.some(
+          (cat: Category) => cat.id === formattedData.category_id
+        );
+        const hasCategoryName = updatedCategories.some(
+          (cat: Category) =>
+            cat.name_en === articleData.category_name_en ||
+            cat.name_ar === articleData.category_name_ar
+        );
+        if (formattedData.category_id && !hasCategoryId && !hasCategoryName) {
           updatedCategories = [
-            ...categoriesData,
+            ...updatedCategories,
             {
               id: formattedData.category_id,
               name_en: articleData.category_name_en || "(Deleted Category)",
@@ -157,10 +165,27 @@ export function EditArticleForm({
             },
           ];
         }
+        // Deduplicate by id
+        const dedupedCategories: Category[] = Array.from(
+          new Map(
+            updatedCategories.map((cat: Category) => [cat.id, cat])
+          ).values()
+        );
 
-        setFormData(formattedData);
-        setOriginalData({ ...formattedData });
-        setCategories(updatedCategories);
+        // If a category with the same name but different id exists, use its id for pre-selection
+        let preselectCategoryId = formattedData.category_id;
+        const realCategory = dedupedCategories.find(
+          (cat: Category) =>
+            cat.name_en === articleData.category_name_en ||
+            cat.name_ar === articleData.category_name_ar
+        );
+        if (realCategory) {
+          preselectCategoryId = realCategory.id;
+        }
+
+        setFormData({ ...formattedData, category_id: preselectCategoryId });
+        setOriginalData({ ...formattedData, category_id: preselectCategoryId });
+        setCategories(dedupedCategories);
 
         // Set image preview if exists
         if (articleData.image_url) {

@@ -17,7 +17,7 @@ import { useAuth } from "@/lib/user-auth";
 
 export function ProfileButton() {
   const { t } = useLanguage();
-  const { user, isAuthenticated, isLoading, logout } = useAuth();
+  const { user, isAuthenticated, isLoading, logout, refreshUser } = useAuth();
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -36,14 +36,12 @@ export function ProfileButton() {
 
   const handleLogout = async () => {
     try {
-      setShowMenu(false);
       await logout();
-      // Force a hard refresh to ensure all state is cleared
-      window.location.reload();
+      setShowMenu(false);
+      // No reload or redirect; UI will update to show login button
     } catch (error) {
       console.error("Error logging out:", error);
-      // Even if logout fails, redirect to home
-      window.location.href = "/";
+      setShowMenu(false);
     }
   };
 

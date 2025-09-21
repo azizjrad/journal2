@@ -21,6 +21,7 @@ import {
   X,
 } from "lucide-react";
 import { DeleteArticleButton } from "@/components/delete-article-button";
+import { LogoutButton } from "@/components/logout-button";
 
 interface Article {
   id: string;
@@ -468,7 +469,6 @@ export function WriterDashboard({ articles, user }: WriterDashboardProps) {
         });
 
         if (response.ok) {
-          // Update the local state
           setCurrentArticles((prev) =>
             prev.map((article) =>
               article.id === articleId
@@ -600,7 +600,7 @@ export function WriterDashboard({ articles, user }: WriterDashboardProps) {
                 Welcome back, {user.username}! Manage your articles and content.
               </p>
             </div>
-            <div className="flex gap-3">
+            <div className="flex gap-3 items-center">
               <Link href="/writer/articles/new">
                 <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white border-0 shadow-lg">
                   <Plus className="h-4 w-4 mr-2" />
@@ -616,6 +616,7 @@ export function WriterDashboard({ articles, user }: WriterDashboardProps) {
                   View Site
                 </Button>
               </Link>
+              <LogoutButton />
             </div>
           </div>
         </div>

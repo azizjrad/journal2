@@ -11,10 +11,11 @@ import { verifyToken } from "@/lib/auth";
 // GET user profile
 export async function GET(request: NextRequest) {
   try {
-    // Get user from token - check both auth-token and admin-token
+    // Get user from token - check auth-token, admin-token, and writer-token
     const authToken = request.cookies.get("auth-token")?.value;
     const adminToken = request.cookies.get("admin-token")?.value;
-    const token = authToken || adminToken;
+    const writerToken = request.cookies.get("writer-token")?.value;
+    const token = authToken || adminToken || writerToken;
 
     if (!token) {
       return NextResponse.json(

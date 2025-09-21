@@ -243,8 +243,7 @@ export function AdminDashboard({
                     variant="outline"
                     className="text-white border-white/20 bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:text-white transition-all duration-200"
                   >
-                    <Eye className="h-4 w-4 mr-2" />
-                    <span className="hidden xs:inline">Preview Site</span>
+                    <Eye className="h-4 w-4" />
                   </Button>
                 </Link>
                 <LogoutButton />

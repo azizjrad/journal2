@@ -141,6 +141,13 @@ export async function POST(request: NextRequest) {
         options: cookieOptions,
         env: process.env.NODE_ENV,
       });
+    } else if (user.role === "writer") {
+      response.cookies.set("writer-token", token, cookieOptions);
+      console.log("[unified-login] Set writer-token cookie:", {
+        value: token.slice(0, 12) + "...",
+        options: cookieOptions,
+        env: process.env.NODE_ENV,
+      });
     } else {
       response.cookies.set("auth-token", token, cookieOptions);
       console.log("[unified-login] Set auth-token cookie:", {
