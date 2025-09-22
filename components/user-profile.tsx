@@ -27,6 +27,7 @@ import {
   LogOut,
 } from "lucide-react";
 import { useAuth } from "@/lib/user-auth";
+import api from "@/lib/api-client";
 
 export function UserProfile() {
   const { user, logout, refreshUser } = useAuth();
@@ -81,15 +82,10 @@ export function UserProfile() {
 
   const loadProfileData = async () => {
     try {
-      const response = await fetch("/api/user/profile", {
-        credentials: "include",
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-        if (data.success) {
-          setProfileData(data.profile);
-        }
+      const response = await api.get("/user/profile");
+      const data = response.data;
+      if (data.success) {
+        setProfileData(data.profile);
       }
     } catch (error) {
       console.error("Failed to load profile:", error);
@@ -103,27 +99,18 @@ export function UserProfile() {
     setProfileSuccess("");
 
     try {
-      const response = await fetch("/api/user/profile", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          firstName,
-          lastName,
-          bio,
-          displayName,
-          website,
-          location,
-          socialTwitter,
-          socialLinkedin,
-          socialGithub,
-        }),
-        credentials: "include",
+      const response = await api.put("/user/profile", {
+        firstName,
+        lastName,
+        bio,
+        displayName,
+        website,
+        location,
+        socialTwitter,
+        socialLinkedin,
+        socialGithub,
       });
-
-      const data = await response.json();
-
+      const data = response.data;
       if (data.success) {
         setProfileSuccess("Profile updated successfully!");
         await refreshUser();
@@ -151,20 +138,11 @@ export function UserProfile() {
     }
 
     try {
-      const response = await fetch("/api/user/change-password", {
-        method: "PUT",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          currentPassword,
-          newPassword,
-        }),
-        credentials: "include",
+      const response = await api.put("/user/change-password", {
+        currentPassword,
+        newPassword,
       });
-
-      const data = await response.json();
-
+      const data = response.data;
       if (data.success) {
         setPasswordSuccess("Password changed successfully!");
         setCurrentPassword("");

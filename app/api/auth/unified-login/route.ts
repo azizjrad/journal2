@@ -3,7 +3,8 @@ import { generateCsrfToken, setCsrfCookie, validateCsrf } from "@/lib/csrf";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";
-import { User } from "@/lib/models/User";
+import { User, RefreshToken } from "@/lib/models/User";
+import crypto from "crypto";
 
 const JWT_SECRET = process.env.JWT_SECRET || "fallback-secret-key";
 
@@ -97,15 +98,25 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Generate JWT token with tokenVersion for revocation
+    // Generate JWT access token (15 min expiry)
     const tokenPayload = {
       userId: user._id.toString(),
       email: user.email,
       role: user.role,
       tokenVersion: user.tokenVersion || 0,
     };
-    const expiresIn = user.role === "admin" ? "1h" : "7d";
-    const token = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn });
+    const accessToken = jwt.sign(tokenPayload, JWT_SECRET, { expiresIn: "15m" });
+
+    // Generate refresh token (30 days expiry)
+    const refreshTokenValue = crypto.randomBytes(48).toString("hex");
+    const refreshTokenExpiry = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days
+    await RefreshToken.create({
+      user_id: user._id,
+      token: refreshTokenValue,
+      expires_at: refreshTokenExpiry,
+      ip_address: clientIP,
+      user_agent: userAgent,
+    });
 
     // Update last login
     await User.findByIdAndUpdate(user._id, {
@@ -129,36 +140,32 @@ export async function POST(request: NextRequest) {
       { headers: noStoreHeaders }
     );
 
-    // Set appropriate cookie based on user role
+    // Set access token cookie (15 min)
     const isProd = process.env.NODE_ENV === "production";
-    const cookieOptions = {
+    const accessCookieOptions = {
       httpOnly: true,
       secure: isProd ? true : false,
       sameSite: "strict" as const,
-      maxAge: user.role === "admin" ? 60 * 60 : 7 * 24 * 60 * 60, // 1h or 7d
+      maxAge: 15 * 60, // 15 minutes
+      path: "/",
+    };
+    // Set refresh token cookie (30 days)
+    const refreshCookieOptions = {
+      httpOnly: true,
+      secure: isProd ? true : false,
+      sameSite: "strict" as const,
+      maxAge: 30 * 24 * 60 * 60, // 30 days
       path: "/",
     };
     if (user.role === "admin") {
-      response.cookies.set("admin-token", token, cookieOptions);
-      console.log("[unified-login] Set admin-token cookie:", {
-        value: token.slice(0, 12) + "...",
-        options: cookieOptions,
-        env: process.env.NODE_ENV,
-      });
+      response.cookies.set("admin-token", accessToken, accessCookieOptions);
+      response.cookies.set("admin-refresh", refreshTokenValue, refreshCookieOptions);
     } else if (user.role === "writer") {
-      response.cookies.set("writer-token", token, cookieOptions);
-      console.log("[unified-login] Set writer-token cookie:", {
-        value: token.slice(0, 12) + "...",
-        options: cookieOptions,
-        env: process.env.NODE_ENV,
-      });
+      response.cookies.set("writer-token", accessToken, accessCookieOptions);
+      response.cookies.set("writer-refresh", refreshTokenValue, refreshCookieOptions);
     } else {
-      response.cookies.set("auth-token", token, cookieOptions);
-      console.log("[unified-login] Set auth-token cookie:", {
-        value: token.slice(0, 12) + "...",
-        options: cookieOptions,
-        env: process.env.NODE_ENV,
-      });
+      response.cookies.set("auth-token", accessToken, accessCookieOptions);
+      response.cookies.set("auth-refresh", refreshTokenValue, refreshCookieOptions);
     }
 
     console.log(`✅ Unified login successful for ${user.role}: ${user.email}`);
