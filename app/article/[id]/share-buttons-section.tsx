@@ -2,10 +2,13 @@
 
 import { useLanguage } from "@/lib/language-context";
 import { ShareButtons } from "@/components/share-buttons";
-import { type Article } from "@/lib/db";
 
 interface ShareButtonsSectionProps {
-  article: Article;
+  article: {
+    id?: string | number;
+    title_en: string;
+    title_ar: string;
+  };
 }
 
 export function ShareButtonsSection({ article }: ShareButtonsSectionProps) {
@@ -22,10 +25,10 @@ export function ShareButtonsSection({ article }: ShareButtonsSectionProps) {
       </h3>
       <ShareButtons
         title={getTitle()}
-        url={`${
+        url={`$${
           process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
         }/article/${article.id}`}
-        articleId={article.id}
+        articleId={article.id?.toString()}
       />
     </>
   );

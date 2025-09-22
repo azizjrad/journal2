@@ -17,7 +17,8 @@ export default function PaymentPage() {
   const { t } = useLanguage();
   const searchParams = useSearchParams();
   const plan = (searchParams.get("plan") as "annual" | "monthly") || "annual";
-  const [email, setEmail] = useState("");
+  const initialEmail = searchParams.get("email") || "";
+  const [email, setEmail] = useState(initialEmail);
   // Stepper state
   const [step, setStep] = useState(1);
   // Payment method state

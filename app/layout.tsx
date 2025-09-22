@@ -6,8 +6,10 @@ import "../styles/professional-news.css";
 import { LanguageProvider } from "@/lib/language-context";
 import { AuthProvider } from "@/lib/user-auth";
 import { Toaster } from "sonner";
+
 import ServiceWorkerRegistration from "@/components/service-worker-registration";
 import OfflineIndicator from "@/components/offline-indicator";
+import { Analytics } from "@vercel/analytics/next";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -108,6 +110,7 @@ export default function RootLayout({
         </AuthProvider>
         <Toaster position="top-right" expand={false} richColors closeButton />
         <ServiceWorkerRegistration />
+        <Analytics />
       </body>
     </html>
   );

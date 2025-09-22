@@ -1587,8 +1587,20 @@ export async function trackArticleEngagement(
     await Article.findByIdAndUpdate(articleId, {
       $inc: { engagement_count: 1 },
     });
-  } catch (error) {
-    console.error("Error tracking article engagement:", error);
+  } catch (error: any) {
+    if (error && error.errors) {
+      console.error("Error tracking article engagement:", {
+        message: error.message,
+        errors: error.errors,
+        articleId,
+        engagementType,
+        ipAddress,
+        userAgent,
+        platform,
+      });
+    } else {
+      console.error("Error tracking article engagement:", error);
+    }
   }
 }
 
@@ -1637,6 +1649,53 @@ export async function getAnalyticsData(
       { $limit: 5 },
     ]);
 
+    // Timeline: group by day for the last N days
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+    const timelineDates = Array.from({ length: days }, (_, i) => {
+      const d = new Date(today);
+      d.setDate(today.getDate() - (days - 1 - i));
+      return d;
+    });
+
+    // Views Timeline
+    const viewsAgg = await ArticleView.aggregate([
+      { $match: { viewed_at: { $gte: startDate } } },
+      {
+        $group: {
+          _id: {
+            $dateToString: { format: "%Y-%m-%d", date: "$viewed_at" },
+          },
+          views: { $sum: 1 },
+        },
+      },
+    ]);
+    const viewsMap = Object.fromEntries(viewsAgg.map((v) => [v._id, v.views]));
+    const viewsTimeline = timelineDates.map((d) => {
+      const dateStr = d.toISOString().slice(0, 10);
+      return { date: dateStr, views: viewsMap[dateStr] || 0 };
+    });
+
+    // Engagement Timeline
+    const engagementAgg = await ArticleEngagement.aggregate([
+      { $match: { created_at: { $gte: startDate } } },
+      {
+        $group: {
+          _id: {
+            $dateToString: { format: "%Y-%m-%d", date: "$created_at" },
+          },
+          engagements: { $sum: 1 },
+        },
+      },
+    ]);
+    const engagementMap = Object.fromEntries(
+      engagementAgg.map((v) => [v._id, v.engagements])
+    );
+    const engagementTimeline = timelineDates.map((d) => {
+      const dateStr = d.toISOString().slice(0, 10);
+      return { date: dateStr, engagements: engagementMap[dateStr] || 0 };
+    });
+
     return {
       totalViews,
       totalEngagements,
@@ -1650,8 +1709,8 @@ export async function getAnalyticsData(
         count: cat.count,
         category_id: cat._id.toString(),
       })),
-      viewsTimeline: [],
-      engagementTimeline: [],
+      viewsTimeline,
+      engagementTimeline,
       recentActivity: [],
     };
   } catch (error) {

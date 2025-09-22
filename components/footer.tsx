@@ -15,16 +15,13 @@ export function Footer({ categories }: FooterProps) {
   const [email, setEmail] = useState("");
   const [isSubscribing, setIsSubscribing] = useState(false);
 
-  const handleNewsletterSubmit = async (e: React.FormEvent) => {
+  const handleNewsletterSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!email) return;
-
-    setIsSubscribing(true);
-    // Simulate subscription process
-    await new Promise((resolve) => setTimeout(resolve, 1000));
-    setIsSubscribing(false);
-    setEmail("");
-    // You can implement actual newsletter subscription here
+    // Redirect to payment page with annual plan and pre-filled email
+    window.location.href = `/payment?plan=annual&email=${encodeURIComponent(
+      email
+    )}`;
   };
 
   return (
@@ -58,7 +55,7 @@ export function Footer({ categories }: FooterProps) {
             <div className="space-y-3">
               <div className="flex items-center gap-3 text-gray-300 text-sm">
                 <Phone className="w-4 h-4 text-red-500" />
-                <span>+218 21 123 4567</span>
+                <span>+218 XX XXX XXXX</span>
               </div>
               <div className="flex items-center gap-3 text-gray-300 text-sm">
                 <Mail className="w-4 h-4 text-red-500" />

@@ -6,7 +6,7 @@ import { TrendingUp, Clock } from "lucide-react";
 import Link from "next/link";
 
 interface Article {
-  id: number;
+  id: string;
   title_en: string;
   title_ar: string;
   excerpt_en: string;

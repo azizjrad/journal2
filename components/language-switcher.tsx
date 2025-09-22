@@ -15,7 +15,7 @@ export function LanguageSwitcher() {
         className={`px-4 py-2 text-base font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-0 active:bg-transparent ${
           language === "en"
             ? "bg-white text-red-700 shadow-sm border border-red-200 !bg-white"
-            : "text-gray-600 text-red-700 hover:bg-transparent bg-transparent"
+            : "text-gray-600 hover:text-red-700 hover:bg-transparent bg-transparent"
         }`}
       >
         EN

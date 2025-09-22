@@ -14,9 +14,10 @@ export function NewsletterSection() {
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
     if (email) {
-      setIsSubscribed(true);
-      setEmail("");
-      // Here you would typically call an API to subscribe the user
+      // Redirect to payment page with annual plan and pre-filled email
+      window.location.href = `/payment?plan=annual&email=${encodeURIComponent(
+        email
+      )}`;
     }
   };
 
@@ -69,67 +70,36 @@ export function NewsletterSection() {
               </div>
             </div>{" "}
             {/* Subscription Form */}
-            {!isSubscribed ? (
-              <form onSubmit={handleSubscribe} className="max-w-2xl mx-auto">
-                <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
-                  <input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder={t(
-                      "enter_email",
-                      "Enter your email address",
-                      "أدخل عنوان بريدك الإلكتروني"
-                    )}
-                    className="flex-1 px-6 py-4 rounded-xl border-2 border-gray-600 bg-white/10 backdrop-blur-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300 text-lg"
-                    required
-                  />
-                  <Button
-                    type="submit"
-                    className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-10 py-4 rounded-xl font-bold text-lg whitespace-nowrap shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 h-[60px] flex items-center justify-center"
-                  >
-                    {t("subscribe_now", "Subscribe Now", "اشترك الآن")}
-                  </Button>
-                </div>
-                <p className="text-sm text-gray-400 mt-4">
-                  {t(
-                    "privacy_notice",
-                    "We respect your privacy. Unsubscribe at any time.",
-                    "نحن نحترم خصوصيتك. يمكنك إلغاء الاشتراك في أي وقت."
+            {/* Always show the form, redirect on submit */}
+            <form onSubmit={handleSubscribe} className="max-w-2xl mx-auto">
+              <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  placeholder={t(
+                    "enter_email",
+                    "Enter your email address",
+                    "أدخل عنوان بريدك الإلكتروني"
                   )}
-                </p>
-              </form>
-            ) : (
-              <div className="bg-green-600/20 border border-green-500/50 rounded-xl p-8 max-w-lg mx-auto">
-                <div className="flex items-center justify-center mb-4">
-                  <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
-                    <svg
-                      className="w-6 h-6 text-white"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 13l4 4L19 7"
-                      />
-                    </svg>
-                  </div>
-                </div>
-                <h4 className="text-2xl font-bold text-white mb-2">
-                  {t("subscription_success", "Thank You!", "شكراً لك!")}
-                </h4>
-                <p className="text-green-300">
-                  {t(
-                    "subscription_message",
-                    "You've successfully subscribed to our newsletter.",
-                    "لقد اشتركت بنجاح في نشرتنا الإخبارية."
-                  )}
-                </p>
+                  className="flex-1 px-6 py-4 rounded-xl border-2 border-gray-600 bg-white/10 backdrop-blur-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300 text-lg"
+                  required
+                />
+                <Button
+                  type="submit"
+                  className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-10 py-4 rounded-xl font-bold text-lg whitespace-nowrap shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 h-[60px] flex items-center justify-center"
+                >
+                  {t("subscribe_now", "Subscribe Now", "اشترك الآن")}
+                </Button>
               </div>
-            )}
+              <p className="text-sm text-gray-400 mt-4">
+                {t(
+                  "privacy_notice",
+                  "We respect your privacy. Unsubscribe at any time.",
+                  "نحن نحترم خصوصيتك. يمكنك إلغاء الاشتراك في أي وقت."
+                )}
+              </p>
+            </form>
           </div>
         </CardContent>
       </Card>

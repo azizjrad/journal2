@@ -588,21 +588,21 @@ export function WriterDashboard({ articles, user }: WriterDashboardProps) {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900">
-      <div className="container mx-auto px-4 py-8">
+      <div className="container mx-auto px-2 sm:px-4 py-4 sm:py-8">
         {/* Header */}
-        <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-8 mb-8 shadow-lg">
-          <div className="flex items-center justify-between">
+        <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-4 sm:p-8 mb-6 sm:mb-8 shadow-lg">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <h1 className="text-4xl font-bold text-white mb-2">
+              <h1 className="text-2xl sm:text-4xl font-bold text-white mb-1 sm:mb-2">
                 Writer Dashboard
               </h1>
-              <p className="text-gray-300">
+              <p className="text-gray-300 text-sm sm:text-base">
                 Welcome back, {user.username}! Manage your articles and content.
               </p>
             </div>
-            <div className="flex gap-3 items-center">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 items-stretch sm:items-center">
               <Link href="/writer/articles/new">
-                <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white border-0 shadow-lg">
+                <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white border-0 shadow-lg w-full sm:w-auto">
                   <Plus className="h-4 w-4 mr-2" />
                   New Article
                 </Button>
@@ -610,7 +610,7 @@ export function WriterDashboard({ articles, user }: WriterDashboardProps) {
               <Link href="/">
                 <Button
                   variant="outline"
-                  className="text-white border-white/20 bg-white/10 backdrop-blur-sm hover:bg-white/20"
+                  className="text-white border-white/20 bg-white/10 backdrop-blur-sm hover:bg-white/20 w-full sm:w-auto"
                 >
                   <Eye className="h-4 w-4 mr-2" />
                   View Site
@@ -622,67 +622,71 @@ export function WriterDashboard({ articles, user }: WriterDashboardProps) {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 hover:bg-white/15 transition-all duration-300 shadow-lg">
+        <div className="grid grid-cols-1 xs:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
+          <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 sm:p-6 hover:bg-white/15 transition-all duration-300 shadow-lg">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-300 mb-1">
+                <p className="text-xs sm:text-sm font-medium text-gray-300 mb-1">
                   Total Articles
                 </p>
-                <p className="text-3xl font-bold text-white">{stats.total}</p>
+                <p className="text-2xl sm:text-3xl font-bold text-white">
+                  {stats.total}
+                </p>
               </div>
-              <div className="p-3 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl">
-                <FileText className="h-6 w-6 text-blue-300" />
+              <div className="p-2 sm:p-3 bg-gradient-to-br from-blue-500/20 to-blue-600/20 rounded-xl">
+                <FileText className="h-5 w-5 sm:h-6 sm:w-6 text-blue-300" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 hover:bg-white/15 transition-all duration-300 shadow-lg">
+          <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 sm:p-6 hover:bg-white/15 transition-all duration-300 shadow-lg">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-300 mb-1">
+                <p className="text-xs sm:text-sm font-medium text-gray-300 mb-1">
                   Published
                 </p>
-                <p className="text-3xl font-bold text-white">
+                <p className="text-2xl sm:text-3xl font-bold text-white">
                   {stats.published}
                 </p>
               </div>
-              <div className="p-3 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-xl">
-                <Eye className="h-6 w-6 text-green-300" />
+              <div className="p-2 sm:p-3 bg-gradient-to-br from-green-500/20 to-green-600/20 rounded-xl">
+                <Eye className="h-5 w-5 sm:h-6 sm:w-6 text-green-300" />
               </div>
             </div>
           </div>
 
-          <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 hover:bg-white/15 transition-all duration-300 shadow-lg">
+          <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-4 sm:p-6 hover:bg-white/15 transition-all duration-300 shadow-lg">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm font-medium text-gray-300 mb-1">
+                <p className="text-xs sm:text-sm font-medium text-gray-300 mb-1">
                   Scheduled
                 </p>
-                <p className="text-3xl font-bold text-white">
+                <p className="text-2xl sm:text-3xl font-bold text-white">
                   {stats.scheduled}
                 </p>
               </div>
-              <div className="p-3 bg-gradient-to-br from-purple-500/20 to-purple-600/20 rounded-xl">
-                <Calendar className="h-6 w-6 text-purple-300" />
+              <div className="p-2 sm:p-3 bg-gradient-to-br from-purple-500/20 to-purple-600/20 rounded-xl">
+                <Calendar className="h-5 w-5 sm:h-6 sm:w-6 text-purple-300" />
               </div>
             </div>
           </div>
         </div>
 
         {/* Articles Section with Tabs */}
-        <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-8 shadow-lg">
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-white">My Articles</h2>
-            <div className="flex items-center gap-3">
-              <div className="relative">
+        <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-4 sm:p-8 shadow-lg">
+          <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mb-4 sm:mb-6">
+            <h2 className="text-lg sm:text-2xl font-bold text-white">
+              My Articles
+            </h2>
+            <div className="flex items-center gap-2 sm:gap-3">
+              <div className="relative w-full sm:w-auto">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
                   type="search"
                   placeholder="Search articles..."
                   value={searchQuery}
                   onChange={(e) => handleSearch(e.target.value)}
-                  className="pl-10 bg-white/10 border-white/20 text-white placeholder-gray-400 focus:border-white/40 w-64"
+                  className="pl-10 bg-white/10 border-white/20 text-white placeholder-gray-400 focus:border-white/40 w-full sm:w-64"
                 />
               </div>
             </div>
@@ -693,28 +697,28 @@ export function WriterDashboard({ articles, user }: WriterDashboardProps) {
             onValueChange={setActiveTab}
             className="w-full"
           >
-            <TabsList className="grid w-full grid-cols-3 bg-white/10 border border-white/20">
+            <TabsList className="flex w-full overflow-x-auto no-scrollbar bg-white/10 border border-white/20 gap-2 sm:gap-0">
               <TabsTrigger
                 value="all"
-                className="data-[state=active]:bg-white/20 data-[state=active]:text-white text-gray-300"
+                className="data-[state=active]:bg-white/20 data-[state=active]:text-white text-gray-300 min-w-[120px]"
               >
                 All ({userArticles.length})
               </TabsTrigger>
               <TabsTrigger
                 value="published"
-                className="data-[state=active]:bg-white/20 data-[state=active]:text-white text-gray-300"
+                className="data-[state=active]:bg-white/20 data-[state=active]:text-white text-gray-300 min-w-[120px]"
               >
                 Published ({stats.published})
               </TabsTrigger>
               <TabsTrigger
                 value="scheduled"
-                className="data-[state=active]:bg-white/20 data-[state=active]:text-white text-gray-300"
+                className="data-[state=active]:bg-white/20 data-[state=active]:text-white text-gray-300 min-w-[120px]"
               >
                 Scheduled ({stats.scheduled})
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="all" className="mt-6">
+            <TabsContent value="all" className="mt-4 sm:mt-6">
               {getFilteredArticlesByTab("all").length === 0 ? (
                 <EmptyState
                   searchQuery={searchQuery}
@@ -722,7 +726,7 @@ export function WriterDashboard({ articles, user }: WriterDashboardProps) {
                   tabType="all"
                 />
               ) : (
-                <div className="grid gap-6">
+                <div className="grid gap-4 sm:gap-6 grid-cols-1 xs:grid-cols-2 md:grid-cols-3">
                   {getFilteredArticlesByTab("all").map((article) => (
                     <ArticleCard
                       key={article.id}
@@ -735,7 +739,7 @@ export function WriterDashboard({ articles, user }: WriterDashboardProps) {
               )}
             </TabsContent>
 
-            <TabsContent value="published" className="mt-6">
+            <TabsContent value="published" className="mt-4 sm:mt-6">
               {getFilteredArticlesByTab("published").length === 0 ? (
                 <EmptyState
                   searchQuery={searchQuery}
@@ -743,7 +747,7 @@ export function WriterDashboard({ articles, user }: WriterDashboardProps) {
                   tabType="published"
                 />
               ) : (
-                <div className="grid gap-6">
+                <div className="grid gap-4 sm:gap-6 grid-cols-1 xs:grid-cols-2 md:grid-cols-3">
                   {getFilteredArticlesByTab("published").map((article) => (
                     <ArticleCard
                       key={article.id}
@@ -756,7 +760,7 @@ export function WriterDashboard({ articles, user }: WriterDashboardProps) {
               )}
             </TabsContent>
 
-            <TabsContent value="scheduled" className="mt-6">
+            <TabsContent value="scheduled" className="mt-4 sm:mt-6">
               {getFilteredArticlesByTab("scheduled").length === 0 ? (
                 <EmptyState
                   searchQuery={searchQuery}
@@ -764,18 +768,18 @@ export function WriterDashboard({ articles, user }: WriterDashboardProps) {
                   tabType="scheduled"
                 />
               ) : (
-                <div className="space-y-6">
-                  <div className="bg-purple-500/10 border border-purple-500/20 rounded-lg p-4 mb-4">
+                <div className="space-y-4 sm:space-y-6">
+                  <div className="bg-purple-500/10 border border-purple-500/20 rounded-lg p-3 sm:p-4 mb-3 sm:mb-4">
                     <div className="flex items-center gap-2 text-purple-300">
                       <Calendar className="h-5 w-5" />
                       <span className="font-medium">Scheduled Articles</span>
                     </div>
-                    <p className="text-sm text-purple-200 mt-1">
+                    <p className="text-xs sm:text-sm text-purple-200 mt-1">
                       These articles will be automatically published at their
                       scheduled time.
                     </p>
                   </div>
-                  <div className="grid gap-6">
+                  <div className="grid gap-4 sm:gap-6 grid-cols-1 xs:grid-cols-2 md:grid-cols-3">
                     {getFilteredArticlesByTab("scheduled").map((article) => (
                       <ScheduledArticleCard
                         key={article.id}

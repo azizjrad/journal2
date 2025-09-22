@@ -4,8 +4,8 @@ import { memo } from "react";
 import { HeroSection } from "@/components/home/hero-section";
 import { LatestNewsSection } from "@/components/home/latest-news-section";
 
-interface Article {
-  id: number;
+export interface Article {
+  id: string;
   title_en: string;
   title_ar: string;
   excerpt_en: string;
@@ -18,8 +18,8 @@ interface Article {
   is_featured: boolean;
 }
 
-interface Category {
-  id: number;
+export interface Category {
+  id: string;
   name_en: string;
   name_ar: string;
   slug: string;

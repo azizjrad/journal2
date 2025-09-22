@@ -7,7 +7,7 @@ import { useState } from "react";
 interface ShareButtonsProps {
   title: string;
   url: string;
-  articleId?: number;
+  articleId?: string;
 }
 
 export function ShareButtons({ title, url, articleId }: ShareButtonsProps) {
@@ -16,7 +16,7 @@ export function ShareButtons({ title, url, articleId }: ShareButtonsProps) {
   const trackEngagement = async (platform: string) => {
     if (articleId) {
       try {
-        await fetch("/api/track/engagement", {
+        const res = await fetch("/api/track/engagement", {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -27,45 +27,45 @@ export function ShareButtons({ title, url, articleId }: ShareButtonsProps) {
             platform,
           }),
         });
+        const data = await res.json().catch(() => ({}));
+        console.log("[Engagement API] status:", res.status, "data:", data);
       } catch (error) {
-        // Silently fail for analytics tracking
-        console.debug("Engagement tracking failed:", error);
+        console.error("Engagement tracking failed:", error);
       }
     }
   };
 
   const copyLink = async () => {
+    // Ensure we copy the absolute URL
+    let absoluteUrl = url;
+    if (typeof window !== "undefined" && url.startsWith("/")) {
+      absoluteUrl = window.location.origin + url;
+    }
     try {
-      // Check if clipboard API is available and allowed
       if (!navigator.clipboard || !navigator.clipboard.writeText) {
         throw new Error("Clipboard API not available");
       }
-
-      await navigator.clipboard.writeText(url);
+      await navigator.clipboard.writeText(absoluteUrl);
       trackEngagement("copy_link");
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
     } catch (err) {
       console.error("Failed to copy link:", err);
-
-      // Fallback: Try to select and copy using document.execCommand
       try {
         const textArea = document.createElement("textarea");
-        textArea.value = url;
+        textArea.value = absoluteUrl;
         textArea.style.position = "fixed";
         textArea.style.opacity = "0";
         document.body.appendChild(textArea);
         textArea.select();
         document.execCommand("copy");
         document.body.removeChild(textArea);
-
         trackEngagement("copy_link");
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
       } catch (fallbackErr) {
         console.error("Fallback copy also failed:", fallbackErr);
-        // Show error message to user
-        alert("Copy failed. Please copy the URL manually: " + url);
+        alert("Copy failed. Please copy the URL manually: " + absoluteUrl);
       }
     }
   };
@@ -77,9 +77,12 @@ export function ShareButtons({ title, url, articleId }: ShareButtonsProps) {
         variant="outline"
         size="sm"
         onClick={copyLink}
-        className={copied ? "text-green-600 bg-green-50" : ""}
+        className={`transition-colors duration-200 border-gray-300 hover:border-blue-500 hover:bg-blue-50 hover:text-blue-700 group ${
+          copied ? "text-green-600 bg-green-50 border-green-400" : ""
+        }`}
+        aria-label="Copy article link"
       >
-        <LinkIcon className="h-4 w-4" />
+        <LinkIcon className="h-4 w-4 group-hover:text-blue-600 transition-colors duration-200" />
         {copied && <span className="ml-1 text-xs">Copied!</span>}
       </Button>
     </div>

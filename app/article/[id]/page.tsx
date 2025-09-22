@@ -171,6 +171,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                     article.id
                   }`}
                   title={article.title_en}
+                  articleId={article.id?.toString()}
                 />
               </div>
               <div className="ml-4">

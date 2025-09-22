@@ -47,8 +47,13 @@ export async function POST(request: NextRequest) {
 
     const { articleId, engagementType, platform } = body;
 
-    // Security: Validate articleId
-    if (!articleId || !Number.isInteger(articleId) || articleId <= 0) {
+    // Security: Validate articleId (accept MongoDB ObjectId string)
+    const objectIdPattern = /^[a-fA-F0-9]{24}$/;
+    if (
+      !articleId ||
+      typeof articleId !== "string" ||
+      !objectIdPattern.test(articleId)
+    ) {
       console.warn(
         `Invalid article ID in engagement tracking from ${clientIP}: ${articleId}`
       );
@@ -115,8 +120,8 @@ export async function POST(request: NextRequest) {
       articleId,
       engagementType,
       clientIP,
-      sanitizedPlatform,
-      userAgent
+      userAgent,
+      sanitizedPlatform
     );
 
     return NextResponse.json({ success: true });

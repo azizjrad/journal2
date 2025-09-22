@@ -104,99 +104,244 @@ export function AboutContent() {
 
           <div className="prose prose-lg max-w-none text-gray-600 space-y-6">
             <p>
-              Akhbarna is a digital news platform providing comprehensive
-              coverage of current events, politics, business, and culture.
+              {t(
+                "about_platform_desc",
+                "Akhbarna is a digital news platform providing comprehensive coverage of current events, politics, business, and culture.",
+                "أخبارنا هي منصة إخبارية رقمية تقدم تغطية شاملة للأحداث الجارية والسياسة والأعمال والثقافة."
+              )}
             </p>
 
             <div>
               <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                The service features:
+                {t(
+                  "service_features_title",
+                  "The service features:",
+                  ":ميزات الخدمة"
+                )}
               </h3>
               <ul className="space-y-2 list-disc list-inside">
-                <li>Business news and analysis</li>
-                <li>Tenders</li>
                 <li>
-                  Profiles of around 600 Libyan companies and government
-                  entities, with management and contact details
+                  {t(
+                    "feature_business_news",
+                    "Business news and analysis",
+                    "أخبار وتحليلات الأعمال"
+                  )}
                 </li>
-                <li>Listings of local and international events on Libya</li>
-                <li>Stock market data</li>
+                <li>{t("feature_tenders", "Tenders", "المناقصات")}</li>
                 <li>
-                  Economic and financial data from local and international
-                  sources
+                  {t(
+                    "feature_profiles",
+                    "Profiles of around 600 Libyan companies and government entities, with management and contact details",
+                    "ملفات تعريف لحوالي 600 شركة وهيئة حكومية ليبية، مع تفاصيل الإدارة ووسائل الاتصال"
+                  )}
                 </li>
                 <li>
-                  Periodic sector profiles, factsheets, reference documents and
-                  other analysis
+                  {t(
+                    "feature_events",
+                    "Listings of local and international events on Libya",
+                    "قوائم الفعاليات المحلية والدولية حول ليبيا"
+                  )}
+                </li>
+                <li>
+                  {t(
+                    "feature_stock_market",
+                    "Stock market data",
+                    "بيانات سوق الأسهم"
+                  )}
+                </li>
+                <li>
+                  {t(
+                    "feature_economic_data",
+                    "Economic and financial data from local and international sources",
+                    "بيانات اقتصادية ومالية من مصادر محلية ودولية"
+                  )}
+                </li>
+                <li>
+                  {t(
+                    "feature_sector_profiles",
+                    "Periodic sector profiles, factsheets, reference documents and other analysis",
+                    "ملفات قطاعية دورية، ونشرات معلومات، ووثائق مرجعية وتحليلات أخرى"
+                  )}
                 </li>
               </ul>
             </div>
 
             <p>
-              Akhbarna is published by an independent editorial team. We strive
-              to meet the highest standards of editorial quality and are fully
-              independent, with no links to any political or religious
-              organisations.
+              {t(
+                "about_independent",
+                "Akhbarna is published by an independent editorial team. We strive to meet the highest standards of editorial quality and are fully independent, with no links to any political or religious organisations.",
+                "يتم نشر أخبارنا بواسطة فريق تحريري مستقل. نسعى لتحقيق أعلى معايير الجودة التحريرية ونتمتع باستقلالية تامة دون أي صلات سياسية أو دينية."
+              )}
             </p>
-
             <p>
-              The content on our site is freely accessible to all readers, with
-              additional features available for registered users.
+              {t(
+                "about_free_content",
+                "The content on our site is freely accessible to all readers, with additional features available for registered users.",
+                "المحتوى على موقعنا متاح مجانًا لجميع القراء، مع ميزات إضافية متاحة للمستخدمين المسجلين."
+              )}
             </p>
 
             <div>
               <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                Content Access:
+                {t(
+                  "content_access_title",
+                  "Content Access:",
+                  ":إمكانية الوصول إلى المحتوى"
+                )}
               </h3>
               <div className="bg-gray-50 rounded-lg p-6 space-y-3">
                 <div className="flex justify-between items-center border-b pb-2">
-                  <span>Free Articles</span>
+                  <span>
+                    {t(
+                      "content_access_free_articles",
+                      "Free Articles",
+                      "مقالات مجانية"
+                    )}
+                  </span>
                   <span className="font-semibold text-green-600">
-                    Unlimited
+                    {t("content_access_unlimited", "Unlimited", "غير محدود")}
                   </span>
                 </div>
                 <div className="flex justify-between items-center border-b pb-2">
-                  <span>Premium Features</span>
-                  <span className="font-semibold text-blue-600">Available</span>
+                  <span>
+                    {t(
+                      "content_access_premium",
+                      "Premium Features",
+                      "ميزات مميزة"
+                    )}
+                  </span>
+                  <span className="font-semibold text-blue-600">
+                    {t("content_access_available", "Available", "متاح")}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center border-b pb-2">
-                  <span>Newsletter Subscription</span>
-                  <span className="font-semibold text-green-600">Free</span>
+                  <span>
+                    {t(
+                      "content_access_newsletter",
+                      "Newsletter Subscription (with Annual Plan)",
+                      "الاشتراك في النشرة الإخبارية (مع الخطة السنوية)"
+                    )}
+                  </span>
+                  <span className="font-semibold text-blue-600">
+                    {t(
+                      "content_access_with_subscription",
+                      "With Subscription",
+                      "مع الاشتراك"
+                    )}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center">
-                  <span>Advanced Search & Archive</span>
-                  <span className="font-semibold text-red-600">Contact us</span>
+                  <span>
+                    {t(
+                      "content_access_advanced",
+                      "Advanced Search & Archive",
+                      "بحث متقدم وأرشيف"
+                    )}
+                  </span>
+                  <span className="font-semibold text-red-600">
+                    {t("content_access_contact", "Contact us", "اتصل بنا")}
+                  </span>
                 </div>
               </div>
             </div>
 
             <div className="bg-red-50 border border-red-200 rounded-lg p-6">
               <h3 className="text-lg font-semibold text-red-800 mb-3">
-                Contact Information
+                {t(
+                  "contact_info_title",
+                  "Contact Information",
+                  "معلومات الاتصال"
+                )}
               </h3>
               <div className="space-y-3">
                 <p className="text-red-700">
-                  Email us at{" "}
-                  <a
-                    href="mailto:contact@akhbarna.com"
-                    className="underline hover:no-underline"
-                  >
-                    contact@akhbarna.com
-                  </a>
+                  {t(
+                    "contact_email",
+                    <>
+                      Email us at{" "}
+                      <a
+                        href="mailto:contact@akhbarna.com"
+                        className="underline hover:no-underline"
+                      >
+                        contact@akhbarna.com
+                      </a>
+                    </>,
+                    <>
+                      راسلنا عبر البريد الإلكتروني{" "}
+                      <a
+                        href="mailto:contact@akhbarna.com"
+                        className="underline hover:no-underline"
+                      >
+                        contact@akhbarna.com
+                      </a>
+                    </>
+                  )}
                 </p>
                 <p className="text-red-700">
-                  To receive our weekly newsletter, please{" "}
-                  <a href="#" className="underline hover:no-underline">
-                    register your details
-                  </a>
-                  .
+                  {language === "ar" ? (
+                    <>
+                      {t(
+                        "contact_newsletter_text_ar_new",
+                        "",
+                        "للاستفادة من نشرتنا الأسبوعية الحصرية، يرجى "
+                      )}
+                      <a
+                        href="/payment"
+                        className="underline hover:no-underline"
+                      >
+                        الاشتراك في الخدمة
+                      </a>
+                      {t("contact_newsletter_text2_ar_new", "", ".")}
+                    </>
+                  ) : (
+                    <>
+                      {t(
+                        "contact_newsletter_text_en_new",
+                        "Enjoy our exclusive weekly newsletter by ",
+                        ""
+                      )}
+                      <a
+                        href="/payment"
+                        className="underline hover:no-underline"
+                      >
+                        subscribing to our service
+                      </a>
+                      {t("contact_newsletter_text2_en_new", ".", "")}
+                    </>
+                  )}
                 </p>
                 <p className="text-red-700">
-                  For editorial inquiries,{" "}
-                  <a href="/contact" className="underline hover:no-underline">
-                    visit our contact page
-                  </a>
-                  .
+                  {language === "ar" ? (
+                    <>
+                      {t(
+                        "contact_editorial_text_ar",
+                        "",
+                        "للاستفسارات التحريرية، "
+                      )}
+                      <a
+                        href="/contact"
+                        className="underline hover:no-underline"
+                      >
+                        قم بزيارة صفحة الاتصال الخاصة بنا
+                      </a>
+                      {t("contact_editorial_text2_ar", "", ".")}
+                    </>
+                  ) : (
+                    <>
+                      {t(
+                        "contact_editorial_text_en",
+                        "For editorial inquiries, ",
+                        ""
+                      )}
+                      <a
+                        href="/contact"
+                        className="underline hover:no-underline"
+                      >
+                        visit our contact page
+                      </a>
+                      {t("contact_editorial_text2_en", ".", "")}
+                    </>
+                  )}
                 </p>
               </div>
             </div>
