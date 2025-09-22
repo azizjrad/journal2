@@ -65,7 +65,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          message: "Invalid credentials or request",
+          message:
+            passwordValidation.errors.join(". ") ||
+            "Password does not meet requirements.",
         },
         { status: 400 }
       );
@@ -77,9 +79,18 @@ export async function POST(request: NextRequest) {
       getUserByUsername(username),
     ]);
 
-    if (existingUserByEmail || existingUserByUsername) {
+    if (existingUserByEmail) {
       return NextResponse.json(
-        { success: false, message: "Invalid credentials or request" },
+        {
+          success: false,
+          message: "An account with this email already exists.",
+        },
+        { status: 409 }
+      );
+    }
+    if (existingUserByUsername) {
+      return NextResponse.json(
+        { success: false, message: "This username is already taken." },
         { status: 409 }
       );
     }

@@ -417,8 +417,8 @@ export function validatePasswordStrength(password: string): {
     return { isValid: false, errors };
   }
 
-  if (password.length < 6) {
-    errors.push("Password must be at least 6 characters long");
+  if (password.length < 8) {
+    errors.push("Password must be at least 8 characters long");
   }
 
   if (!/[A-Za-z]/.test(password)) {

@@ -479,7 +479,10 @@ export function ArticleReports() {
                           </div>
                         </div>
 
-                        <div className="flex items-center gap-2 ml-4">
+                        <div
+                          className="flex flex-row flex-wrap gap-2 items-start justify-start"
+                          style={{ marginTop: "-4px", marginLeft: "-16px" }}
+                        >
                           {report.status === "in_progress" && (
                             <>
                               <Button
