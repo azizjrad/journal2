@@ -35,10 +35,11 @@ async function connectDB() {
 
 export async function POST(request: NextRequest) {
   // CSRF protection for state-changing requests
+  const noStoreHeaders = { "Cache-Control": "no-store" };
   if (!validateCsrf(request)) {
     return NextResponse.json(
       { success: false, message: "Invalid CSRF token" },
-      { status: 403 }
+      { status: 403, headers: noStoreHeaders }
     );
   }
   try {
@@ -58,7 +59,7 @@ export async function POST(request: NextRequest) {
           success: false,
           message: "Invalid credentials or request",
         },
-        { status: 400 }
+        { status: 400, headers: noStoreHeaders }
       );
     }
 
@@ -74,7 +75,7 @@ export async function POST(request: NextRequest) {
           success: false,
           message: "Invalid credentials or request",
         },
-        { status: 401 }
+        { status: 401, headers: noStoreHeaders }
       );
     }
 
@@ -91,7 +92,7 @@ export async function POST(request: NextRequest) {
             success: false,
             message: "Invalid credentials or request",
           },
-          { status: 401 }
+          { status: 401, headers: noStoreHeaders }
         );
       }
     }
@@ -112,18 +113,21 @@ export async function POST(request: NextRequest) {
     });
 
     // Create response
-    const response = NextResponse.json({
-      success: true,
-      message: "Login successful",
-      user: {
-        id: user._id.toString(),
-        email: user.email,
-        username: user.username,
-        first_name: user.first_name,
-        last_name: user.last_name,
-        role: user.role,
+    const response = NextResponse.json(
+      {
+        success: true,
+        message: "Login successful",
+        user: {
+          id: user._id.toString(),
+          email: user.email,
+          username: user.username,
+          first_name: user.first_name,
+          last_name: user.last_name,
+          role: user.role,
+        },
       },
-    });
+      { headers: noStoreHeaders }
+    );
 
     // Set appropriate cookie based on user role
     const isProd = process.env.NODE_ENV === "production";
@@ -167,7 +171,7 @@ export async function POST(request: NextRequest) {
         success: false,
         message: "Request failed. Please try again.",
       },
-      { status: 500 }
+      { status: 500, headers: noStoreHeaders }
     );
   }
 }

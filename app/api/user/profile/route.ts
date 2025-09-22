@@ -11,6 +11,8 @@ import { verifyToken } from "@/lib/auth";
 // GET user profile
 export async function GET(request: NextRequest) {
   try {
+    // Always prevent caching of profile responses
+    const noStoreHeaders = { "Cache-Control": "no-store" };
     // Get user from token - check auth-token, admin-token, and writer-token
     const authToken = request.cookies.get("auth-token")?.value;
     const adminToken = request.cookies.get("admin-token")?.value;
@@ -20,7 +22,7 @@ export async function GET(request: NextRequest) {
     if (!token) {
       return NextResponse.json(
         { success: false, message: "Authentication required" },
-        { status: 401 }
+        { status: 401, headers: noStoreHeaders }
       );
     }
 
@@ -28,7 +30,7 @@ export async function GET(request: NextRequest) {
     if (!tokenPayload) {
       return NextResponse.json(
         { success: false, message: "Invalid token" },
-        { status: 401 }
+        { status: 401, headers: noStoreHeaders }
       );
     }
 
@@ -41,23 +43,26 @@ export async function GET(request: NextRequest) {
     if (!user) {
       return NextResponse.json(
         { success: false, message: "User not found" },
-        { status: 404 }
+        { status: 404, headers: noStoreHeaders }
       );
     }
 
     // Remove password hash from response
     const { password_hash, ...userResponse } = user;
 
-    return NextResponse.json({
-      success: true,
-      user: userResponse,
-      profile,
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        user: userResponse,
+        profile,
+      },
+      { headers: noStoreHeaders }
+    );
   } catch (error) {
     console.error("Get profile error:", error);
     return NextResponse.json(
       { success: false, message: "Failed to get profile" },
-      { status: 500 }
+      { status: 500, headers: noStoreHeaders }
     );
   }
 }
