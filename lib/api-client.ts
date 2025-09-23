@@ -1,7 +1,7 @@
-import axios from 'axios';
+import axios from "axios";
 
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: "/api",
   withCredentials: true, // send cookies
 });
 
@@ -25,8 +25,8 @@ const processQueue = (error: any, token: string | null = null) => {
 };
 
 api.interceptors.response.use(
-  response => response,
-  async error => {
+  (response) => response,
+  async (error) => {
     const originalRequest = error.config;
     if (error.response?.status === 401 && !originalRequest._retry) {
       if (isRefreshing) {
@@ -34,12 +34,12 @@ api.interceptors.response.use(
           failedQueue.push({ resolve, reject });
         })
           .then(() => api(originalRequest))
-          .catch(err => Promise.reject(err));
+          .catch((err) => Promise.reject(err));
       }
       originalRequest._retry = true;
       isRefreshing = true;
       try {
-        await api.post('/auth/refresh');
+        await api.post("/auth/refresh");
         processQueue(null);
         return api(originalRequest);
       } catch (err) {

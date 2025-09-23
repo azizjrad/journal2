@@ -3,6 +3,13 @@
 import { memo } from "react";
 import { HeroSection } from "@/components/home/hero-section";
 import { LatestNewsSection } from "@/components/home/latest-news-section";
+import {
+  FeaturedCategorySection,
+  FeaturedCategoryArticle,
+} from "@/components/featured-category-section";
+import BigStorySection, {
+  BigStoryArticle,
+} from "@/components/big-story-section";
 
 export interface Article {
   id: string;
@@ -30,6 +37,8 @@ interface HomeContentProps {
   otherArticles: Article[];
   recentArticles: Article[];
   categories: Category[];
+  featuredCategoryArticles?: FeaturedCategoryArticle[];
+  bigStoryArticle?: BigStoryArticle | null;
 }
 
 // Memoized child components for better performance
@@ -41,6 +50,8 @@ function HomeContentComponent({
   otherArticles,
   recentArticles,
   categories,
+  featuredCategoryArticles = [],
+  bigStoryArticle = null,
 }: HomeContentProps) {
   return (
     <main className="bg-stone-100">
@@ -49,6 +60,20 @@ function HomeContentComponent({
         featuredArticles={featuredArticles}
         recentArticles={recentArticles}
       />
+
+      {/* Big Story Section (above featured categories) */}
+      {bigStoryArticle && (
+        <div className="container mx-auto px-4 lg:px-6 py-4">
+          <BigStorySection article={bigStoryArticle} />
+        </div>
+      )}
+
+      {/* Featured Category Section (smaller, under big story, before latest news) */}
+      {featuredCategoryArticles.length > 0 && (
+        <div className="container mx-auto px-4 lg:px-6 py-4">
+          <FeaturedCategorySection articles={featuredCategoryArticles} small />
+        </div>
+      )}
 
       {/* Latest News Grid */}
       <MemoizedLatestNewsSection articles={otherArticles} />

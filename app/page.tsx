@@ -11,8 +11,90 @@ import { FixedHeaderWrapper } from "@/components/fixed-header-wrapper";
 import { HomeBreadcrumb } from "@/components/home-breadcrumb";
 import { HomeContent, Article, Category } from "@/components/home-content";
 import { Footer } from "@/components/footer";
+import {
+  FeaturedCategorySection,
+  FeaturedCategoryArticle,
+} from "@/components/featured-category-section";
+import { BigStoryArticle } from "@/components/big-story-section";
+import { getArticlesByCategory, getAuthorInfo } from "@/lib/db";
 
 export default async function HomePage() {
+  // Fetch latest article for each main category and big story
+  const [business, culture, politics, science, bigStory] = await Promise.all([
+    getArticlesByCategory("business", 1),
+    getArticlesByCategory("culture", 1),
+    getArticlesByCategory("politics", 1),
+    getArticlesByCategory("science", 1),
+    getArticlesByCategory("the-big-story", 1),
+  ]);
+
+  const featuredCategoryArticles: FeaturedCategoryArticle[] = [
+    business[0] && {
+      id: business[0].id,
+      title: business[0].title_en || business[0].title_ar,
+      title_ar: business[0].title_ar || business[0].title_en,
+      image_url: business[0].image_url,
+      category: "business",
+      categoryLabel: "BUSINESS",
+      href: `/article/${business[0].id}`,
+    },
+    culture[0] && {
+      id: culture[0].id,
+      title: culture[0].title_en || culture[0].title_ar,
+      title_ar: culture[0].title_ar || culture[0].title_en,
+      image_url: culture[0].image_url,
+      category: "culture",
+      categoryLabel: "CULTURE",
+      href: `/article/${culture[0].id}`,
+    },
+    politics[0] && {
+      id: politics[0].id,
+      title: politics[0].title_en || politics[0].title_ar,
+      title_ar: politics[0].title_ar || politics[0].title_en,
+      image_url: politics[0].image_url,
+      category: "politics",
+      categoryLabel: "POLITICS",
+      href: `/article/${politics[0].id}`,
+    },
+    science[0] && {
+      id: science[0].id,
+      title: science[0].title_en || science[0].title_ar,
+      title_ar: science[0].title_ar || science[0].title_en,
+      image_url: science[0].image_url,
+      category: "science",
+      categoryLabel: "SCIENCE",
+      href: `/article/${science[0].id}`,
+    },
+  ].filter(Boolean) as FeaturedCategoryArticle[];
+
+  // Prepare big story article for the new section
+  let bigStoryArticle = null;
+  if (bigStory[0]) {
+    let authorName = "";
+    if (bigStory[0].author_id) {
+      const authorInfo = await getAuthorInfo(bigStory[0].author_id);
+      authorName = authorInfo?.name || "";
+    }
+    bigStoryArticle = {
+      id: bigStory[0].id || "",
+      title: bigStory[0].title_en || bigStory[0].title_ar,
+      title_ar: bigStory[0].title_ar || bigStory[0].title_en,
+      image_url: bigStory[0].image_url,
+      category: "the-big-story",
+      categoryLabel:
+        bigStory[0].category_name_en?.toUpperCase() || "THE BIG STORY",
+      categoryLabel_ar:
+        bigStory[0].category_name_ar?.toUpperCase() ||
+        bigStory[0].category_name_en?.toUpperCase() ||
+        "THE BIG STORY",
+      href: `/article/${bigStory[0].id}`,
+      authors: authorName,
+      excerpt: bigStory[0].excerpt_en || "",
+      excerpt_ar: bigStory[0].excerpt_ar || "",
+      content_en: bigStory[0].content_en || "",
+      content_ar: bigStory[0].content_ar || "",
+    };
+  }
   // DEBUG: Log featuredArticlesRaw and featuredArticles to troubleshoot empty homepage
   // Remove these logs after debugging
   function debugLog(label: string, data: any) {
@@ -102,11 +184,14 @@ export default async function HomePage() {
       <div style={{ paddingTop: "140px" }}>
         {/* Space for fixed header */}
         <HomeBreadcrumb />
+        {/* Removed duplicate Featured Category Section; now only rendered inside HomeContent */}
         <HomeContent
           featuredArticles={featuredArticles}
           otherArticles={otherArticles}
           recentArticles={recentArticles}
           categories={categories}
+          featuredCategoryArticles={featuredCategoryArticles}
+          bigStoryArticle={bigStoryArticle}
         />
       </div>
       <Footer categories={categoriesRaw} />
