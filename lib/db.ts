@@ -986,6 +986,13 @@ export async function updateArticle(
   if (article.slug) sanitizedArticle.slug = sanitizeInput(article.slug);
   if (article.category_id)
     sanitizedArticle.category_id = new Types.ObjectId(article.category_id);
+  // Handle image_data and image_content_type
+  if (article.image_data) {
+    sanitizedArticle.image_data = Buffer.from(article.image_data, "base64");
+  }
+  if (article.image_content_type) {
+    sanitizedArticle.image_content_type = article.image_content_type;
+  }
 
   const result = await Article.findByIdAndUpdate(id, sanitizedArticle, {
     new: true,
