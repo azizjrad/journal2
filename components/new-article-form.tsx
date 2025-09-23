@@ -247,13 +247,11 @@ export function NewArticleForm({
         try {
           const uploadResult = await uploadImage(imageFile);
           if (uploadResult.image_data && uploadResult.image_content_type) {
-            imagePayload = {
-              image_data: uploadResult.image_data,
-              image_content_type: uploadResult.image_content_type,
-            };
-          } else if (uploadResult.image_url) {
-            imagePayload = { image_url: uploadResult.image_url };
+            imagePayload.image_data = uploadResult.image_data;
+            imagePayload.image_content_type = uploadResult.image_content_type;
           }
+          // Always clear image_url if uploading a new image
+          imagePayload.image_url = "";
         } catch (error) {
           toast.error("Failed to upload image", {
             description: "Please try again or use a different image.",
@@ -261,7 +259,7 @@ export function NewArticleForm({
           return;
         }
       } else if (formData.image_url) {
-        imagePayload = { image_url: formData.image_url };
+        imagePayload.image_url = formData.image_url;
       }
 
       const articleData = {
