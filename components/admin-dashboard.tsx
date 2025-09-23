@@ -450,7 +450,12 @@ export function AdminDashboard({
                     />
                   </div>
                   <CategoryFilter
-                    categories={currentCategories}
+                    categories={currentCategories.map((cat) => ({
+                      ...cat,
+                      slug:
+                        (cat as any).slug ??
+                        cat.name_en.toLowerCase().replace(/\s+/g, "-"),
+                    }))}
                     value={categoryFilter}
                     onChange={setCategoryFilter}
                   />

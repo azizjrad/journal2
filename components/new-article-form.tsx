@@ -126,6 +126,18 @@ export function NewArticleForm({
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+        "image/webp",
+      ];
+      if (!allowedTypes.includes(file.type)) {
+        toast.error(
+          "Unsupported image type. Only JPEG, PNG, GIF, and WebP are allowed."
+        );
+        return;
+      }
       if (file.size > 5 * 1024 * 1024) {
         toast.error("Image size must be less than 5MB");
         return;
@@ -151,7 +163,14 @@ export function NewArticleForm({
     }
   };
 
-  const uploadImage = async (file: File): Promise<string> => {
+  // Upload image and return { image_data, image_content_type } for DB storage, or { image_url } for legacy fallback
+  const uploadImage = async (
+    file: File
+  ): Promise<{
+    image_data?: string;
+    image_content_type?: string;
+    image_url?: string;
+  }> => {
     const formData = new FormData();
     formData.append("file", file);
 
@@ -169,7 +188,18 @@ export function NewArticleForm({
       }
 
       const data = await response.json();
-      return data.url;
+      // If the API returns image_data, use it; otherwise fallback to url (legacy)
+      if (data.image_data && data.contentType) {
+        return {
+          image_data: data.image_data,
+          image_content_type: data.contentType,
+        };
+      }
+      // Fallback: treat as legacy URL
+      if (data.url) {
+        return { image_url: data.url };
+      }
+      return {};
     } catch (error) {
       console.error("Image upload error:", error);
       throw error;
@@ -208,22 +238,35 @@ export function NewArticleForm({
         return;
       }
 
-      let finalImageUrl = formData.image_url;
-
+      let imagePayload: {
+        image_data?: string;
+        image_content_type?: string;
+        image_url?: string;
+      } = {};
       if (imageFile) {
         try {
-          finalImageUrl = await uploadImage(imageFile);
+          const uploadResult = await uploadImage(imageFile);
+          if (uploadResult.image_data && uploadResult.image_content_type) {
+            imagePayload = {
+              image_data: uploadResult.image_data,
+              image_content_type: uploadResult.image_content_type,
+            };
+          } else if (uploadResult.image_url) {
+            imagePayload = { image_url: uploadResult.image_url };
+          }
         } catch (error) {
           toast.error("Failed to upload image", {
             description: "Please try again or use a different image.",
           });
           return;
         }
+      } else if (formData.image_url) {
+        imagePayload = { image_url: formData.image_url };
       }
 
       const articleData = {
         ...formData,
-        image_url: finalImageUrl,
+        ...imagePayload,
         meta_keywords_en: formatTags(formData.meta_keywords_en),
         meta_keywords_ar: formatTags(formData.meta_keywords_ar),
         published_at: formData.is_published

@@ -45,19 +45,14 @@ export async function POST(request: NextRequest) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Generate unique filename
-    const timestamp = Date.now();
-    const randomString = Math.random().toString(36).substring(2, 15);
-    const extension = path.extname(file.name) || ".jpg";
-    const filename = `${timestamp}-${randomString}${extension}`;
-
-    // Save to public/uploads directory
-    const uploadPath = path.join(process.cwd(), "public", "uploads", filename);
-    await writeFile(uploadPath, buffer);
-
-    // Return the public URL
-    const url = `/uploads/${filename}`;
-    return NextResponse.json({ url });
+    // Instead of saving to disk, return the buffer and contentType for DB storage
+    // (The frontend or article creation endpoint should now handle storing this in the Article document)
+    return NextResponse.json({
+      image_data: buffer.toString("base64"),
+      contentType: file.type,
+      originalName: file.name,
+      size: file.size,
+    });
   } catch (error) {
     console.error("Error uploading file:", error);
     return NextResponse.json(

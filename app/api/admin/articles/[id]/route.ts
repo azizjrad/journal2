@@ -10,7 +10,13 @@ export async function GET(
   { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = params;
+    const id = params?.id;
+    if (!id) {
+      return NextResponse.json(
+        { error: "Missing article id" },
+        { status: 400 }
+      );
+    }
     const article = await getArticleByIdAdmin(id);
     if (!article) {
       return NextResponse.json({ error: "Article not found" }, { status: 404 });

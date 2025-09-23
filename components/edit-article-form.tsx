@@ -323,6 +323,18 @@ export function EditArticleForm({
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      const allowedTypes = [
+        "image/jpeg",
+        "image/png",
+        "image/gif",
+        "image/webp",
+      ];
+      if (!allowedTypes.includes(file.type)) {
+        toast.error(
+          "Unsupported image type. Only JPEG, PNG, GIF, and WebP are allowed."
+        );
+        return;
+      }
       if (file.size > 5 * 1024 * 1024) {
         toast.error("Image size must be less than 5MB");
         return;
@@ -348,7 +360,14 @@ export function EditArticleForm({
     }
   };
 
-  const uploadImage = async (file: File): Promise<string> => {
+  // Upload image and return { image_data, image_content_type } for DB storage, or { image_url } for legacy fallback
+  const uploadImage = async (
+    file: File
+  ): Promise<{
+    image_data?: string;
+    image_content_type?: string;
+    image_url?: string;
+  }> => {
     const formData = new FormData();
     formData.append("file", file);
 
@@ -366,7 +385,16 @@ export function EditArticleForm({
       }
 
       const data = await response.json();
-      return data.url;
+      if (data.image_data && data.contentType) {
+        return {
+          image_data: data.image_data,
+          image_content_type: data.contentType,
+        };
+      }
+      if (data.url) {
+        return { image_url: data.url };
+      }
+      return {};
     } catch (error) {
       console.error("Image upload error:", error);
       throw error;
@@ -393,12 +421,23 @@ export function EditArticleForm({
     try {
       // Check if there are any changes before proceeding
       const hasChanges = hasUnsavedChanges();
-      let finalImageUrl = formData.image_url;
 
-      // Handle image upload if there's a new image
+      let imagePayload: {
+        image_data?: string;
+        image_content_type?: string;
+        image_url?: string;
+      } = {};
       if (imageFile) {
         try {
-          finalImageUrl = await uploadImage(imageFile);
+          const uploadResult = await uploadImage(imageFile);
+          if (uploadResult.image_data && uploadResult.image_content_type) {
+            imagePayload = {
+              image_data: uploadResult.image_data,
+              image_content_type: uploadResult.image_content_type,
+            };
+          } else if (uploadResult.image_url) {
+            imagePayload = { image_url: uploadResult.image_url };
+          }
         } catch (error) {
           toast.error("Failed to upload image", {
             description: "Please try again or use a different image.",
@@ -406,11 +445,13 @@ export function EditArticleForm({
           setLoading(false);
           return;
         }
+      } else if (formData.image_url) {
+        imagePayload = { image_url: formData.image_url };
       }
 
       const updateData = {
         ...formData,
-        image_url: finalImageUrl,
+        ...imagePayload,
         published_at: formData.is_published ? new Date().toISOString() : null,
         meta_keywords_en: formatTags(formData.meta_keywords_en),
         meta_keywords_ar: formatTags(formData.meta_keywords_ar),
@@ -1120,12 +1161,12 @@ export function EditArticleForm({
                       </svg>
                     </div>
                     <div>
-                      <p className="font-semibold text-red-300 text-base">
+                      <div className="font-semibold text-red-300 text-base">
                         You have unsaved changes!
-                      </p>
-                      <p className="text-sm text-red-200/80 mt-1">
+                      </div>
+                      <div className="text-sm text-red-200/80 mt-1">
                         Your work will be lost if you cancel now.
-                      </p>
+                      </div>
                     </div>
                   </div>
                   <div className="space-y-3">

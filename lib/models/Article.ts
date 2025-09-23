@@ -120,6 +120,11 @@ const articleSchema = new mongoose.Schema(
       type: String,
       maxlength: 255,
     },
+    // Store image binary data directly in MongoDB (optional, fallback to image_url if not present)
+    image_data: {
+      type: Buffer,
+      contentType: String,
+    },
     category_id: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Category",

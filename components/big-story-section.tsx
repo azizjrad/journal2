@@ -45,14 +45,16 @@ export default function BigStorySection({ article }: Props) {
             {/* Left: Image */}
             <div className="md:w-2/3 w-full">
               <Link href={article.href}>
-                <Image
-                  src={article.image_url}
-                  alt={article.title}
-                  width={900}
-                  height={600}
-                  className="w-full h-auto object-cover rounded"
-                  priority
-                />
+                {article.image_url ? (
+                  <Image
+                    src={article.image_url}
+                    alt={article.title}
+                    width={900}
+                    height={600}
+                    className="w-full h-auto object-cover rounded"
+                    priority
+                  />
+                ) : null}
               </Link>
             </div>
             {/* Right: Text */}

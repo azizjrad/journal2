@@ -45,6 +45,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     console.log("📦 Request body:", body);
 
+    // Accept both legacy (image_url) and new (image_data + image_content_type) fields
     const {
       title_en,
       title_ar,
@@ -53,6 +54,8 @@ export async function POST(request: NextRequest) {
       excerpt_en,
       excerpt_ar,
       image_url,
+      image_data,
+      image_content_type,
       category_id,
       is_published = false,
       is_featured = false,
@@ -114,6 +117,8 @@ export async function POST(request: NextRequest) {
       excerpt_en,
       excerpt_ar,
       image_url,
+      image_data,
+      image_content_type,
       category_id, // Keep as string for MongoDB ObjectId
       author_id: currentUser.id, // Set the author
       is_published: actualIsPublished,
