@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useMemo, useCallback, memo } from "react";
+import { CategoryFilter } from "@/components/category-filter";
 import { Menu, X } from "lucide-react";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
@@ -71,8 +72,9 @@ export function AdminDashboard({
   const [currentArticles, setCurrentArticles] = useState(articles);
   const [currentCategories, setCurrentCategories] = useState(categories);
 
-  // Search state for articles
+  // Search and filter state for articles
   const [articleSearchQuery, setArticleSearchQuery] = useState("");
+  const [categoryFilter, setCategoryFilter] = useState("");
 
   // Pagination state for articles
   const [articlesCurrentPage, setArticlesCurrentPage] = useState(1);
@@ -83,23 +85,30 @@ export function AdminDashboard({
   const scheduledPerPage = 10;
 
   // Calculate pagination for articles
-  // Filter articles based on search query
+  // Filter articles based on search query and category
   const filteredArticles = useMemo(() => {
-    if (!articleSearchQuery.trim()) {
-      return currentArticles;
+    let filtered = currentArticles;
+    if (categoryFilter) {
+      filtered = filtered.filter(
+        (article) =>
+          article.category_name_en === categoryFilter ||
+          article.category_name_ar === categoryFilter
+      );
     }
-
-    const query = articleSearchQuery.toLowerCase();
-    return currentArticles.filter(
-      (article) =>
-        article.title_en.toLowerCase().includes(query) ||
-        article.title_ar.toLowerCase().includes(query) ||
-        (article.category_name_en &&
-          article.category_name_en.toLowerCase().includes(query)) ||
-        (article.category_name_ar &&
-          article.category_name_ar.toLowerCase().includes(query))
-    );
-  }, [currentArticles, articleSearchQuery]);
+    if (articleSearchQuery.trim()) {
+      const query = articleSearchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (article) =>
+          article.title_en.toLowerCase().includes(query) ||
+          article.title_ar.toLowerCase().includes(query) ||
+          (article.category_name_en &&
+            article.category_name_en.toLowerCase().includes(query)) ||
+          (article.category_name_ar &&
+            article.category_name_ar.toLowerCase().includes(query))
+      );
+    }
+    return filtered;
+  }, [currentArticles, articleSearchQuery, categoryFilter]);
 
   const totalArticlePages = Math.ceil(
     filteredArticles.length / articlesPerPage
@@ -428,9 +437,9 @@ export function AdminDashboard({
                   </Link>
                 </div>
 
-                {/* Search Bar */}
-                <div className="mb-4 sm:mb-6">
-                  <div className="relative max-w-full sm:max-w-md">
+                {/* Search and Category Filter Bar */}
+                <div className="mb-4 sm:mb-6 flex flex-col sm:flex-row gap-2 sm:gap-4 items-stretch sm:items-center">
+                  <div className="relative max-w-full sm:max-w-md flex-1">
                     <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                     <Input
                       type="text"
@@ -440,16 +449,21 @@ export function AdminDashboard({
                       className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-gray-400 focus:border-red-400 focus:ring-red-400/20 text-sm sm:text-base"
                     />
                   </div>
-                  {articleSearchQuery && (
-                    <div className="mt-2 text-xs sm:text-sm text-gray-300">
-                      {filteredArticles.length === 0
-                        ? "No articles found matching your search."
-                        : `Found ${filteredArticles.length} article${
-                            filteredArticles.length === 1 ? "" : "s"
-                          } matching "${articleSearchQuery}"`}
-                    </div>
-                  )}
+                  <CategoryFilter
+                    categories={currentCategories}
+                    value={categoryFilter}
+                    onChange={setCategoryFilter}
+                  />
                 </div>
+                {articleSearchQuery && (
+                  <div className="mt-2 text-xs sm:text-sm text-gray-300">
+                    {filteredArticles.length === 0
+                      ? "No articles found matching your search."
+                      : `Found ${filteredArticles.length} article${
+                          filteredArticles.length === 1 ? "" : "s"
+                        } matching "${articleSearchQuery}"`}
+                  </div>
+                )}
 
                 <div className="space-y-3 sm:space-y-4">
                   {filteredArticles.length === 0 ? (

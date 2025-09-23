@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useCallback, memo } from "react";
+import { useState, useMemo, useCallback, memo, useEffect } from "react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,8 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { CategoryFilter } from "@/components/category-filter";
+import { getCategories } from "@/lib/db";
 import {
   Plus,
   Edit,
@@ -170,219 +172,232 @@ const ArticleCard = memo(function ArticleCard({
   );
 });
 
-// Empty state component for different tabs
-const EmptyState = memo(function EmptyState({
-  searchQuery,
-  handleSearch,
-  tabType,
-}: {
-  searchQuery: string;
-  handleSearch: (query: string) => void;
-  tabType: string;
-}) {
-  const getEmptyMessage = () => {
-    if (searchQuery) {
-      return {
-        title: "No articles found",
-        description: `No articles match your search for "${searchQuery}"`,
-        action: (
-          <Button
-            onClick={() => handleSearch("")}
-            variant="outline"
-            className="text-white border-white/20 bg-white/10 hover:bg-white/20"
-          >
-            Clear Search
-          </Button>
-        ),
-      };
-    }
-
-    switch (tabType) {
-      case "published":
-        return {
-          title: "No published articles yet",
-          description:
-            "Your published articles will appear here once you publish them",
-          action: (
-            <Link href="/writer/articles/new">
-              <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white">
-                <Plus className="h-4 w-4 mr-2" />
-                Create Article
-              </Button>
-            </Link>
-          ),
-        };
-      case "scheduled":
-        return {
-          title: "No scheduled articles",
-          description:
-            "Schedule articles to publish them automatically at a specific time",
-          action: (
-            <Link href="/writer/articles/new">
-              <Button className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white">
-                <Calendar className="h-4 w-4 mr-2" />
-                Schedule Article
-              </Button>
-            </Link>
-          ),
-        };
-      default:
-        return {
-          title: "No articles yet",
-          description: "Start creating amazing content for your readers",
-          action: (
-            <Link href="/writer/articles/new">
-              <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white">
-                <Plus className="h-4 w-4 mr-2" />
-                Create Your First Article
-              </Button>
-            </Link>
-          ),
-        };
-    }
-  };
-
-  const { title, description, action } = getEmptyMessage();
-
-  return (
-    <div className="text-center py-12">
-      <FileText className="h-16 w-16 text-gray-400 mx-auto mb-4" />
-      <h3 className="text-lg font-medium text-white mb-2">{title}</h3>
-      <p className="text-gray-300 mb-6">{description}</p>
-      {action}
-    </div>
-  );
-});
-
-// Scheduled article card with management options
-const ScheduledArticleCard = memo(function ScheduledArticleCard({
-  article,
-  onDelete,
-  onReschedule,
-  onCancelSchedule,
-}: {
-  article: Article;
-  onDelete: (id: string) => void;
-  onReschedule: (id: string, newDate: string) => void;
-  onCancelSchedule: (id: string) => void;
-}) {
-  const scheduledDate = article.scheduled_for
-    ? new Date(article.scheduled_for)
-    : null;
-
-  return (
-    <div className="bg-gradient-to-r from-purple-500/10 to-purple-600/10 backdrop-blur-sm border border-purple-500/20 rounded-xl p-6 hover:from-purple-500/15 hover:to-purple-600/15 transition-all duration-300 shadow-lg">
-      <div className="flex items-start justify-between">
-        <div className="flex-grow">
-          <h3 className="font-semibold text-white mb-2 line-clamp-2">
-            {article.title_en}
-          </h3>
-          <p className="text-gray-300 text-sm mb-3 line-clamp-2">
-            {article.excerpt_en}
-          </p>
-
-          {scheduledDate && (
-            <div className="bg-purple-500/20 border border-purple-500/30 rounded-lg p-3 mb-3">
-              <div className="flex items-center gap-2 text-purple-300 mb-1">
-                <Calendar className="h-4 w-4" />
-                <span className="font-medium">Scheduled for Publication</span>
-              </div>
-              <p className="text-purple-200 text-sm">
-                {scheduledDate.toLocaleDateString()} at{" "}
-                {scheduledDate.toLocaleTimeString()}
-              </p>
-            </div>
-          )}
-
-          <div className="flex items-center gap-2 mb-3">
-            <Badge className="text-xs bg-purple-500/20 text-purple-300 border-purple-500/30">
-              <Clock className="h-3 w-3 mr-1" />
-              Scheduled
-            </Badge>
-            {article.category_name_en && (
-              <Badge className="text-xs bg-blue-500/20 text-blue-300 border-blue-500/30">
-                {article.category_name_en}
-              </Badge>
-            )}
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2 ml-4">
-          <Link href={`/writer/articles/${article.id}/edit`}>
-            <Button
-              size="sm"
-              variant="outline"
-              className="text-white border-white/20 bg-white/10 hover:bg-white/20"
-            >
-              <Edit2 className="h-4 w-4" />
-            </Button>
-          </Link>
-          <Button
-            size="sm"
-            variant="outline"
-            className="text-yellow-300 border-yellow-500/20 bg-yellow-500/10 hover:bg-yellow-500/20"
-            onClick={() => {
-              const currentDate = article.scheduled_for
-                ? new Date(article.scheduled_for).toISOString().slice(0, 16)
-                : new Date().toISOString().slice(0, 16);
-
-              const newDate = prompt(
-                "Enter new publication date and time:",
-                currentDate
-              );
-
-              if (newDate) {
-                const dateObj = new Date(newDate);
-                if (dateObj > new Date()) {
-                  onReschedule(article.id, dateObj.toISOString());
-                } else {
-                  alert("Please select a future date and time.");
-                }
-              }
-            }}
-            title="Reschedule Article"
-          >
-            <Calendar className="h-4 w-4" />
-          </Button>
-          <Button
-            size="sm"
-            variant="outline"
-            className="text-orange-300 border-orange-500/20 bg-orange-500/10 hover:bg-orange-500/20"
-            onClick={() => {
-              if (
-                confirm(
-                  "Are you sure you want to cancel the schedule? The article will become a draft."
-                )
-              ) {
-                onCancelSchedule(article.id);
-              }
-            }}
-            title="Cancel Schedule"
-          >
-            <X className="h-4 w-4" />
-          </Button>
-          <DeleteArticleButton
-            articleId={article.id}
-            articleTitle={article.title_en}
-            onDelete={onDelete}
-          />
-        </div>
-      </div>
-    </div>
-  );
-});
-
+// Main WriterDashboard function state and hooks
 export function WriterDashboard({ articles, user }: WriterDashboardProps) {
   const [searchQuery, setSearchQuery] = useState("");
   const [currentArticles, setCurrentArticles] = useState(articles);
   const [activeTab, setActiveTab] = useState("all");
+  const [categories, setCategories] = useState([]);
+  const [categoryFilter, setCategoryFilter] = useState("");
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const res = await fetch("/api/admin/categories");
+        if (res.ok) {
+          const data = await res.json();
+          setCategories(data);
+        }
+      } catch (e) {}
+    })();
+  }, []);
 
   // Filter articles to only show user's articles
   const userArticles = useMemo(() => {
     return currentArticles.filter((article) => article.author_id === user.id);
   }, [currentArticles, user.id]);
 
-  // Filter articles based on search and tab
+  // Empty state component for different tabs
+  const EmptyState = memo(function EmptyState({
+    searchQuery,
+    handleSearch,
+    tabType,
+  }: {
+    searchQuery: string;
+    handleSearch: (query: string) => void;
+    tabType: string;
+  }) {
+    const getEmptyMessage = () => {
+      if (searchQuery) {
+        return {
+          title: "No articles found",
+          description: `No articles match your search for "${searchQuery}"`,
+          action: (
+            <Button
+              onClick={() => handleSearch("")}
+              variant="outline"
+              className="text-white border-white/20 bg-white/10 hover:bg-white/20"
+            >
+              Clear Search
+            </Button>
+          ),
+        };
+      }
+
+      switch (tabType) {
+        case "published":
+          return {
+            title: "No published articles yet",
+            description:
+              "Your published articles will appear here once you publish them",
+            action: (
+              <Link href="/writer/articles/new">
+                <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create Article
+                </Button>
+              </Link>
+            ),
+          };
+        case "scheduled":
+          return {
+            title: "No scheduled articles",
+            description:
+              "Schedule articles to publish them automatically at a specific time",
+            action: (
+              <Link href="/writer/articles/new">
+                <Button className="bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 text-white">
+                  <Calendar className="h-4 w-4 mr-2" />
+                  Schedule Article
+                </Button>
+              </Link>
+            ),
+          };
+        default:
+          return {
+            title: "No articles yet",
+            description: "Start creating amazing content for your readers",
+            action: (
+              <Link href="/writer/articles/new">
+                <Button className="bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white">
+                  <Plus className="h-4 w-4 mr-2" />
+                  Create Your First Article
+                </Button>
+              </Link>
+            ),
+          };
+      }
+    };
+
+    const { title, description, action } = getEmptyMessage();
+
+    return (
+      <div className="text-center py-12">
+        <FileText className="h-16 w-16 text-gray-400 mx-auto mb-4" />
+        <h3 className="text-lg font-medium text-white mb-2">{title}</h3>
+        <p className="text-gray-300 mb-6">{description}</p>
+        {action}
+      </div>
+    );
+  });
+
+  // Scheduled article card with management options
+  const ScheduledArticleCard = memo(function ScheduledArticleCard({
+    article,
+    onDelete,
+    onReschedule,
+    onCancelSchedule,
+  }: {
+    article: Article;
+    onDelete: (id: string) => void;
+    onReschedule: (id: string, newDate: string) => void;
+    onCancelSchedule: (id: string) => void;
+  }) {
+    const scheduledDate = article.scheduled_for
+      ? new Date(article.scheduled_for)
+      : null;
+
+    return (
+      <div className="bg-gradient-to-r from-purple-500/10 to-purple-600/10 backdrop-blur-sm border border-purple-500/20 rounded-xl p-6 hover:from-purple-500/15 hover:to-purple-600/15 transition-all duration-300 shadow-lg">
+        <div className="flex items-start justify-between">
+          <div className="flex-grow">
+            <h3 className="font-semibold text-white mb-2 line-clamp-2">
+              {article.title_en}
+            </h3>
+            <p className="text-gray-300 text-sm mb-3 line-clamp-2">
+              {article.excerpt_en}
+            </p>
+
+            {scheduledDate && (
+              <div className="bg-purple-500/20 border border-purple-500/30 rounded-lg p-3 mb-3">
+                <div className="flex items-center gap-2 text-purple-300 mb-1">
+                  <Calendar className="h-4 w-4" />
+                  <span className="font-medium">Scheduled for Publication</span>
+                </div>
+                <p className="text-purple-200 text-sm">
+                  {scheduledDate.toLocaleDateString()} at{" "}
+                  {scheduledDate.toLocaleTimeString()}
+                </p>
+              </div>
+            )}
+
+            <div className="flex items-center gap-2 mb-3">
+              <Badge className="text-xs bg-purple-500/20 text-purple-300 border-purple-500/30">
+                <Clock className="h-3 w-3 mr-1" />
+                Scheduled
+              </Badge>
+              {article.category_name_en && (
+                <Badge className="text-xs bg-blue-500/20 text-blue-300 border-blue-500/30">
+                  {article.category_name_en}
+                </Badge>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2 ml-4">
+            <Link href={`/writer/articles/${article.id}/edit`}>
+              <Button
+                size="sm"
+                variant="outline"
+                className="text-white border-white/20 bg-white/10 hover:bg-white/20"
+              >
+                <Edit2 className="h-4 w-4" />
+              </Button>
+            </Link>
+            <Button
+              size="sm"
+              variant="outline"
+              className="text-yellow-300 border-yellow-500/20 bg-yellow-500/10 hover:bg-yellow-500/20"
+              onClick={() => {
+                const currentDate = article.scheduled_for
+                  ? new Date(article.scheduled_for).toISOString().slice(0, 16)
+                  : new Date().toISOString().slice(0, 16);
+
+                const newDate = prompt(
+                  "Enter new publication date and time:",
+                  currentDate
+                );
+
+                if (newDate) {
+                  const dateObj = new Date(newDate);
+                  if (dateObj > new Date()) {
+                    onReschedule(article.id, dateObj.toISOString());
+                  } else {
+                    alert("Please select a future date and time.");
+                  }
+                }
+              }}
+              title="Reschedule Article"
+            >
+              <Calendar className="h-4 w-4" />
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              className="text-orange-300 border-orange-500/20 bg-orange-500/10 hover:bg-orange-500/20"
+              onClick={() => {
+                if (
+                  confirm(
+                    "Are you sure you want to cancel the schedule? The article will become a draft."
+                  )
+                ) {
+                  onCancelSchedule(article.id);
+                }
+              }}
+              title="Cancel Schedule"
+            >
+              <X className="h-4 w-4" />
+            </Button>
+            <DeleteArticleButton
+              articleId={article.id}
+              articleTitle={article.title_en}
+              onDelete={onDelete}
+            />
+          </div>
+        </div>
+      </div>
+    );
+  });
   const getFilteredArticlesByTab = useCallback(
     (tabType: string) => {
       let tabArticles = userArticles;
@@ -406,6 +421,13 @@ export function WriterDashboard({ articles, user }: WriterDashboardProps) {
           break;
       }
 
+      // Filter by category
+      if (categoryFilter) {
+        tabArticles = tabArticles.filter(
+          (a) => a.category_slug === categoryFilter
+        );
+      }
+
       // Apply search filter
       if (!searchQuery.trim()) {
         return tabArticles;
@@ -420,7 +442,7 @@ export function WriterDashboard({ articles, user }: WriterDashboardProps) {
             article.category_name_en.toLowerCase().includes(query))
       );
     },
-    [userArticles, searchQuery]
+    [userArticles, searchQuery, categoryFilter]
   );
 
   const filteredArticles = useMemo(() => {
@@ -678,7 +700,7 @@ export function WriterDashboard({ articles, user }: WriterDashboardProps) {
             <h2 className="text-lg sm:text-2xl font-bold text-white">
               My Articles
             </h2>
-            <div className="flex items-center gap-2 sm:gap-3">
+            <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 items-stretch sm:items-center">
               <div className="relative w-full sm:w-auto">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
                 <Input
@@ -689,6 +711,11 @@ export function WriterDashboard({ articles, user }: WriterDashboardProps) {
                   className="pl-10 bg-white/10 border-white/20 text-white placeholder-gray-400 focus:border-white/40 w-full sm:w-64"
                 />
               </div>
+              <CategoryFilter
+                categories={categories}
+                value={categoryFilter}
+                onChange={setCategoryFilter}
+              />
             </div>
           </div>
 
@@ -697,7 +724,7 @@ export function WriterDashboard({ articles, user }: WriterDashboardProps) {
             onValueChange={setActiveTab}
             className="w-full"
           >
-            <TabsList className="flex w-full overflow-x-auto no-scrollbar bg-white/10 border border-white/20 gap-2 sm:gap-0">
+            <TabsList className="flex w-full overflow-x-auto bg-white/10 border border-white/20 gap-2 sm:gap-0 hide-scrollbar">
               <TabsTrigger
                 value="all"
                 className="data-[state=active]:bg-white/20 data-[state=active]:text-white text-gray-300 min-w-[120px]"
