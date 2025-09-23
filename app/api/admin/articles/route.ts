@@ -43,7 +43,15 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    console.log("📦 Request body:", body);
+    console.log("[ARTICLE CREATE] Request body keys:", Object.keys(body));
+    if (body.image_data) {
+      console.log(`[ARTICLE CREATE] image_data length: ${body.image_data.length}`);
+    } else {
+      console.log("[ARTICLE CREATE] No image_data in request");
+    }
+    if (body.image_content_type) {
+      console.log(`[ARTICLE CREATE] image_content_type: ${body.image_content_type}`);
+    }
 
     // Accept both legacy (image_url) and new (image_data + image_content_type) fields
     const {
