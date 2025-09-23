@@ -49,7 +49,7 @@ export async function POST(request: NextRequest) {
     // (The frontend or article creation endpoint should now handle storing this in the Article document)
     return NextResponse.json({
       image_data: buffer.toString("base64"),
-      contentType: file.type,
+      image_content_type: file.type,
       originalName: file.name,
       size: file.size,
     });
