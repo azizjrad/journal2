@@ -15,7 +15,7 @@ import {
   AlertDialogTrigger,
 } from "@/components/ui/alert-dialog";
 import { Trash2 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/use-toast";
 
 interface DeleteArticleButtonProps {
   articleId: string;
@@ -46,19 +46,25 @@ export function DeleteArticleButton({
           router.refresh(); // Refresh the page to show updated data
         }
         setOpen(false);
-        toast.success("Article deleted successfully!", {
+        toast({
+          title: "Article deleted successfully!",
           description: `"${articleTitle}" has been removed.`,
+          variant: "success",
         });
       } else {
         const errorData = await response.json().catch(() => ({}));
-        toast.error("Failed to delete article", {
+        toast({
+          title: "Failed to delete article",
           description: errorData.error || "Please try again.",
+          variant: "destructive",
         });
       }
     } catch (error) {
       console.error("Error deleting article:", error);
-      toast.error("Error deleting article", {
+      toast({
+        title: "Error deleting article",
         description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
       });
     } finally {
       setLoading(false);

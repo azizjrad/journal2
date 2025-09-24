@@ -51,7 +51,7 @@ import {
   XCircle,
   Plus,
 } from "lucide-react";
-import { toast } from "sonner";
+import { toast } from "@/lib/use-toast";
 
 interface User {
   id: string;

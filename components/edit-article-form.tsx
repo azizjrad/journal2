@@ -27,7 +27,7 @@ import {
   Save,
 } from "lucide-react";
 import Image from "next/image";
-import { toast } from "sonner";
+import { toast } from "@/lib/use-toast";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -399,7 +399,10 @@ export function EditArticleForm({
     e.preventDefault();
     // Client-side validation for category_id
     if (!formData.category_id) {
-      toast.error("Please select a category before submitting.");
+      toast({
+        title: "Please select a category before submitting.",
+        variant: "destructive",
+      });
       return;
     }
     setLoading(true);
@@ -416,8 +419,10 @@ export function EditArticleForm({
             image_url = uploadResult.image_url;
           }
         } catch (error) {
-          toast.error("Failed to upload image", {
+          toast({
+            title: "Failed to upload image",
             description: "Please try again or use a different image.",
+            variant: "destructive",
           });
           setLoading(false);
           return;
@@ -450,8 +455,10 @@ export function EditArticleForm({
       if (response.ok) {
         // Only show success toast if there were actual changes
         if (hasChanges || imageFile) {
-          toast.success("Article updated successfully!", {
+          toast({
+            title: "Article updated successfully!",
             description: "Your changes have been saved.",
+            variant: "success",
           });
         }
 
@@ -460,14 +467,18 @@ export function EditArticleForm({
         router.push(getDashboardPath());
       } else {
         const errorData = await response.json().catch(() => ({}));
-        toast.error("Failed to update article", {
+        toast({
+          title: "Failed to update article",
           description: errorData.error || "Please try again.",
+          variant: "destructive",
         });
       }
     } catch (error) {
       console.error("Error updating article:", error);
-      toast.error("Error updating article", {
+      toast({
+        title: "Error updating article",
         description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
       });
     } finally {
       setLoading(false);

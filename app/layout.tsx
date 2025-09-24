@@ -5,7 +5,7 @@ import "./globals.css";
 import "../styles/professional-news.css";
 import { LanguageProvider } from "@/lib/language-context";
 import { AuthProvider } from "@/lib/user-auth";
-import { Toaster } from "sonner";
+import { Toaster } from "@/components/ui/toaster";
 
 import ServiceWorkerRegistration from "@/components/service-worker-registration";
 import OfflineIndicator from "@/components/offline-indicator";
@@ -108,7 +108,9 @@ export default function RootLayout({
         <AuthProvider>
           <LanguageProvider>{children}</LanguageProvider>
         </AuthProvider>
-        <Toaster position="top-right" expand={false} richColors closeButton />
+        {/* Use custom glassmorphism Toaster for all notifications */}
+        <import path="@/components/ui/toaster" />
+        <Toaster />
         <ServiceWorkerRegistration />
         <Analytics />
       </body>

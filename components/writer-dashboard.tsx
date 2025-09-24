@@ -2,7 +2,7 @@
 
 import { useState, useMemo, useCallback, memo, useEffect } from "react";
 import Link from "next/link";
-import { toast } from "sonner";
+import { toast } from "@/lib/use-toast";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";

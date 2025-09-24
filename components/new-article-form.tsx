@@ -26,7 +26,7 @@ import {
   XCircle,
 } from "lucide-react";
 import Image from "next/image";
-import { toast } from "sonner";
+import { toast } from "@/lib/use-toast";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -289,17 +289,24 @@ export function NewArticleForm({
       console.log("API Response:", responseData);
 
       if (response.ok) {
-        toast.success("Article created successfully!");
+        toast({
+          title: "Article created successfully!",
+          variant: "success",
+        });
         router.push(getDashboardPath());
       } else {
-        toast.error("Failed to create article", {
+        toast({
+          title: "Failed to create article",
           description: responseData.error || "Please try again.",
+          variant: "destructive",
         });
       }
     } catch (error) {
       console.error("Error creating article:", error);
-      toast.error("Error creating article", {
+      toast({
+        title: "Error creating article",
         description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
       });
     } finally {
       setLoading(false);

@@ -18,7 +18,7 @@ interface SentNewsletter {
   recipientCount: number;
 }
 import { Textarea } from "@/components/ui/textarea";
-import { toast } from "sonner";
+import { toast } from "@/lib/use-toast";
 
 const LOGO_URL = "/logo.png"; // Update with your logo path in /public
 
