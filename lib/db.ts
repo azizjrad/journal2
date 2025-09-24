@@ -106,8 +106,6 @@ export interface ArticleInterface {
   excerpt_en: string;
   excerpt_ar: string;
   image_url: string;
-  image_data?: string; // base64 string for transport, Buffer in DB
-  image_content_type?: string; // MIME type for image_data
   category_id: string;
   author_id?: string;
   tags?: string[];
@@ -321,14 +319,9 @@ export async function getArticleByIdAdmin(
 
   if (!article) return null;
 
-  // If image_data is present, provide a special endpoint for image_url
-  let image_url = article.image_url;
-  if (article.image_data && article.image_data.length > 0) {
-    image_url = `/api/admin/articles/${article._id}/image`;
-  }
   return {
     ...convertDoc(article),
-    image_url,
+    image_url: article.image_url,
     category_name_en: article.category_id?.name_en,
     category_name_ar: article.category_id?.name_ar,
     category_slug: article.category_id?.slug,
@@ -569,6 +562,8 @@ export async function getCategories(): Promise<CategoryInterface[]> {
   await dbConnect();
 
   const categories = await Category.find({}).sort({ name_en: 1 }).lean();
+  // DEBUG: Log categories fetched from DB
+  console.log("[DEBUG] Categories fetched:", categories);
 
   return convertDoc(categories);
 }
@@ -893,11 +888,7 @@ export async function createArticle(
       author_id: article.author_id
         ? new Types.ObjectId(article.author_id)
         : undefined,
-      // If image_data is present (base64 string), convert to Buffer for MongoDB
-      image_data: article.image_data
-        ? Buffer.from(article.image_data, "base64")
-        : undefined,
-      image_content_type: article.image_content_type,
+      // Remove image_data and image_content_type
     };
 
     console.log("Creating article with sanitized data:", {
@@ -906,8 +897,6 @@ export async function createArticle(
       category_id: sanitizedArticle.category_id,
       author_id: sanitizedArticle.author_id,
       is_published: sanitizedArticle.is_published,
-      has_image_data: !!sanitizedArticle.image_data,
-      image_content_type: sanitizedArticle.image_content_type,
     });
 
     const result = await Article.create(sanitizedArticle);
@@ -986,13 +975,7 @@ export async function updateArticle(
   if (article.slug) sanitizedArticle.slug = sanitizeInput(article.slug);
   if (article.category_id)
     sanitizedArticle.category_id = new Types.ObjectId(article.category_id);
-  // Handle image_data and image_content_type
-  if (article.image_data) {
-    sanitizedArticle.image_data = Buffer.from(article.image_data, "base64");
-  }
-  if (article.image_content_type) {
-    sanitizedArticle.image_content_type = article.image_content_type;
-  }
+  // Remove image_data and image_content_type
 
   const result = await Article.findByIdAndUpdate(id, sanitizedArticle, {
     new: true,
@@ -1935,6 +1918,7 @@ export interface ReportInterface {
   escalated_by?: string;
   closed_at?: Date;
   closed_by?: string;
+  dismissed_at?: Date;
   created_at?: Date;
   updated_at?: Date;
 }

@@ -360,37 +360,23 @@ export function EditArticleForm({
     }
   };
 
-  // Upload image and return { image_data, image_content_type } for DB storage, or { image_url } for legacy fallback
-  const uploadImage = async (
-    file: File
-  ): Promise<{
-    image_data?: string;
-    image_content_type?: string;
-    image_url?: string;
-  }> => {
+  // Upload image and return { image_url } for DB storage
+  const uploadImage = async (file: File): Promise<{ image_url?: string }> => {
     const formData = new FormData();
     formData.append("file", file);
-
     try {
       const response = await fetch("/api/admin/upload", {
         method: "POST",
         body: formData,
+        credentials: "include",
       });
-
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(
           errorData.error || `Upload failed with status: ${response.status}`
         );
       }
-
       const data = await response.json();
-      if (data.image_data && data.contentType) {
-        return {
-          image_data: data.image_data,
-          image_content_type: data.contentType,
-        };
-      }
       if (data.url) {
         return { image_url: data.url };
       }
@@ -422,20 +408,13 @@ export function EditArticleForm({
       // Check if there are any changes before proceeding
       const hasChanges = hasUnsavedChanges();
 
-      let imagePayload: {
-        image_data?: string;
-        image_content_type?: string;
-        image_url?: string;
-      } = {};
+      let image_url = formData.image_url;
       if (imageFile) {
         try {
           const uploadResult = await uploadImage(imageFile);
-          if (uploadResult.image_data && uploadResult.image_content_type) {
-            imagePayload.image_data = uploadResult.image_data;
-            imagePayload.image_content_type = uploadResult.image_content_type;
+          if (uploadResult.image_url) {
+            image_url = uploadResult.image_url;
           }
-          // Always clear image_url if uploading a new image
-          imagePayload.image_url = "";
         } catch (error) {
           toast.error("Failed to upload image", {
             description: "Please try again or use a different image.",
@@ -443,13 +422,11 @@ export function EditArticleForm({
           setLoading(false);
           return;
         }
-      } else if (formData.image_url) {
-        imagePayload.image_url = formData.image_url;
       }
 
       const updateData = {
         ...formData,
-        ...imagePayload,
+        image_url,
         published_at: formData.is_published ? new Date().toISOString() : null,
         meta_keywords_en: formatTags(formData.meta_keywords_en),
         meta_keywords_ar: formatTags(formData.meta_keywords_ar),

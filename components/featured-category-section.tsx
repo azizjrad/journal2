@@ -24,10 +24,10 @@ export function FeaturedCategorySection({ articles, small }: Props) {
   // Ultra-compact style for homepage
   return (
     <section className="w-full border-b border-gray-300 my-20">
-      <div className="flex flex-row gap-4 justify-between items-stretch py-0.5 mb-4 sm:flex-row sm:gap-4 sm:justify-between sm:items-stretch flex-col gap-0 justify-start items-stretch">
+      <div className="flex flex-row gap-4 justify-between items-stretch py-0.5 mb-4 sm:flex-row sm:gap-4 sm:justify-between sm:items-stretch">
         {articles.map((article, idx) => (
           <React.Fragment key={article.id}>
-            <div className="flex-1 min-w-[320px] pr-1 transition-all duration-300 rounded-xl hover:bg-gray-200/50 group py-4 px-2 hover:px-5 sm:min-w-[320px] sm:pr-1 sm:py-4 sm:px-2 sm:hover:px-5 min-w-0 pr-0 py-3 px-2">
+            <div className="flex-1 min-w-[320px] transition-all duration-300 rounded-xl hover:bg-gray-200/50 group py-4 hover:px-5 sm:min-w-[320px] sm:pr-1 sm:py-4 sm:px-2 sm:hover:px-5 px-2">
               <Link href={article.href} className="block group">
                 <div className="flex flex-row items-start w-full">
                   <div className="flex flex-col flex-1 min-w-0 justify-start">

@@ -7,10 +7,10 @@ import { verifyToken } from "@/lib/auth";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
-    const id = params?.id;
+    const { id } = context.params;
     if (!id) {
       return NextResponse.json(
         { error: "Missing article id" },
@@ -35,7 +35,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  context: { params: { id: string } }
 ) {
   try {
     console.log("🔄 Starting article update...");
@@ -44,24 +44,31 @@ export async function PUT(
     if (authToken) {
       try {
         currentUser = await verifyToken(authToken);
-        console.log("✅ Writer authenticated:", currentUser.id);
+        if (currentUser) {
+          console.log("✅ Writer authenticated:", currentUser.userId);
+        }
       } catch (error) {
         console.log("❌ Invalid auth token");
       }
     }
     if (!currentUser) {
       try {
-        await ensureAdmin();
+        await ensureAdmin(request);
         console.log("✅ Admin authenticated");
       } catch (error) {
-        console.log("❌ Admin authentication failed:", error.message);
+        console.log(
+          "❌ Admin authentication failed:",
+          typeof error === "object" && error !== null && "message" in error
+            ? (error as { message?: string }).message
+            : error
+        );
         return NextResponse.json(
           { error: "Authentication required" },
           { status: 401 }
         );
       }
     }
-    const { id } = params;
+    const { id } = context.params;
     const body = await request.json();
     const {
       title_en,
@@ -111,8 +118,20 @@ export async function PUT(
       meta_keywords_en,
       meta_keywords_ar,
       published_at,
+      tags,
     });
-    console.log("✅ Article updated successfully:", id);
+
+    // Invalidate Redis cache for featured articles
+    try {
+      const { getRedis } = await import("@/lib/redis");
+      const redis = await getRedis();
+      await redis.del("featuredArticles");
+      console.log("🧹 Redis cache invalidated: featuredArticles");
+    } catch (err) {
+      console.error("Redis cache invalidation failed:", err);
+    }
+
+    console.log("\u2705 Article updated successfully:", id);
     return NextResponse.json(updatedArticle);
   } catch (error) {
     console.error("❌ Error updating article:", error);
@@ -158,6 +177,17 @@ export async function DELETE(
       );
     }
     await deleteArticle(id);
+
+    // Invalidate Redis cache for featured articles
+    try {
+      const { getRedis } = await import("@/lib/redis");
+      const redis = await getRedis();
+      await redis.del("featuredArticles");
+      console.log("🧹 Redis cache invalidated: featuredArticles");
+    } catch (err) {
+      console.error("Redis cache invalidation failed:", err);
+    }
+
     console.log("✅ Article deleted successfully:", id);
     return NextResponse.json({
       success: true,

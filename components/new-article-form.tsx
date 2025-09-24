@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -53,10 +53,35 @@ interface NewArticleFormProps {
 }
 
 export function NewArticleForm({
-  categories,
+  categories: initialCategories,
   isWriterMode = false,
 }: NewArticleFormProps) {
   const router = useRouter();
+  // DEBUG: Log categories received from backend
+  if (typeof window !== "undefined") {
+    console.log("[DEBUG] Categories received (prop):", initialCategories);
+  }
+
+  // State for categories (for client-side fetch)
+  const [categories, setCategories] = useState(initialCategories || []);
+
+  // Fetch categories from API if running on client and categories are empty
+  useEffect(() => {
+    if (
+      typeof window !== "undefined" &&
+      (!initialCategories || initialCategories.length === 0)
+    ) {
+      fetch("/api/categories")
+        .then((res) => res.json())
+        .then((data) => {
+          setCategories(data);
+          console.log("[DEBUG] Categories fetched from API:", data);
+        })
+        .catch((err) => {
+          console.error("[DEBUG] Error fetching categories from API:", err);
+        });
+    }
+  }, [initialCategories]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [loading, setLoading] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
@@ -163,39 +188,22 @@ export function NewArticleForm({
     }
   };
 
-  // Upload image and return { image_data, image_content_type } for DB storage, or { image_url } for legacy fallback
-  const uploadImage = async (
-    file: File
-  ): Promise<{
-    image_data?: string;
-    image_content_type?: string;
-    image_url?: string;
-  }> => {
+  // Upload image and return { image_url } for DB storage
+  const uploadImage = async (file: File): Promise<{ image_url?: string }> => {
     const formData = new FormData();
     formData.append("file", file);
-
     try {
       const response = await fetch("/api/admin/upload", {
         method: "POST",
         body: formData,
       });
-
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(
           errorData.error || `Upload failed with status: ${response.status}`
         );
       }
-
       const data = await response.json();
-      // If the API returns image_data, use it; otherwise fallback to url (legacy)
-      if (data.image_data && data.contentType) {
-        return {
-          image_data: data.image_data,
-          image_content_type: data.contentType,
-        };
-      }
-      // Fallback: treat as legacy URL
       if (data.url) {
         return { image_url: data.url };
       }
@@ -238,33 +246,25 @@ export function NewArticleForm({
         return;
       }
 
-      let imagePayload: {
-        image_data?: string;
-        image_content_type?: string;
-        image_url?: string;
-      } = {};
+      let image_url = formData.image_url;
       if (imageFile) {
         try {
           const uploadResult = await uploadImage(imageFile);
-          if (uploadResult.image_data && uploadResult.image_content_type) {
-            imagePayload.image_data = uploadResult.image_data;
-            imagePayload.image_content_type = uploadResult.image_content_type;
+          if (uploadResult.image_url) {
+            image_url = uploadResult.image_url;
           }
-          // Always clear image_url if uploading a new image
-          imagePayload.image_url = "";
         } catch (error) {
           toast.error("Failed to upload image", {
             description: "Please try again or use a different image.",
           });
+          setLoading(false);
           return;
         }
-      } else if (formData.image_url) {
-        imagePayload.image_url = formData.image_url;
       }
 
       const articleData = {
         ...formData,
-        ...imagePayload,
+        image_url,
         meta_keywords_en: formatTags(formData.meta_keywords_en),
         meta_keywords_ar: formatTags(formData.meta_keywords_ar),
         published_at: formData.is_published
@@ -321,6 +321,15 @@ export function NewArticleForm({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 via-gray-900 to-slate-800">
+      {/* Internal Loading Screen */}
+      {loading && (
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 flex items-center justify-center">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-4 border-red-500 mx-auto mb-4"></div>
+            <p className="text-slate-300 text-lg">Loading article data...</p>
+          </div>
+        </div>
+      )}
       {/* Modern Header with Glass Effect */}
       <div className="sticky top-0 z-50 backdrop-blur-xl bg-slate-900/80 border-b border-slate-700/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

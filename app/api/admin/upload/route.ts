@@ -17,7 +17,6 @@ export async function POST(request: NextRequest) {
     const data = await request.formData();
     const file: File | null = data.get("file") as unknown as File;
 
-
     if (!file) {
       console.error("[UPLOAD] No file uploaded");
       return NextResponse.json({ error: "No file uploaded" }, { status: 400 });
@@ -49,15 +48,24 @@ export async function POST(request: NextRequest) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    console.log(`[UPLOAD] File received: name=${file.name}, type=${file.type}, size=${file.size}, bufferLength=${buffer.length}`);
+    // Generate a unique filename
+    const timestamp = Date.now();
+    const ext = file.name.split(".").pop() || "png";
+    const random = Math.random().toString(36).substring(2, 12);
+    const filename = `${timestamp}-${random}.${ext}`;
+    const uploadPath = path.join(process.cwd(), "public", "uploads", filename);
 
-    // Instead of saving to disk, return the buffer and contentType for DB storage
-    // (The frontend or article creation endpoint should now handle storing this in the Article document)
+    // Save file to local filesystem
+    await writeFile(uploadPath, buffer);
+    console.log(`[UPLOAD] Saved file to ${uploadPath}`);
+
+    // Return the public URL for DB storage
+    const url = `/uploads/${filename}`;
     return NextResponse.json({
-      image_data: buffer.toString("base64"),
-      image_content_type: file.type,
+      url,
       originalName: file.name,
       size: file.size,
+      contentType: file.type,
     });
   } catch (error) {
     console.error("Error uploading file:", error);

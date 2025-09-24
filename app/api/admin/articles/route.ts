@@ -44,16 +44,7 @@ export async function POST(request: NextRequest) {
 
     const body = await request.json();
     console.log("[ARTICLE CREATE] Request body keys:", Object.keys(body));
-    if (body.image_data) {
-      console.log(`[ARTICLE CREATE] image_data length: ${body.image_data.length}`);
-    } else {
-      console.log("[ARTICLE CREATE] No image_data in request");
-    }
-    if (body.image_content_type) {
-      console.log(`[ARTICLE CREATE] image_content_type: ${body.image_content_type}`);
-    }
-
-    // Accept both legacy (image_url) and new (image_data + image_content_type) fields
+    // Accept only image_url for article images
     const {
       title_en,
       title_ar,
@@ -62,8 +53,6 @@ export async function POST(request: NextRequest) {
       excerpt_en,
       excerpt_ar,
       image_url,
-      image_data,
-      image_content_type,
       category_id,
       is_published = false,
       is_featured = false,
@@ -125,8 +114,6 @@ export async function POST(request: NextRequest) {
       excerpt_en,
       excerpt_ar,
       image_url,
-      image_data,
-      image_content_type,
       category_id, // Keep as string for MongoDB ObjectId
       author_id: currentUser.id, // Set the author
       is_published: actualIsPublished,
@@ -135,6 +122,16 @@ export async function POST(request: NextRequest) {
       published_at,
       scheduled_for,
     });
+
+    // Invalidate Redis cache for featured articles
+    try {
+      const { getRedis } = await import("@/lib/redis");
+      const redis = await getRedis();
+      await redis.del("featuredArticles");
+      console.log("🧹 Redis cache invalidated: featuredArticles");
+    } catch (err) {
+      console.error("Redis cache invalidation failed:", err);
+    }
 
     console.log("🎉 Article created successfully:", newArticle.id);
     return NextResponse.json(newArticle);
