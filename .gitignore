@@ -27,8 +27,7 @@ yarn-error.log*
 next-env.d.ts
 
 # uploaded files (keep .gitkeep but ignore uploaded images)
-/public/uploads/*
-!/public/uploads/.gitkeep
+
 
 # documentation files (ignore all .md files except README.md)
 *.md
