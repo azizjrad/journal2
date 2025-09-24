@@ -158,13 +158,17 @@ export function NewArticleForm({
         "image/webp",
       ];
       if (!allowedTypes.includes(file.type)) {
-        toast.error(
-          "Unsupported image type. Only JPEG, PNG, GIF, and WebP are allowed."
-        );
+        toast({
+          title: "Unsupported image type. Only JPEG, PNG, GIF, and WebP are allowed.",
+          variant: "destructive",
+        });
         return;
       }
       if (file.size > 5 * 1024 * 1024) {
-        toast.error("Image size must be less than 5MB");
+        toast({
+          title: "Image size must be less than 5MB",
+          variant: "destructive",
+        });
         return;
       }
 
@@ -188,29 +192,42 @@ export function NewArticleForm({
     }
   };
 
+  // MVP ONLY: Set to true to use frontend image storage (public/uploads)
+  // To disable for production, set MVP_IMAGE_STORAGE = false
+  const MVP_IMAGE_STORAGE = true;
+
   // Upload image and return { image_url } for DB storage
   const uploadImage = async (file: File): Promise<{ image_url?: string }> => {
-    const formData = new FormData();
-    formData.append("file", file);
-    try {
-      const response = await fetch("/api/admin/upload", {
-        method: "POST",
-        body: formData,
-      });
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(
-          errorData.error || `Upload failed with status: ${response.status}`
-        );
+    if (MVP_IMAGE_STORAGE) {
+      // Simulate frontend upload: save to public/uploads and return relative URL
+      // In production, this should be replaced with backend/external upload
+      const formData = new FormData();
+      formData.append("file", file);
+      try {
+        const response = await fetch("/api/admin/upload", {
+          method: "POST",
+          body: formData,
+        });
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(
+            errorData.error || `Upload failed with status: ${response.status}`
+          );
+        }
+        const data = await response.json();
+        if (data.url) {
+          // Always use relative URL for MVP
+          return { image_url: data.url };
+        }
+        return {};
+      } catch (error) {
+        console.error("Image upload error:", error);
+        throw error;
       }
-      const data = await response.json();
-      if (data.url) {
-        return { image_url: data.url };
-      }
+    } else {
+      // Production: use backend/external upload logic here
+      // ...existing code...
       return {};
-    } catch (error) {
-      console.error("Image upload error:", error);
-      throw error;
     }
   };
 
@@ -229,19 +246,28 @@ export function NewArticleForm({
     try {
       // Validate required fields
       if (!formData.title_en.trim() || !formData.title_ar.trim()) {
-        toast.error("Please fill in both English and Arabic titles");
+        toast({
+          title: "Please fill in both English and Arabic titles",
+          variant: "destructive",
+        });
         setLoading(false);
         return;
       }
 
       if (!formData.content_en.trim() || !formData.content_ar.trim()) {
-        toast.error("Please fill in both English and Arabic content");
+        toast({
+          title: "Please fill in both English and Arabic content",
+          variant: "destructive",
+        });
         setLoading(false);
         return;
       }
 
       if (!formData.category_id || formData.category_id.trim() === "") {
-        toast.error("Please select a category");
+        toast({
+          title: "Please select a category",
+          variant: "destructive",
+        });
         setLoading(false);
         return;
       }
@@ -254,8 +280,10 @@ export function NewArticleForm({
             image_url = uploadResult.image_url;
           }
         } catch (error) {
-          toast.error("Failed to upload image", {
+          toast({
+            title: "Failed to upload image",
             description: "Please try again or use a different image.",
+            variant: "destructive",
           });
           setLoading(false);
           return;

@@ -360,30 +360,43 @@ export function EditArticleForm({
     }
   };
 
+  // MVP ONLY: Set to true to use frontend image storage (public/uploads)
+  // To disable for production, set MVP_IMAGE_STORAGE = false
+  const MVP_IMAGE_STORAGE = true;
+
   // Upload image and return { image_url } for DB storage
   const uploadImage = async (file: File): Promise<{ image_url?: string }> => {
-    const formData = new FormData();
-    formData.append("file", file);
-    try {
-      const response = await fetch("/api/admin/upload", {
-        method: "POST",
-        body: formData,
-        credentials: "include",
-      });
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({}));
-        throw new Error(
-          errorData.error || `Upload failed with status: ${response.status}`
-        );
+    if (MVP_IMAGE_STORAGE) {
+      // Simulate frontend upload: save to public/uploads and return relative URL
+      // In production, this should be replaced with backend/external upload
+      const formData = new FormData();
+      formData.append("file", file);
+      try {
+        const response = await fetch("/api/admin/upload", {
+          method: "POST",
+          body: formData,
+          credentials: "include",
+        });
+        if (!response.ok) {
+          const errorData = await response.json().catch(() => ({}));
+          throw new Error(
+            errorData.error || `Upload failed with status: ${response.status}`
+          );
+        }
+        const data = await response.json();
+        if (data.url) {
+          // Always use relative URL for MVP
+          return { image_url: data.url };
+        }
+        return {};
+      } catch (error) {
+        console.error("Image upload error:", error);
+        throw error;
       }
-      const data = await response.json();
-      if (data.url) {
-        return { image_url: data.url };
-      }
+    } else {
+      // Production: use backend/external upload logic here
+      // ...existing code...
       return {};
-    } catch (error) {
-      console.error("Image upload error:", error);
-      throw error;
     }
   };
 
