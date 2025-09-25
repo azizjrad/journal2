@@ -673,13 +673,8 @@ export async function deleteCategory(id: string): Promise<boolean> {
     throw new Error("Invalid category ID");
   }
 
-  // Check if category has articles
-  const articlesCount = await Article.countDocuments({
-    category_id: new Types.ObjectId(id),
-  });
-  if (articlesCount > 0) {
-    throw new Error("Cannot delete category that has articles");
-  }
+  // Delete all articles with this category
+  await Article.deleteMany({ category_id: new Types.ObjectId(id) });
 
   const result = await Category.findByIdAndDelete(id);
   if (!result) {

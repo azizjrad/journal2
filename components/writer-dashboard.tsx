@@ -630,14 +630,15 @@ export function WriterDashboard({ articles, user }: WriterDashboardProps) {
                 </Button>
               </Link>
               <Link href="/">
-                <Button
-                  variant="outline"
-                  className="text-white border-white/20 bg-white/10 backdrop-blur-sm hover:bg-white/20 w-full sm:w-auto"
-                >
-                  <Eye className="h-4 w-4 mr-2" />
-                  View Site
-                </Button>
-              </Link>
+                <Link href="/" target="_blank" rel="noopener noreferrer">
+                  <Button
+                    variant="outline"
+                    className="text-white border-white/20 bg-white/10 backdrop-blur-sm hover:bg-white/20 w-full sm:w-auto"
+                  >
+                    <Eye className="h-4 w-4 mr-2" />
+                    View Site
+                  </Button>
+                </Link>
               <LogoutButton />
             </div>
           </div>

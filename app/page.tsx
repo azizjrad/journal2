@@ -17,6 +17,7 @@ import {
 } from "@/components/featured-category-section";
 import { BigStoryArticle } from "@/components/big-story-section";
 import { getArticlesByCategory, getAuthorInfo } from "@/lib/db";
+import MainLayout from "@/components/main-layout";
 
 export default async function HomePage() {
   // Fetch latest article for each main category and big story
@@ -176,25 +177,27 @@ export default async function HomePage() {
     .filter((c): c is Category => c !== null);
 
   return (
-    <div className="min-h-screen bg-stone-100">
-      <FixedHeaderWrapper
-        categories={categoriesRaw}
-        articles={featuredArticlesRaw}
-      />
-      <div style={{ paddingTop: "140px" }}>
-        {/* Space for fixed header */}
-        <HomeBreadcrumb />
-        {/* Removed duplicate Featured Category Section; now only rendered inside HomeContent */}
-        <HomeContent
-          featuredArticles={featuredArticles}
-          otherArticles={otherArticles}
-          recentArticles={recentArticles}
-          categories={categories}
-          featuredCategoryArticles={featuredCategoryArticles}
-          bigStoryArticle={bigStoryArticle}
+    <MainLayout>
+      <div className="min-h-screen bg-stone-100">
+        <FixedHeaderWrapper
+          categories={categoriesRaw}
+          articles={featuredArticlesRaw}
         />
+        <div style={{ paddingTop: "140px" }}>
+          {/* Space for fixed header */}
+          <HomeBreadcrumb />
+          {/* Removed duplicate Featured Category Section; now only rendered inside HomeContent */}
+          <HomeContent
+            featuredArticles={featuredArticles}
+            otherArticles={otherArticles}
+            recentArticles={recentArticles}
+            categories={categories}
+            featuredCategoryArticles={featuredCategoryArticles}
+            bigStoryArticle={bigStoryArticle}
+          />
+        </div>
+        <Footer categories={categoriesRaw} />
       </div>
-      <Footer categories={categoriesRaw} />
-    </div>
+    </MainLayout>
   );
 }

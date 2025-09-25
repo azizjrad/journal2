@@ -10,6 +10,8 @@ import { Toaster } from "@/components/ui/toaster";
 import ServiceWorkerRegistration from "@/components/service-worker-registration";
 import OfflineIndicator from "@/components/offline-indicator";
 import { Analytics } from "@vercel/analytics/next";
+import Header from "@/components/header";
+import React from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -71,11 +73,27 @@ export const viewport = {
   colorScheme: "dark light",
 };
 
-export default function RootLayout({
+// Fetch categories from API (server component)
+async function fetchCategories() {
+  try {
+    const res = await fetch(
+      `${process.env.NEXT_PUBLIC_SITE_URL || ""}/api/categories`,
+      { cache: "no-store" }
+    );
+    if (!res.ok) return [];
+    return await res.json();
+  } catch {
+    return [];
+  }
+}
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const categories = await fetchCategories();
+
   return (
     <html lang="en">
       <head>
@@ -109,7 +127,6 @@ export default function RootLayout({
           <LanguageProvider>{children}</LanguageProvider>
         </AuthProvider>
         {/* Use custom glassmorphism Toaster for all notifications */}
-        <import path="@/components/ui/toaster" />
         <Toaster />
         <ServiceWorkerRegistration />
         <Analytics />

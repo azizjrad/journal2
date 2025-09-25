@@ -116,19 +116,22 @@ export function CategoryManagement({
         setIsCreateOpen(false);
         resetForm();
         router.refresh();
-        toast.success("Category created successfully!", {
+        toast({
+          title: "Category created successfully!",
           description: `${formData.name_en} has been added to your categories.`,
         });
       } else {
         const errorData = await response.json().catch(() => ({}));
         console.error("Create category error:", errorData);
-        toast.error("Failed to create category", {
+        toast({
+          title: "Failed to create category",
           description: errorData.error || "Please try again.",
         });
       }
     } catch (error) {
       console.error("Error creating category:", error);
-      toast.error("Error creating category", {
+      toast({
+        title: "Error creating category",
         description: "An unexpected error occurred. Please try again.",
       });
     } finally {
@@ -180,19 +183,22 @@ export function CategoryManagement({
         setEditingCategory(null);
         resetForm();
         router.refresh();
-        toast.success("Category updated successfully!", {
+        toast({
+          title: "Category updated successfully!",
           description: `${formData.name_en} has been updated.`,
         });
       } else {
         const errorData = await response.json().catch(() => ({}));
         console.error("Edit category error:", errorData);
-        toast.error("Failed to update category", {
+        toast({
+          title: "Failed to update category",
           description: errorData.error || "Please try again.",
         });
       }
     } catch (error) {
       console.error("Error updating category:", error);
-      toast.error("Error updating category", {
+      toast({
+        title: "Error updating category",
         description: "An unexpected error occurred. Please try again.",
       });
     } finally {
@@ -227,19 +233,22 @@ export function CategoryManagement({
           setCategoriesCurrentPage(1);
         }
         router.refresh();
-        toast.success("Category deleted successfully!", {
+        toast({
+          title: "Category deleted successfully!",
           description: "The category has been removed from your system.",
         });
       } else {
         const errorData = await response.json().catch(() => ({}));
         console.error("Delete category error:", errorData);
-        toast.error("Failed to delete category", {
+        toast({
+          title: "Failed to delete category",
           description: errorData.error || "Please try again.",
         });
       }
     } catch (error) {
       console.error("Error deleting category:", error);
-      toast.error("Error deleting category", {
+      toast({
+        title: "Error deleting category",
         description: "An unexpected error occurred. Please try again.",
       });
     } finally {
@@ -389,7 +398,7 @@ export function CategoryManagement({
                     setIsCreateOpen(false);
                     resetForm();
                   }}
-                  className="h-12 px-6 bg-gray-800/50 border-white/40 text-white backdrop-blur-sm transition-all duration-200 rounded-xl"
+                  className="h-12 px-6 bg-gray-800/50 border-white/40 text-white backdrop-blur-sm transition-all duration-200 rounded-xl hover:bg-gray-700 hover:text-white focus:ring-2 focus:ring-purple-500"
                 >
                   Cancel
                 </Button>

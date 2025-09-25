@@ -239,7 +239,7 @@ export function AdminDashboard({
                 </div>
               </div>
               <div className="flex items-center gap-2 sm:gap-3 flex-wrap">
-                <Link href="/profile">
+                <Link href="/profile" target="_blank" rel="noopener noreferrer">
                   <Button
                     variant="outline"
                     className="text-white border-white/20 bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:text-white transition-all duration-200"
@@ -247,7 +247,7 @@ export function AdminDashboard({
                     <Settings className="h-4 w-4" />
                   </Button>
                 </Link>
-                <Link href="/">
+                <Link href="/" target="_blank" rel="noopener noreferrer">
                   <Button
                     variant="outline"
                     className="text-white border-white/20 bg-white/10 backdrop-blur-sm hover:bg-white/20 hover:text-white transition-all duration-200"

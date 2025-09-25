@@ -159,7 +159,8 @@ export function NewArticleForm({
       ];
       if (!allowedTypes.includes(file.type)) {
         toast({
-          title: "Unsupported image type. Only JPEG, PNG, GIF, and WebP are allowed.",
+          title:
+            "Unsupported image type. Only JPEG, PNG, GIF, and WebP are allowed.",
           variant: "destructive",
         });
         return;

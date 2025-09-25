@@ -64,7 +64,7 @@ export default function Header({
     onMobileMenuChange?.(sidebarOpen);
   }, [sidebarOpen, onMobileMenuChange]);
 
-  // Show max 5 categories in navbar, rest in sidebar
+  // Always show Home and All News, then up to 5 categories
   const navbarCategories = categories.slice(0, 5);
 
   // Sidebar component to be rendered in portal

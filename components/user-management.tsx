@@ -138,18 +138,31 @@ export function UserManagement() {
         console.error("❌ Users API error:", response.status, errorData);
 
         if (response.status === 401) {
-          toast.error("Authentication required. Please login as admin.");
+          toast({
+            title: "Authentication required",
+            description: "Please login as admin.",
+            variant: "destructive",
+          });
         } else if (response.status === 403) {
-          toast.error("Admin access required");
+          toast({
+            title: "Admin access required",
+            variant: "destructive",
+          });
         } else {
-          toast.error(
-            `Failed to fetch users: ${errorData.message || "Unknown error"}`
-          );
+          toast({
+            title: "Failed to fetch users",
+            description: errorData.message || "Unknown error",
+            variant: "destructive",
+          });
         }
       }
     } catch (error) {
       console.error("💥 Error fetching users:", error);
-      toast.error("Error fetching users");
+      toast({
+        title: "Error fetching users",
+        description: String(error),
+        variant: "destructive",
+      });
     } finally {
       setLoading(false);
       console.log("🏁 User fetch completed");
@@ -177,24 +190,27 @@ export function UserManagement() {
           )
         );
         const userName = users.find((u) => u.id === userId)?.username || "User";
-        toast.success(`${userName}'s role updated to ${newRole}!`, {
+        toast({
+          title: `${userName}'s role updated to ${newRole}!`,
           description: `User now has ${newRole} privileges`,
-          duration: 4000,
+          variant: "success",
         });
       } else {
         const errorData = await response.json().catch(() => ({}));
         console.error("❌ Role update error:", response.status, errorData);
-        toast.error("Failed to update user role", {
+        toast({
+          title: "Failed to update user role",
           description: errorData.message || "Please try again later",
-          duration: 4000,
+          variant: "destructive",
         });
       }
     } catch (error) {
       console.error("💥 Error updating user role:", error);
-      toast.error("Error updating user role", {
+      toast({
+        title: "Error updating user role",
         description:
           "A network error occurred. Please check your connection and try again.",
-        duration: 4000,
+        variant: "destructive",
       });
     } finally {
       setActionLoading(null);
@@ -217,30 +233,30 @@ export function UserManagement() {
             user.id === userId ? { ...user, is_active: !currentStatus } : user
           )
         );
-        toast.success(
-          `${userName} has been ${
+        toast({
+          title: `${userName} has been ${
             !currentStatus ? "unbanned" : "banned"
           } successfully!`,
-          {
-            description: !currentStatus
-              ? "User can now access their account again"
-              : "User has been suspended from the platform",
-            duration: 4000,
-          }
-        );
+          description: !currentStatus
+            ? "User can now access their account again"
+            : "User has been suspended from the platform",
+          variant: "success",
+        });
       } else {
         const response_data = await response.json();
-        toast.error("Failed to update user status", {
+        toast({
+          title: "Failed to update user status",
           description: response_data.message || "Please try again later",
-          duration: 4000,
+          variant: "destructive",
         });
       }
     } catch (error) {
       console.error("Error updating user status:", error);
-      toast.error("Error updating user status", {
+      toast({
+        title: "Error updating user status",
         description:
           "A network error occurred. Please check your connection and try again.",
-        duration: 4000,
+        variant: "destructive",
       });
     } finally {
       setActionLoading(null);
@@ -269,30 +285,30 @@ export function UserManagement() {
               : user
           )
         );
-        toast.success(
-          `${userName} has been ${
+        toast({
+          title: `${userName} has been ${
             !currentVerification ? "verified" : "unverified"
           } successfully!`,
-          {
-            description: !currentVerification
-              ? "User now has verified status and can access all features"
-              : "User verification has been removed",
-            duration: 4000,
-          }
-        );
+          description: !currentVerification
+            ? "User now has verified status and can access all features"
+            : "User verification has been removed",
+          variant: "success",
+        });
       } else {
         const response_data = await response.json();
-        toast.error("Failed to update user verification", {
+        toast({
+          title: "Failed to update user verification",
           description: response_data.message || "Please try again later",
-          duration: 4000,
+          variant: "destructive",
         });
       }
     } catch (error) {
       console.error("Error updating user verification:", error);
-      toast.error("Error updating user verification", {
+      toast({
+        title: "Error updating user verification",
         description:
           "A network error occurred. Please check your connection and try again.",
-        duration: 4000,
+        variant: "destructive",
       });
     } finally {
       setActionLoading(null);
@@ -322,16 +338,14 @@ export function UserManagement() {
               : user
           )
         );
-        toast.success(
-          `${userName}'s writer application ${status} successfully!`,
-          {
-            description:
-              status === "approved"
-                ? "User now has writer privileges and can create articles"
-                : "User has been notified of the application status",
-            duration: 4000,
-          }
-        );
+        toast({
+          title: `${userName}'s writer application ${status} successfully!`,
+          description:
+            status === "approved"
+              ? "User now has writer privileges and can create articles"
+              : "User has been notified of the application status",
+          variant: "success",
+        });
       } else {
         const response_data = await response.json();
         const actionWord =
@@ -340,17 +354,19 @@ export function UserManagement() {
             : status === "rejected"
             ? "reject"
             : status;
-        toast.error(`Failed to ${actionWord} writer application`, {
+        toast({
+          title: `Failed to ${actionWord} writer application`,
           description: response_data.message || "Please try again later",
-          duration: 4000,
+          variant: "destructive",
         });
       }
     } catch (error) {
       console.error("Error updating writer status:", error);
-      toast.error("Error updating writer status", {
+      toast({
+        title: "Error updating writer status",
         description:
           "A network error occurred. Please check your connection and try again.",
-        duration: 4000,
+        variant: "destructive",
       });
     } finally {
       setActionLoading(null);
@@ -367,27 +383,26 @@ export function UserManagement() {
       if (response.ok) {
         const deletedUser = users.find((u) => u.id === userId);
         setUsers((prev) => prev.filter((user) => user.id !== userId));
-        toast.success(
-          `${deletedUser?.username || "User"} deleted successfully!`,
-          {
-            description:
-              "User account and all associated data have been removed",
-            duration: 4000,
-          }
-        );
+        toast({
+          title: `${deletedUser?.username || "User"} deleted successfully!`,
+          description: "User account and all associated data have been removed",
+          variant: "success",
+        });
       } else {
         const response_data = await response.json();
-        toast.error("Failed to delete user", {
+        toast({
+          title: "Failed to delete user",
           description: response_data.message || "Please try again later",
-          duration: 4000,
+          variant: "destructive",
         });
       }
     } catch (error) {
       console.error("Error deleting user:", error);
-      toast.error("Error deleting user", {
+      toast({
+        title: "Error deleting user",
         description:
           "A network error occurred. Please check your connection and try again.",
-        duration: 4000,
+        variant: "destructive",
       });
     } finally {
       setActionLoading(null);
@@ -405,9 +420,10 @@ export function UserManagement() {
         !createUserData.email ||
         !createUserData.password
       ) {
-        toast.error("Please fill in all required fields", {
+        toast({
+          title: "Please fill in all required fields",
           description: "Username, email, and password are required",
-          duration: 4000,
+          variant: "destructive",
         });
         return;
       }
@@ -425,9 +441,10 @@ export function UserManagement() {
         const data = await response.json();
         // Refresh the user list
         await fetchUsers();
-        toast.success(`${createUserData.username} created successfully!`, {
+        toast({
+          title: `${createUserData.username} created successfully!`,
           description: `New ${createUserData.role} account has been set up`,
-          duration: 4000,
+          variant: "success",
         });
         setShowCreateDialog(false);
         setCreateUserData({
@@ -438,18 +455,20 @@ export function UserManagement() {
         });
       } else {
         const errorData = await response.json();
-        toast.error("Failed to create user", {
+        toast({
+          title: "Failed to create user",
           description:
             errorData.error || "Please check the details and try again",
-          duration: 4000,
+          variant: "destructive",
         });
       }
     } catch (error) {
       console.error("Error creating user:", error);
-      toast.error("Error creating user", {
+      toast({
+        title: "Error creating user",
         description:
           "A network error occurred. Please check your connection and try again.",
-        duration: 4000,
+        variant: "destructive",
       });
     } finally {
       setCreateLoading(false);
