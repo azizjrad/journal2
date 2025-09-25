@@ -60,9 +60,7 @@ export function FeaturedCategorySection({ articles, small }: Props) {
             </div>
             {/* Separator: horizontal on mobile, vertical on desktop */}
             {idx < articles.length - 1 && (
-              <div
-                className="w-full h-px bg-gray-300 my-0.5 rounded-full sm:w-px sm:h-auto sm:self-stretch sm:mx-2 sm:my-0"
-              />
+              <div className="w-full h-px bg-gray-300 my-0.5 rounded-full sm:w-px sm:h-auto sm:self-stretch sm:mx-2 sm:my-0" />
             )}
           </React.Fragment>
         ))}
