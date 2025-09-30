@@ -1,5 +1,5 @@
 import { getNewsletterSubscribers } from "@/lib/db";
-import { sendEmail } from "@/lib/email";
+import { sendPasswordResetEmail, sendVerificationEmail, sendNewsletterEmail } from "@/lib/email-sendgrid";
 import { SentNewsletter } from "@/lib/models/SentNewsletter";
 
 export async function sendNewsletterToSubscribers(
@@ -18,7 +18,7 @@ export async function sendNewsletterToSubscribers(
     }
     // Send email to each selected subscriber
     for (const sub of selected) {
-      await sendEmail({
+      await sendNewsletterEmail({
         to: sub.email,
         subject,
         html: content,
