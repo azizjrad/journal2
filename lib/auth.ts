@@ -447,6 +447,13 @@ export function getEmailVerificationExpiry(): Date {
 }
 
 /**
+ * Get password reset token expiry date (1 hour from now)
+ */
+export function getPasswordResetExpiry(): Date {
+  return new Date(Date.now() + 1 * 60 * 60 * 1000); // 1 hour
+}
+
+/**
  * Sanitize user input
  */
 export function sanitizeInput(input: string): string {

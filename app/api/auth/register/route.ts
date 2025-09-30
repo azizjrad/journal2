@@ -107,6 +107,38 @@ export async function POST(request: NextRequest) {
       writerStatus = "pending"; // Writer application pending
     }
 
+    // Create email verification token
+    const verificationToken = generateSecureToken();
+    const expiresAt = getEmailVerificationExpiry();
+
+    // Try sending email verification first
+    let emailSent = false;
+    try {
+      emailSent = await sendEmailVerification({
+        email: email.toLowerCase(),
+        verificationToken,
+        userName: firstName || username,
+      });
+    } catch (err) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Failed to send verification email. Account not created.",
+        },
+        { status: 500 }
+      );
+    }
+
+    if (!emailSent) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Failed to send verification email. Account not created.",
+        },
+        { status: 500 }
+      );
+    }
+
     // Create user
     const user = await createUser({
       username: username.toLowerCase(),
@@ -123,20 +155,11 @@ export async function POST(request: NextRequest) {
       display_name: `${firstName || ""} ${lastName || ""}`.trim() || username,
     });
 
-    // Create email verification token
-    const verificationToken = generateSecureToken();
-    const expiresAt = getEmailVerificationExpiry();
+    // Save verification token
     if (!user.id || typeof user.id !== "string") {
       throw new Error("User ID is missing or invalid");
     }
     await createEmailVerificationToken(user.id, verificationToken, expiresAt);
-
-    // Send email verification
-    const emailSent = await sendEmailVerification({
-      email: user.email,
-      verificationToken,
-      userName: user.first_name || user.username,
-    });
 
     // Log registration activity
     const userAgent = request.headers.get("user-agent") || undefined;
@@ -154,10 +177,8 @@ export async function POST(request: NextRequest) {
     const { password_hash, ...userResponse } = user;
 
     // Prepare success message based on account type
-    let successMessage = emailSent
-      ? "User registered successfully. Please check your email to verify your account."
-      : "User registered successfully. Please contact support to verify your account.";
-
+    let successMessage =
+      "User registered successfully. Please check your email to verify your account.";
     if (accountType === "writer") {
       successMessage += " Your writer application is pending admin approval.";
     }

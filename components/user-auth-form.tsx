@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Alert, AlertDescription } from "@/components/ui/alert";
+import { Loader2 } from "lucide-react";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
 import {
@@ -61,6 +62,7 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
   const [forgotEmail, setForgotEmail] = useState("");
   const [forgotError, setForgotError] = useState("");
   const [forgotSuccess, setForgotSuccess] = useState("");
+  const [showSuccessSpinner, setShowSuccessSpinner] = useState(false);
   const [forgotLoading, setForgotLoading] = useState(false);
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -508,12 +510,64 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
                     </Alert>
                   )}
 
-                  {forgotSuccess && (
-                    <Alert className="border-green-400 bg-green-900/20">
-                      <AlertDescription className="text-green-300">
-                        {forgotSuccess}
-                      </AlertDescription>
-                    </Alert>
+                  {(forgotSuccess || forgotError) && (
+                    <>
+                      {forgotError ? (
+                        <Alert className="border-red-400 bg-red-900/20">
+                          <AlertDescription className="text-red-300">
+                            {forgotError}
+                          </AlertDescription>
+                        </Alert>
+                      ) : (
+                        <Alert className="border-green-400 bg-green-900/20">
+                          <AlertDescription className="text-green-300">
+                            {forgotSuccess}
+                          </AlertDescription>
+                        </Alert>
+                      )}
+                      <Button
+                        type="button"
+                        className="w-full mt-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold"
+                        disabled={forgotLoading || showSuccessSpinner}
+                        onClick={async () => {
+                          if (!forgotEmail) return;
+                          setForgotLoading(true);
+                          setForgotError("");
+                          setForgotSuccess("");
+                          setShowSuccessSpinner(true);
+                          try {
+                            const response = await fetch(
+                              "/api/auth/forgot-password",
+                              {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({ email: forgotEmail }),
+                              }
+                            );
+                            const data = await response.json();
+                            if (data.success) {
+                              setTimeout(() => {
+                                setShowSuccessSpinner(false);
+                                setForgotSuccess(data.message);
+                              }, 1000);
+                            } else {
+                              setShowSuccessSpinner(false);
+                              setForgotError(
+                                data.message || "Password reset failed"
+                              );
+                            }
+                          } catch (error) {
+                            setShowSuccessSpinner(false);
+                            setForgotError(
+                              "Password reset failed. Please try again."
+                            );
+                          }
+                          setForgotLoading(false);
+                        }}
+                      >
+                        Send Again
+                      </Button>
+                    </>
                   )}
 
                   <div className="space-y-2">

@@ -24,7 +24,23 @@ export default function ResetPasswordPage() {
   useEffect(() => {
     if (!token) {
       setError("Invalid reset link. Please request a new password reset.");
+      return;
     }
+
+    // Check if token is expired by making a dry run request
+    (async () => {
+      const response = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token, newPassword: "_dryrun_" }),
+      });
+      const data = await response.json();
+      if (!data.success && data.message?.toLowerCase().includes("expired")) {
+        setError(
+          "This password reset link has expired. Please request a new one."
+        );
+      }
+    })();
   }, [token]);
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -40,8 +56,21 @@ export default function ResetPasswordPage() {
       return;
     }
 
-    if (password.length < 6) {
-      setError("Password must be at least 6 characters long.");
+    // Password requirements: at least 8 chars, one uppercase, one lowercase, one number, one special char
+    const passwordRequirements = [
+      { regex: /.{8,}/, message: "at least 8 characters" },
+      { regex: /[A-Z]/, message: "an uppercase letter" },
+      { regex: /[a-z]/, message: "a lowercase letter" },
+      { regex: /[0-9]/, message: "a number" },
+      { regex: /[^A-Za-z0-9]/, message: "a special character" },
+    ];
+    const failedReqs = passwordRequirements.filter(
+      (req) => !req.regex.test(password)
+    );
+    if (failedReqs.length > 0) {
+      setError(
+        `Password must contain ${failedReqs.map((r) => r.message).join(", ")}.`
+      );
       return;
     }
 
@@ -116,18 +145,51 @@ export default function ResetPasswordPage() {
           </CardHeader>
 
           <CardContent>
-            {error && (
+            {error && error.toLowerCase().includes("expired") ? (
+              <div className="flex flex-col items-center justify-center py-12">
+                <Alert className="border-red-400 bg-red-900/20 mb-4 max-w-md">
+                  <AlertDescription className="text-red-300 text-lg font-semibold">
+                    This password reset link has expired.
+                    <br />
+                    Please request a new one to reset your password.
+                    <br />
+                    If you did not receive the reset link, you can send it again
+                    below.
+                  </AlertDescription>
+                </Alert>
+                <div className="flex gap-2 mt-4">
+                  <Button
+                    variant="outline"
+                    className="text-red-300 border-red-400 hover:bg-red-900/30"
+                    onClick={() =>
+                      (window.location.href = "/auth/forgot-password")
+                    }
+                  >
+                    Request New Password Reset
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    className="text-red-300 border-red-400 hover:bg-red-900/30"
+                    onClick={() =>
+                      (window.location.href = "/auth/forgot-password")
+                    }
+                  >
+                    Send Again
+                  </Button>
+                </div>
+              </div>
+            ) : error ? (
               <Alert className="border-red-400 bg-red-900/20 mb-4">
                 <AlertDescription className="text-red-300">
                   {error}
                 </AlertDescription>
               </Alert>
-            )}
+            ) : null}
 
             {success && (
               <Alert className="border-green-400 bg-green-900/20 mb-4">
-                <AlertDescription className="text-green-300">
-                  {success}
+                <AlertDescription className="text-green-300 text-lg font-semibold">
+                  Password reset successful.
                   <br />
                   <span className="text-sm">Redirecting to login page...</span>
                 </AlertDescription>
@@ -152,8 +214,11 @@ export default function ResetPasswordPage() {
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 text-gray-400 hover:text-white"
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 text-gray-400 hover:text-gray-200 hover:bg-white/10 transition-colors duration-200"
                       onClick={() => setShowPassword(!showPassword)}
+                      aria-label={
+                        showPassword ? "Hide password" : "Show password"
+                      }
                     >
                       {showPassword ? (
                         <EyeOff className="h-4 w-4" />
@@ -180,7 +245,7 @@ export default function ResetPasswordPage() {
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 text-gray-400 hover:text-white"
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 text-gray-400 hover:text-gray-200 hover:bg-white/10 transition-colors duration-200"
                       onClick={() =>
                         setShowConfirmPassword(!showConfirmPassword)
                       }
@@ -203,16 +268,6 @@ export default function ResetPasswordPage() {
                 </Button>
               </form>
             )}
-
-            <div className="mt-6 text-center">
-              <Button
-                variant="link"
-                className="text-gray-300 hover:text-white"
-                onClick={() => (window.location.href = "/auth")}
-              >
-                Back to Login
-              </Button>
-            </div>
           </CardContent>
         </Card>
 

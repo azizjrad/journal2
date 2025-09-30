@@ -4,7 +4,11 @@ import {
   createPasswordResetToken,
   logUserActivity,
 } from "@/lib/db";
-import { generateSecureToken, checkRateLimit } from "@/lib/auth";
+import {
+  generateSecureToken,
+  checkRateLimit,
+  getPasswordResetExpiry,
+} from "@/lib/auth";
 import { sendPasswordResetEmail } from "@/lib/email-sendgrid";
 
 export async function POST(request: NextRequest) {
@@ -58,7 +62,7 @@ export async function POST(request: NextRequest) {
     // Generate password reset token
     const resetToken = generateSecureToken();
     // Set expiry to 1 hour from now
-    const expiresAt = new Date(Date.now() + 60 * 60 * 1000);
+    const expiresAt = getPasswordResetExpiry();
     await createPasswordResetToken(String(user.id), resetToken, expiresAt);
 
     // Send password reset email
