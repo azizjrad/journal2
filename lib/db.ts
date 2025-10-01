@@ -291,10 +291,10 @@ export async function getArticleById(
   if (!article) return null;
 
   const articleWithCategory = {
-    ...convertDoc(article),
-    category_name_en: article.category_id?.name_en,
-    category_name_ar: article.category_id?.name_ar,
-    category_slug: article.category_id?.slug,
+    ...(convertDoc(article) as any),
+    category_name_en: (article as any).category_id?.name_en,
+    category_name_ar: (article as any).category_id?.name_ar,
+    category_slug: (article as any).category_id?.slug,
   };
 
   // Enrich with author information
@@ -320,11 +320,11 @@ export async function getArticleByIdAdmin(
   if (!article) return null;
 
   return {
-    ...convertDoc(article),
-    image_url: article.image_url,
-    category_name_en: article.category_id?.name_en,
-    category_name_ar: article.category_id?.name_ar,
-    category_slug: article.category_id?.slug,
+    ...(convertDoc(article) as any),
+    image_url: (article as any).image_url,
+    category_name_en: (article as any).category_id?.name_en,
+    category_name_ar: (article as any).category_id?.name_ar,
+    category_slug: (article as any).category_id?.slug,
   };
 }
 
@@ -1980,33 +1980,36 @@ export async function getReports(
       .lean();
 
     // Convert MongoDB documents to plain objects and format
-    return reports.map((report: any) => ({
-      _id: report._id.toString(),
-      article_id: report.article_id.toString(),
-      article_title: report.article_title,
-      report_type: report.report_type,
-      reason: report.reason,
-      reporter_email: report.reporter_email,
-      reporter_name: report.reporter_name,
-      reporter_ip: report.reporter_ip,
-      status: report.status,
-      priority: report.priority,
-      reviewed_at: report.reviewed_at,
-      reviewed_by: report.reviewed_by?._id?.toString(),
-      reviewed_by_name: report.reviewed_by
-        ? `${report.reviewed_by.first_name || ""} ${
-            report.reviewed_by.last_name || ""
-          }`.trim() || report.reviewed_by.username
-        : report.reviewed_by_name,
-      admin_notes: report.admin_notes,
-      resolution_notes: report.resolution_notes,
-      escalated_at: report.escalated_at,
-      escalated_by: report.escalated_by?.toString(),
-      closed_at: report.closed_at,
-      closed_by: report.closed_by?.toString(),
-      created_at: report.created_at,
-      updated_at: report.updated_at,
-    }));
+    return reports.map((report: any) => {
+      const rep = report as any;
+      return {
+      _id: rep._id.toString(),
+      article_id: rep.article_id.toString(),
+      article_title: rep.article_title,
+      report_type: rep.report_type,
+      reason: rep.reason,
+      reporter_email: rep.reporter_email,
+      reporter_name: rep.reporter_name,
+      reporter_ip: rep.reporter_ip,
+      status: rep.status,
+      priority: rep.priority,
+      reviewed_at: rep.reviewed_at,
+      reviewed_by: rep.reviewed_by?._id?.toString(),
+      reviewed_by_name: rep.reviewed_by
+        ? `${rep.reviewed_by.first_name || ""} ${
+            rep.reviewed_by.last_name || ""
+          }`.trim() || rep.reviewed_by.username
+        : rep.reviewed_by_name,
+      admin_notes: rep.admin_notes,
+      resolution_notes: rep.resolution_notes,
+      escalated_at: rep.escalated_at,
+      escalated_by: rep.escalated_by?.toString(),
+      closed_at: rep.closed_at,
+      closed_by: rep.closed_by?.toString(),
+      created_at: rep.created_at,
+      updated_at: rep.updated_at,
+    };
+    });
   } catch (error) {
     console.error("Error fetching reports:", error);
     return [];
@@ -2028,32 +2031,33 @@ export async function getReportById(
       return null;
     }
 
+    const rep = report as any;
     return {
-      _id: report._id.toString(),
-      article_id: report.article_id.toString(),
-      article_title: report.article_title,
-      report_type: report.report_type,
-      reason: report.reason,
-      reporter_email: report.reporter_email,
-      reporter_name: report.reporter_name,
-      reporter_ip: report.reporter_ip,
-      status: report.status,
-      priority: report.priority,
-      reviewed_at: report.reviewed_at,
-      reviewed_by: report.reviewed_by?._id?.toString(),
-      reviewed_by_name: report.reviewed_by
-        ? `${report.reviewed_by.first_name || ""} ${
-            report.reviewed_by.last_name || ""
-          }`.trim() || report.reviewed_by.username
-        : report.reviewed_by_name,
-      admin_notes: report.admin_notes,
-      resolution_notes: report.resolution_notes,
-      escalated_at: report.escalated_at,
-      escalated_by: report.escalated_by?.toString(),
-      closed_at: report.closed_at,
-      closed_by: report.closed_by?.toString(),
-      created_at: report.created_at,
-      updated_at: report.updated_at,
+      _id: rep._id.toString(),
+      article_id: rep.article_id.toString(),
+      article_title: rep.article_title,
+      report_type: rep.report_type,
+      reason: rep.reason,
+      reporter_email: rep.reporter_email,
+      reporter_name: rep.reporter_name,
+      reporter_ip: rep.reporter_ip,
+      status: rep.status,
+      priority: rep.priority,
+      reviewed_at: rep.reviewed_at,
+      reviewed_by: rep.reviewed_by?._id?.toString(),
+      reviewed_by_name: rep.reviewed_by
+        ? `${rep.reviewed_by.first_name || ""} ${
+            rep.reviewed_by.last_name || ""
+          }`.trim() || rep.reviewed_by.username
+        : rep.reviewed_by_name,
+      admin_notes: rep.admin_notes,
+      resolution_notes: rep.resolution_notes,
+      escalated_at: rep.escalated_at,
+      escalated_by: rep.escalated_by?.toString(),
+      closed_at: rep.closed_at,
+      closed_by: rep.closed_by?.toString(),
+      created_at: rep.created_at,
+      updated_at: rep.updated_at,
     };
   } catch (error) {
     console.error("Error fetching report:", error);
@@ -2170,33 +2174,34 @@ export async function updateReportStatus(
       return null;
     }
 
+    const rep = updatedReport as any;
     return {
-      _id: updatedReport._id.toString(),
-      article_id: updatedReport.article_id.toString(),
-      article_title: updatedReport.article_title,
-      report_type: updatedReport.report_type,
-      reason: updatedReport.reason,
-      reporter_email: updatedReport.reporter_email,
-      reporter_name: updatedReport.reporter_name,
-      reporter_ip: updatedReport.reporter_ip,
-      status: updatedReport.status,
-      priority: updatedReport.priority,
-      reviewed_at: updatedReport.reviewed_at,
-      reviewed_by: updatedReport.reviewed_by?._id?.toString(),
-      reviewed_by_name: updatedReport.reviewed_by
-        ? `${updatedReport.reviewed_by.first_name || ""} ${
-            updatedReport.reviewed_by.last_name || ""
-          }`.trim() || updatedReport.reviewed_by.username
-        : updatedReport.reviewed_by_name,
-      admin_notes: updatedReport.admin_notes,
-      resolution_notes: updatedReport.resolution_notes,
-      escalated_at: updatedReport.escalated_at,
-      escalated_by: updatedReport.escalated_by?.toString(),
-      closed_at: updatedReport.closed_at,
-      closed_by: updatedReport.closed_by?.toString(),
-      dismissed_at: updatedReport.dismissed_at,
-      created_at: updatedReport.created_at,
-      updated_at: updatedReport.updated_at,
+      _id: rep._id.toString(),
+      article_id: rep.article_id.toString(),
+      article_title: rep.article_title,
+      report_type: rep.report_type,
+      reason: rep.reason,
+      reporter_email: rep.reporter_email,
+      reporter_name: rep.reporter_name,
+      reporter_ip: rep.reporter_ip,
+      status: rep.status,
+      priority: rep.priority,
+      reviewed_at: rep.reviewed_at,
+      reviewed_by: rep.reviewed_by?._id?.toString(),
+      reviewed_by_name: rep.reviewed_by
+        ? `${rep.reviewed_by.first_name || ""} ${
+            rep.reviewed_by.last_name || ""
+          }`.trim() || rep.reviewed_by.username
+        : rep.reviewed_by_name,
+      admin_notes: rep.admin_notes,
+      resolution_notes: rep.resolution_notes,
+      escalated_at: rep.escalated_at,
+      escalated_by: rep.escalated_by?.toString(),
+      closed_at: rep.closed_at,
+      closed_by: rep.closed_by?.toString(),
+      dismissed_at: rep.dismissed_at,
+      created_at: rep.created_at,
+      updated_at: rep.updated_at,
     };
   } catch (error) {
     console.error("Error updating report status:", error);
