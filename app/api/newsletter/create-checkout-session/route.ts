@@ -1,25 +1,32 @@
 import { NextRequest, NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import { stripe, STRIPE_PRICES, PLAN_DETAILS } from "@/lib/stripe";
-import { getUserSession } from "@/lib/db";
+import { verifyToken } from "@/lib/auth";
+import { getUserById } from "@/lib/db";
 
 export async function POST(request: NextRequest) {
   try {
-    const cookieStore = await cookies();
-    const sessionId = cookieStore.get("session-id")?.value;
+    const authToken = request.cookies.get("auth-token")?.value;
 
-    if (!sessionId) {
+    if (!authToken) {
       return NextResponse.json(
         { success: false, message: "Not authenticated" },
         { status: 401 }
       );
     }
 
-    const session = await getUserSession(sessionId);
-    if (!session || !session.user_id) {
+    const payload = verifyToken(authToken);
+    if (!payload || !payload.userId) {
       return NextResponse.json(
-        { success: false, message: "Invalid session" },
+        { success: false, message: "Invalid authentication" },
         { status: 401 }
+      );
+    }
+
+    const user = await getUserById(payload.userId);
+    if (!user) {
+      return NextResponse.json(
+        { success: false, message: "User not found" },
+        { status: 404 }
       );
     }
 
@@ -40,19 +47,22 @@ export async function POST(request: NextRequest) {
     }
 
     // Get price ID from environment or use default
-    const priceId = STRIPE_PRICES[plan as "basic" | "premium"][
-      billing as "monthly" | "annual"
-    ];
+    const priceId =
+      STRIPE_PRICES[plan as "basic" | "premium"][
+        billing as "monthly" | "annual"
+      ];
 
     const planDetails =
-      PLAN_DETAILS[plan as "basic" | "premium"][billing as "monthly" | "annual"];
+      PLAN_DETAILS[plan as "basic" | "premium"][
+        billing as "monthly" | "annual"
+      ];
 
     // Create or retrieve Stripe customer
     let customerId: string | undefined;
     
     // Check if customer already exists
     const customers = await stripe.customers.list({
-      email: session.user_id, // You'll need to get the actual email
+      email: user.email,
       limit: 1,
     });
 
@@ -60,14 +70,14 @@ export async function POST(request: NextRequest) {
       customerId = customers.data[0].id;
     } else {
       const customer = await stripe.customers.create({
+        email: user.email,
+        name: `${user.first_name || ''} ${user.last_name || ''}`.trim(),
         metadata: {
-          userId: session.user_id,
+          userId: String(user.id),
         },
       });
       customerId = customer.id;
-    }
-
-    // Create Stripe Checkout Session
+    }    // Create Stripe Checkout Session
     const checkoutSession = await stripe.checkout.sessions.create({
       customer: customerId,
       payment_method_types: ["card"],
@@ -78,16 +88,20 @@ export async function POST(request: NextRequest) {
         },
       ],
       mode: "subscription",
-      success_url: `${process.env.APP_BASE_URL || "http://localhost:3000"}/newsletter/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.APP_BASE_URL || "http://localhost:3000"}/newsletter?canceled=true`,
+      success_url: `${
+        process.env.APP_BASE_URL || "http://localhost:3000"
+      }/newsletter/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${
+        process.env.APP_BASE_URL || "http://localhost:3000"
+      }/newsletter?canceled=true`,
       metadata: {
-        userId: session.user_id,
+        userId: String(user.id),
         plan,
         billing,
       },
       subscription_data: {
         metadata: {
-          userId: session.user_id,
+          userId: String(user.id),
           plan,
           billing,
         },
@@ -102,9 +116,10 @@ export async function POST(request: NextRequest) {
   } catch (error) {
     console.error("Checkout session creation error:", error);
     return NextResponse.json(
-      { 
-        success: false, 
-        message: error instanceof Error ? error.message : "Internal server error" 
+      {
+        success: false,
+        message:
+          error instanceof Error ? error.message : "Internal server error",
       },
       { status: 500 }
     );

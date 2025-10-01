@@ -6,7 +6,7 @@ import {
   getNewsletterSubscriptionByStripeId,
   getUserById,
 } from "@/lib/db";
-import Stripe from "stripe";
+import type Stripe from "stripe";
 
 // Disable body parsing for webhooks
 export const config = {
@@ -61,7 +61,11 @@ export async function POST(request: NextRequest) {
   } catch (err) {
     console.error("Webhook signature verification failed:", err);
     return NextResponse.json(
-      { error: `Webhook Error: ${err instanceof Error ? err.message : "Unknown error"}` },
+      {
+        error: `Webhook Error: ${
+          err instanceof Error ? err.message : "Unknown error"
+        }`,
+      },
       { status: 400 }
     );
   }
@@ -70,7 +74,7 @@ export async function POST(request: NextRequest) {
     switch (event.type) {
       case "checkout.session.completed": {
         const session = event.data.object as Stripe.Checkout.Session;
-        
+
         // Get subscription details
         if (session.subscription && session.customer) {
           const subscription = await stripe.subscriptions.retrieve(
@@ -108,8 +112,10 @@ export async function POST(request: NextRequest) {
             amount: subscription.items.data[0].price.unit_amount! / 100,
             stripeSubscriptionId: subscription.id,
             stripeCustomerId: session.customer as string,
-            currentPeriodStart: new Date(subscription.current_period_start * 1000),
-            currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+            currentPeriodStart: new Date(
+              (subscription as any).current_period_start * 1000
+            ),
+            currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
             paymentMethod,
           });
 
@@ -119,14 +125,23 @@ export async function POST(request: NextRequest) {
       }
 
       case "customer.subscription.updated": {
-        const subscription = event.data.object as Stripe.Subscription;
+        const subscription = event.data.object as any;
 
         await updateNewsletterSubscription(subscription.id, {
-          status: subscription.status === "active" ? "active" : 
-                  subscription.status === "past_due" ? "past_due" : 
-                  subscription.status === "canceled" ? "canceled" : "incomplete",
-          currentPeriodStart: new Date(subscription.current_period_start * 1000),
-          currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+          status:
+            subscription.status === "active"
+              ? "active"
+              : subscription.status === "past_due"
+              ? "past_due"
+              : subscription.status === "canceled"
+              ? "canceled"
+              : "incomplete",
+          currentPeriodStart: new Date(
+            subscription.current_period_start * 1000
+          ),
+          currentPeriodEnd: new Date(
+            subscription.current_period_end * 1000
+          ),
           cancelAtPeriodEnd: subscription.cancel_at_period_end,
         });
 
@@ -147,33 +162,41 @@ export async function POST(request: NextRequest) {
       }
 
       case "invoice.payment_succeeded": {
-        const invoice = event.data.object as Stripe.Invoice;
+        const invoice = event.data.object as any;
 
-        if (invoice.subscription) {
+        if (invoice.subscription && typeof invoice.subscription === "string") {
           const subscription = await stripe.subscriptions.retrieve(
-            invoice.subscription as string
-          );
+            invoice.subscription
+          ) as any;
 
           await updateNewsletterSubscription(subscription.id, {
             status: "active",
-            currentPeriodStart: new Date(subscription.current_period_start * 1000),
-            currentPeriodEnd: new Date(subscription.current_period_end * 1000),
+            currentPeriodStart: new Date(
+              subscription.current_period_start * 1000
+            ),
+            currentPeriodEnd: new Date(
+              subscription.current_period_end * 1000
+            ),
           });
 
-          console.log(`✅ Payment succeeded for subscription ${subscription.id}`);
+          console.log(
+            `✅ Payment succeeded for subscription ${subscription.id}`
+          );
         }
         break;
       }
 
       case "invoice.payment_failed": {
-        const invoice = event.data.object as Stripe.Invoice;
+        const invoice = event.data.object as any;
 
-        if (invoice.subscription) {
-          await updateNewsletterSubscription(invoice.subscription as string, {
+        if (invoice.subscription && typeof invoice.subscription === "string") {
+          await updateNewsletterSubscription(invoice.subscription, {
             status: "past_due",
           });
 
-          console.log(`⚠️ Payment failed for subscription ${invoice.subscription}`);
+          console.log(
+            `⚠️ Payment failed for subscription ${invoice.subscription}`
+          );
         }
         break;
       }
