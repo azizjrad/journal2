@@ -1,5 +1,5 @@
 import { getNewsletterSubscribers } from "@/lib/db";
-import { sendPasswordResetEmail, sendVerificationEmail, sendNewsletterEmail } from "@/lib/email-sendgrid";
+import { sendNewsletterEmail } from "@/lib/email-sendgrid";
 import { SentNewsletter } from "@/lib/models/SentNewsletter";
 
 export async function sendNewsletterToSubscribers(
