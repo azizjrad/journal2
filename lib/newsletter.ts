@@ -8,13 +8,16 @@ export async function sendNewsletterToSubscribers(
   subscriberIds: string[]
 ): Promise<{ success: boolean; error?: string }> {
   try {
-    // Get all subscribers (with emails)
-    const allSubscribers = await getNewsletterSubscribers({ limit: 10000 });
+    // Get all ACTIVE subscribers only (with emails)
+    const allSubscribers = await getNewsletterSubscribers({ 
+      limit: 10000,
+      status: "active" // Only get active subscribers with valid payment
+    });
     const selected = allSubscribers.filter((s: any) =>
       subscriberIds.includes(s._id)
     );
     if (selected.length === 0) {
-      return { success: false, error: "No valid subscribers selected" };
+      return { success: false, error: "No valid active subscribers selected" };
     }
     // Send email to each selected subscriber
     for (const sub of selected) {
