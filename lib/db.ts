@@ -2724,3 +2724,134 @@ export async function getContactMessageStats(): Promise<{
     todayCount,
   };
 }
+
+// ============================================================================
+// NEWSLETTER SUBSCRIPTION MANAGEMENT FUNCTIONS
+// ============================================================================
+
+export async function createNewsletterSubscription(data: {
+  userId: string;
+  subscriptionId: string;
+  plan: "basic" | "premium";
+  billingPeriod: "monthly" | "annual";
+  amount: number;
+  stripeSubscriptionId: string;
+  stripeCustomerId: string;
+  currentPeriodStart: Date;
+  currentPeriodEnd: Date;
+  paymentMethod?: {
+    type: string;
+    last4?: string;
+    brand?: string;
+  };
+}): Promise<any> {
+  await dbConnect();
+
+  if (!Types.ObjectId.isValid(data.userId)) {
+    throw new Error("Invalid user ID");
+  }
+
+  const subscription = await NewsletterSubscription.create({
+    user_id: new Types.ObjectId(data.userId),
+    subscription_id: data.subscriptionId,
+    plan: data.plan,
+    billing_period: data.billingPeriod,
+    status: "active",
+    amount: data.amount,
+    currency: "USD",
+    payment_method: data.paymentMethod,
+    current_period_start: data.currentPeriodStart,
+    current_period_end: data.currentPeriodEnd,
+    stripe_subscription_id: data.stripeSubscriptionId,
+    stripe_customer_id: data.stripeCustomerId,
+  });
+
+  return convertDoc(subscription);
+}
+
+export async function getNewsletterSubscriptionByStripeId(
+  stripeSubscriptionId: string
+): Promise<any> {
+  await dbConnect();
+
+  const subscription = await NewsletterSubscription.findOne({
+    stripe_subscription_id: stripeSubscriptionId,
+  }).lean();
+
+  return convertDoc(subscription);
+}
+
+export async function getNewsletterSubscriptionByUserId(
+  userId: string
+): Promise<any> {
+  await dbConnect();
+
+  if (!Types.ObjectId.isValid(userId)) {
+    throw new Error("Invalid user ID");
+  }
+
+  const subscription = await NewsletterSubscription.findOne({
+    user_id: new Types.ObjectId(userId),
+  })
+    .sort({ created_at: -1 })
+    .lean();
+
+  return convertDoc(subscription);
+}
+
+export async function updateNewsletterSubscription(
+  subscriptionId: string,
+  updates: {
+    status?: "active" | "canceled" | "past_due" | "incomplete";
+    currentPeriodStart?: Date;
+    currentPeriodEnd?: Date;
+    canceledAt?: Date;
+    cancelAtPeriodEnd?: boolean;
+    paymentMethod?: {
+      type: string;
+      last4?: string;
+      brand?: string;
+    };
+  }
+): Promise<any> {
+  await dbConnect();
+
+  const updateData: any = {};
+
+  if (updates.status) updateData.status = updates.status;
+  if (updates.currentPeriodStart)
+    updateData.current_period_start = updates.currentPeriodStart;
+  if (updates.currentPeriodEnd)
+    updateData.current_period_end = updates.currentPeriodEnd;
+  if (updates.canceledAt) updateData.canceled_at = updates.canceledAt;
+  if (updates.cancelAtPeriodEnd !== undefined)
+    updateData.cancel_at_period_end = updates.cancelAtPeriodEnd;
+  if (updates.paymentMethod) updateData.payment_method = updates.paymentMethod;
+
+  const subscription = await NewsletterSubscription.findOneAndUpdate(
+    { subscription_id: subscriptionId },
+    { $set: updateData },
+    { new: true }
+  ).lean();
+
+  return convertDoc(subscription);
+}
+
+export async function cancelNewsletterSubscription(
+  subscriptionId: string
+): Promise<any> {
+  await dbConnect();
+
+  const subscription = await NewsletterSubscription.findOneAndUpdate(
+    { subscription_id: subscriptionId },
+    {
+      $set: {
+        status: "canceled",
+        canceled_at: new Date(),
+      },
+    },
+    { new: true }
+  ).lean();
+
+  return convertDoc(subscription);
+}

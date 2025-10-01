@@ -98,8 +98,30 @@ export function NewsletterSubscriptionPopup({
           </div>
         </div>
         <button
-          className="ml-4 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition"
-          onClick={() => router.push(`/payment?plan=${selectedPlan}`)}
+          className="ml-4 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
+          onClick={async () => {
+            try {
+              const plan = selectedPlan === "annual" ? "premium" : "basic";
+              const billing = selectedPlan === "annual" ? "annual" : "monthly";
+              
+              const response = await fetch("/api/newsletter/create-checkout-session", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ plan, billing }),
+              });
+              
+              const data = await response.json();
+              
+              if (data.success && data.url) {
+                window.location.href = data.url;
+              } else {
+                alert(data.message || "Failed to create checkout session");
+              }
+            } catch (error) {
+              console.error("Checkout error:", error);
+              alert("An error occurred. Please try again.");
+            }
+          }}
         >
           {t("get_access", "Get Digital Access", "احصل على الوصول الرقمي")}
         </button>
