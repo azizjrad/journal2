@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getArticleByIdAdmin, updateArticle, deleteArticle } from "@/lib/db";
 import { ensureAdminOrWriter, ensureAdmin } from "@/lib/ensure-admin";
 import { verifyToken } from "@/lib/auth";
+import { validateCsrf } from "@/lib/csrf";
 
 export async function GET(
   request: NextRequest,
@@ -37,6 +38,14 @@ export async function PUT(
   request: NextRequest,
   context: { params: { id: string } }
 ) {
+  // CSRF protection
+  if (!validateCsrf(request)) {
+    return NextResponse.json(
+      { error: "Invalid security token" },
+      { status: 403 }
+    );
+  }
+
   try {
     console.log("🔄 Starting article update...");
     let currentUser = null;
@@ -146,6 +155,14 @@ export async function DELETE(
   request: NextRequest,
   context: { params: { id: string } }
 ) {
+  // CSRF protection
+  if (!validateCsrf(request)) {
+    return NextResponse.json(
+      { error: "Invalid security token" },
+      { status: 403 }
+    );
+  }
+
   try {
     console.log("🗑️ Starting article deletion...");
     const authCheck = await ensureAdminOrWriter(request);

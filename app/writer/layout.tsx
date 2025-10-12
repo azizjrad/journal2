@@ -1,6 +1,7 @@
 "use client";
 
 import { AuthProvider, useAuth } from "@/lib/user-auth";
+import { AccessDenied } from "@/components/access-denied";
 
 function WriterContent({ children }: { children: React.ReactNode }) {
   const { isAuthenticated, isLoading, user } = useAuth();
@@ -65,21 +66,7 @@ function WriterContent({ children }: { children: React.ReactNode }) {
 
   // Check if user has writer or admin role
   if (user.role !== "writer" && user.role !== "admin") {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-8 max-w-md mx-auto">
-            <h2 className="text-2xl font-bold text-white mb-4">
-              Access Denied
-            </h2>
-            <p className="text-gray-300 mb-6">
-              You need writer or admin privileges to access this area.
-            </p>
-            <p className="text-gray-400 text-sm">Current role: {user.role}</p>
-          </div>
-        </div>
-      </div>
-    );
+    return <AccessDenied role={user.role} requiredRole="writer" />;
   }
 
   return <>{children}</>;

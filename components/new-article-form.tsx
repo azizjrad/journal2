@@ -305,10 +305,18 @@ export function NewArticleForm({
 
       console.log("Submitting article data:", articleData);
 
+      // Fetch CSRF token
+      await fetch("/api/auth/csrf-token", { credentials: "include" });
+      const csrfCookie = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("csrf-token="));
+      const csrfToken = csrfCookie ? csrfCookie.split("=")[1] : "";
+
       const response = await fetch("/api/admin/articles", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "x-csrf-token": csrfToken,
         },
         credentials: "include",
         body: JSON.stringify(articleData),
@@ -882,13 +890,12 @@ export function NewArticleForm({
                               const now = new Date();
 
                               if (selectedDate <= now) {
-                                toast.error(
-                                  "Scheduled time must be in the future",
-                                  {
-                                    description:
-                                      "Please select a date and time that hasn't passed yet.",
-                                  }
-                                );
+                                toast({
+                                  title: "Scheduled time must be in the future",
+                                  description:
+                                    "Please select a date and time that hasn't passed yet.",
+                                  variant: "destructive",
+                                });
                                 return;
                               }
                             }

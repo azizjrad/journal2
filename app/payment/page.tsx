@@ -8,17 +8,42 @@ import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/lib/language-context";
 import { Footer } from "@/components/footer";
+import { useAuth } from "@/lib/user-auth";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 export default function PaymentPage() {
   // Validation states
   const [emailError, setEmailError] = useState("");
   const [promoError, setPromoError] = useState("");
   const [marketingError, setMarketingError] = useState("");
+  // Error modal state
+  const [errorModal, setErrorModal] = useState<{
+    open: boolean;
+    title: string;
+    message: string;
+    redirectTo?: string;
+  }>({ open: false, title: "", message: "" });
   const { t } = useLanguage();
+  const { user, isAuthenticated } = useAuth();
   const searchParams = useSearchParams();
   const plan = (searchParams.get("plan") as "annual" | "monthly") || "annual";
   const initialEmail = searchParams.get("email") || "";
   const [email, setEmail] = useState(initialEmail);
+
+  // Auto-fill email from logged-in user
+  useEffect(() => {
+    if (isAuthenticated && user?.email && !email) {
+      setEmail(user.email);
+    }
+  }, [isAuthenticated, user, email]);
   // Stepper state
   const [step, setStep] = useState(1);
   // Payment method state
@@ -51,6 +76,30 @@ export default function PaymentPage() {
     city: "",
   });
   const [cardTouched, setCardTouched] = useState(false);
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [legalAgree, setLegalAgree] = useState(false);
+  const [csrfToken, setCsrfToken] = useState("");
+
+  // Fetch CSRF token on mount
+  useEffect(() => {
+    const fetchCsrfToken = async () => {
+      try {
+        await fetch("/api/auth/csrf-token", { credentials: "include" });
+        // Token is now in cookie, extract it for headers
+        const cookies = document.cookie.split(";");
+        const csrfCookie = cookies.find((c) =>
+          c.trim().startsWith("csrf-token=")
+        );
+        if (csrfCookie) {
+          const token = csrfCookie.split("=")[1];
+          setCsrfToken(token);
+        }
+      } catch (error) {
+        console.error("Failed to fetch CSRF token:", error);
+      }
+    };
+    fetchCsrfToken();
+  }, []);
 
   function validateCardForm() {
     const errors = {
@@ -282,6 +331,8 @@ export default function PaymentPage() {
                 className="peer appearance-none w-5 h-5 border border-gray-300 rounded bg-white checked:bg-red-600 checked:border-red-600 focus:ring-2 focus:ring-red-400 transition-colors duration-200 align-middle"
                 style={{ display: "inline-block", verticalAlign: "middle" }}
                 id="legalAgree"
+                checked={legalAgree}
+                onChange={(e) => setLegalAgree(e.target.checked)}
               />
               {/* Custom checkmark SVG */}
               <svg
@@ -332,14 +383,121 @@ export default function PaymentPage() {
             </a>
           </div>
           <Button
-            className="w-full py-3 text-lg font-bold bg-gray-900 hover:bg-gray-800 text-white rounded-xl shadow-xl transition-all duration-300 flex items-center justify-center gap-2 mt-2"
-            onClick={() => {
-              /* handle payment submit */
+            className="w-full py-3 text-lg font-bold bg-gray-900 hover:bg-gray-800 text-white rounded-xl shadow-xl transition-all duration-300 flex items-center justify-center gap-2 mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            disabled={!legalAgree || isProcessing}
+            onClick={async () => {
+              if (!legalAgree) {
+                setErrorModal({
+                  open: true,
+                  title: t("required", "Required", "مطلوب"),
+                  message: t(
+                    "agree_terms_required",
+                    "Please agree to the terms and conditions before proceeding.",
+                    "يرجى الموافقة على الشروط والأحكام قبل المتابعة."
+                  ),
+                });
+                return;
+              }
+
+              setIsProcessing(true);
+
+              try {
+                // Create Stripe checkout session
+                const response = await fetch(
+                  "/api/newsletter/create-checkout-session",
+                  {
+                    method: "POST",
+                    credentials: "include",
+                    headers: {
+                      "Content-Type": "application/json",
+                      "x-csrf-token": csrfToken,
+                    },
+                    body: JSON.stringify({
+                      billing: plan,
+                      email: email,
+                      paymentMethod: paymentMethod,
+                    }),
+                  }
+                );
+
+                const data = await response.json();
+
+                if (data.success && data.url) {
+                  // Redirect to Stripe Checkout
+                  window.location.href = data.url;
+                } else {
+                  setIsProcessing(false);
+
+                  // If already subscribed, show modal and redirect to settings
+                  if (data.code === "ALREADY_SUBSCRIBED") {
+                    setErrorModal({
+                      open: true,
+                      title: t(
+                        "subscription_exists",
+                        "Subscription Already Active",
+                        "الاشتراك نشط بالفعل"
+                      ),
+                      message: data.message,
+                      redirectTo: "/settings?tab=subscription",
+                    });
+                  } else {
+                    setErrorModal({
+                      open: true,
+                      title: t("error", "Error", "خطأ"),
+                      message:
+                        data.message ||
+                        t(
+                          "checkout_failed",
+                          "Failed to create checkout session. Please try again.",
+                          "فشل إنشاء جلسة الدفع. يرجى المحاولة مرة أخرى."
+                        ),
+                    });
+                  }
+                }
+              } catch (error) {
+                console.error("Checkout error:", error);
+                setIsProcessing(false);
+                setErrorModal({
+                  open: true,
+                  title: t("error", "Error", "خطأ"),
+                  message: t(
+                    "error_occurred",
+                    "An error occurred. Please try again.",
+                    "حدث خطأ. يرجى المحاولة مرة أخرى."
+                  ),
+                });
+              }
             }}
           >
-            {paymentMethod === "paypal"
-              ? t("pay_with_paypal", "Pay with PayPal", "ادفع عبر PayPal")
-              : t("pay_now", "Pay Now", "ادفع الآن")}
+            {isProcessing ? (
+              <>
+                <svg
+                  className="animate-spin h-5 w-5 mr-2"
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                >
+                  <circle
+                    className="opacity-25"
+                    cx="12"
+                    cy="12"
+                    r="10"
+                    stroke="currentColor"
+                    strokeWidth="4"
+                  ></circle>
+                  <path
+                    className="opacity-75"
+                    fill="currentColor"
+                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                  ></path>
+                </svg>
+                {t("processing", "Processing...", "جاري المعالجة...")}
+              </>
+            ) : paymentMethod === "paypal" ? (
+              t("pay_with_paypal", "Pay with PayPal", "ادفع عبر PayPal")
+            ) : (
+              t("pay_now", "Pay Now", "ادفع الآن")
+            )}
           </Button>
           <div className="text-xs text-gray-500 text-center mt-1">
             {t(
@@ -757,7 +915,6 @@ export default function PaymentPage() {
                       checked={paymentMethod === "card"}
                       onChange={() => {
                         setPaymentMethod("card");
-                        setCardExpanded(true);
                       }}
                     />
                     <span
@@ -777,300 +934,31 @@ export default function PaymentPage() {
                   <span className="font-medium text-gray-900">
                     Credit / Debit card
                   </span>
-                  <button
-                    type="button"
-                    className="ml-auto focus:outline-none"
-                    tabIndex={paymentMethod === "card" ? 0 : -1}
-                    aria-label={cardExpanded ? "Collapse" : "Expand"}
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      setCardExpanded((v) => !v);
-                      if (paymentMethod !== "card") setPaymentMethod("card");
-                    }}
-                  >
-                    <svg
-                      className={`w-6 h-6 transition-transform ${
-                        cardExpanded ? "rotate-180" : ""
-                      }`}
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        d="M19 9l-7 7-7-7"
-                      />
-                    </svg>
-                  </button>
+                  <span className="ml-auto flex gap-1">
+                    <Image
+                      src="/card.png"
+                      alt="Mastercard"
+                      width={32}
+                      height={20}
+                      className="object-contain"
+                    />
+                    <Image
+                      src="/visa.png"
+                      alt="Visa"
+                      width={32}
+                      height={20}
+                      className="object-contain"
+                    />
+                  </span>
                 </label>
-                {paymentMethod === "card" && cardExpanded && (
-                  <div className="mt-4 bg-white rounded-xl p-4 border border-gray-200">
-                    <div className="flex items-center justify-between mb-2">
-                      <span className="text-base font-medium">Card number</span>
-                      <span className="flex gap-1">
-                        <Image
-                          src="/card.png"
-                          alt="Mastercard"
-                          width={32}
-                          height={20}
-                          className="object-contain"
-                        />
-                        <Image
-                          src="/visa.png"
-                          alt="Visa"
-                          width={32}
-                          height={20}
-                          className="object-contain"
-                        />
-                      </span>
-                    </div>
-                    <div className="relative mb-1">
-                      <input
-                        className={`w-full border rounded-lg px-4 py-3 text-lg focus:outline-none bg-white pr-10 ${
-                          cardTouched && cardErrors.number
-                            ? "border-red-500"
-                            : "border-gray-300"
-                        }`}
-                        placeholder="Card number"
-                        value={cardFields.number}
-                        onChange={(e) =>
-                          setCardFields((f) => ({
-                            ...f,
-                            number: e.target.value,
-                          }))
-                        }
-                      />
-                      {cardTouched && cardErrors.number && (
-                        <Image
-                          src="/card-error.png"
-                          alt="Error"
-                          width={20}
-                          height={20}
-                          className="absolute right-3 top-1/2 -translate-y-1/2"
-                        />
-                      )}
-                    </div>
-                    {cardTouched && cardErrors.number && (
-                      <div className="text-red-600 text-sm mb-2">
-                        {cardErrors.number}
-                      </div>
-                    )}
-                    <div className="flex gap-4 mt-2">
-                      <div className="flex-1">
-                        <div className="relative mb-1">
-                          <input
-                            className={`w-full border rounded-lg px-4 py-3 text-lg focus:outline-none bg-white pr-10 ${
-                              cardTouched && cardErrors.expiry
-                                ? "border-red-500"
-                                : "border-gray-300"
-                            }`}
-                            placeholder="Expiration date"
-                            value={cardFields.expiry}
-                            onChange={(e) =>
-                              setCardFields((f) => ({
-                                ...f,
-                                expiry: e.target.value,
-                              }))
-                            }
-                          />
-                          {cardTouched && cardErrors.expiry && (
-                            <Image
-                              src="/card-error.png"
-                              alt="Error"
-                              width={20}
-                              height={20}
-                              className="absolute right-3 top-1/2 -translate-y-1/2"
-                            />
-                          )}
-                        </div>
-                        {cardTouched && cardErrors.expiry && (
-                          <div className="text-red-600 text-sm mb-2">
-                            {cardErrors.expiry}
-                          </div>
-                        )}
-                      </div>
-                      <div className="flex-1">
-                        <div className="relative mb-1">
-                          <input
-                            className={`w-full border rounded-lg px-4 py-3 text-lg focus:outline-none bg-white pr-10 ${
-                              cardTouched && cardErrors.cvc
-                                ? "border-red-500"
-                                : "border-gray-300"
-                            }`}
-                            placeholder="Security code"
-                            value={cardFields.cvc}
-                            onChange={(e) =>
-                              setCardFields((f) => ({
-                                ...f,
-                                cvc: e.target.value,
-                              }))
-                            }
-                          />
-                          {cardTouched && !cardFields.address && (
-                            <div className="text-red-600 text-sm mt-1">
-                              {t(
-                                "address_required",
-                                "This field is incomplete.",
-                                "هذا الحقل غير مكتمل."
-                              )}
-                            </div>
-                          )}
-                          {cardTouched && cardErrors.cvc && (
-                            <Image
-                              src="/card-error.png"
-                              alt="Error"
-                              width={20}
-                              height={20}
-                              className="absolute right-3 top-1/2 -translate-y-1/2"
-                            />
-                          )}
-                        </div>
-                        {cardTouched && cardErrors.cvc && (
-                          <div className="text-red-600 text-sm mb-2">
-                            {cardErrors.cvc}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                    <div className="text-gray-500 text-xs mb-4 mt-2">
-                      Your card information will be used to process this and
-                      future purchases
-                    </div>
-                    <div className="font-semibold text-lg mb-2 mt-4">
-                      Billing Address
-                    </div>
-                    <input
-                      className={`w-full border rounded-lg px-4 py-3 mb-4 text-lg focus:outline-none bg-white ${
-                        cardTouched && cardErrors.firstName
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
-                      placeholder="First name"
-                      value={cardFields.firstName}
-                      onChange={(e) =>
-                        setCardFields((f) => ({
-                          ...f,
-                          firstName: e.target.value,
-                        }))
-                      }
-                    />
-                    {cardTouched && cardErrors.firstName && (
-                      <div className="text-red-600 text-sm mb-2">
-                        {cardErrors.firstName}
-                      </div>
-                    )}
-                    <input
-                      className={`w-full border rounded-lg px-4 py-3 mb-4 text-lg focus:outline-none bg-white ${
-                        cardTouched && cardErrors.lastName
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
-                      placeholder="Last name"
-                      value={cardFields.lastName}
-                      onChange={(e) =>
-                        setCardFields((f) => ({
-                          ...f,
-                          lastName: e.target.value,
-                        }))
-                      }
-                    />
-                    {cardTouched && cardErrors.lastName && (
-                      <div className="text-red-600 text-sm mb-2">
-                        {cardErrors.lastName}
-                      </div>
-                    )}
-                    <select
-                      className="w-full border rounded-lg px-4 py-3 mb-4 text-lg focus:outline-none border-gray-300 bg-white text-gray-900"
-                      value={cardFields.country}
-                      onChange={(e) =>
-                        setCardFields((f) => ({
-                          ...f,
-                          country: e.target.value,
-                        }))
-                      }
-                    >
-                      <option value="Libya">Libya</option>
-                      <option value="Tunisia">Tunisia</option>
-                      <option value="Algeria">Algeria</option>
-                      <option value="Morocco">Morocco</option>
-                    </select>
-                    <input
-                      className={`w-full border rounded-lg px-4 py-3 mb-4 text-lg focus:outline-none bg-white ${
-                        cardTouched && cardErrors.address
-                          ? "border-red-500"
-                          : "border-gray-300"
-                      }`}
-                      placeholder="Address line 1"
-                      value={cardFields.address}
-                      onChange={(e) =>
-                        setCardFields((f) => ({
-                          ...f,
-                          address: e.target.value,
-                        }))
-                      }
-                    />
-                    {cardTouched && cardErrors.address && (
-                      <div className="text-red-600 text-sm mb-2">
-                        {cardErrors.address}
-                      </div>
-                    )}
-                    {cardFields.address && (
-                      <>
-                        <input
-                          className="w-full border rounded-lg px-4 py-3 mb-4 text-lg focus:outline-none bg-white border-gray-300"
-                          placeholder="Address line 2"
-                          value={cardFields.address2 || ""}
-                          onChange={(e) =>
-                            setCardFields((f) => ({
-                              ...f,
-                              address2: e.target.value,
-                            }))
-                          }
-                        />
-                        <input
-                          className={`w-full border rounded-lg px-4 py-3 mb-4 text-lg focus:outline-none bg-white ${
-                            cardTouched && cardErrors.postal
-                              ? "border-red-500"
-                              : "border-gray-300"
-                          }`}
-                          placeholder="Postal code"
-                          value={cardFields.postal || ""}
-                          onChange={(e) =>
-                            setCardFields((f) => ({
-                              ...f,
-                              postal: e.target.value,
-                            }))
-                          }
-                        />
-                        {cardTouched && cardErrors.postal && (
-                          <div className="text-red-600 text-sm mt-1">
-                            {cardErrors.postal}
-                          </div>
-                        )}
-                        <input
-                          className={`w-full border rounded-lg px-4 py-3 mb-4 text-lg focus:outline-none bg-white ${
-                            cardTouched && cardErrors.city
-                              ? "border-red-500"
-                              : "border-gray-300"
-                          }`}
-                          placeholder="City"
-                          value={cardFields.city || ""}
-                          onChange={(e) =>
-                            setCardFields((f) => ({
-                              ...f,
-                              city: e.target.value,
-                            }))
-                          }
-                        />
-                        {cardTouched && cardErrors.city && (
-                          <div className="text-red-600 text-sm mt-1">
-                            {cardErrors.city}
-                          </div>
-                        )}
-                      </>
-                    )}
+                {paymentMethod === "card" && (
+                  <div className="mt-4 bg-blue-50 rounded-xl p-4 border border-blue-200">
+                    <p className="text-sm text-blue-800">
+                      <strong>💳 Secure Payment</strong>
+                      <br />
+                      You'll be redirected to our secure payment page to enter
+                      your card details in the next step.
+                    </p>
                   </div>
                 )}
               </div>
@@ -1109,14 +997,7 @@ export default function PaymentPage() {
                 <Button
                   className="w-full py-3 text-lg font-bold bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-xl shadow-xl transition-all duration-300"
                   onClick={() => {
-                    if (paymentMethod === "card" && cardExpanded) {
-                      setCardTouched(true);
-                      if (validateCardForm()) {
-                        setStep(3);
-                      }
-                    } else {
-                      setStep(3);
-                    }
+                    setStep(3);
                   }}
                 >
                   {t(
@@ -1132,6 +1013,53 @@ export default function PaymentPage() {
         {step === 3 && renderStep3()}
       </div>
       <Footer categories={[]} />
+
+      {/* Error Modal */}
+      <AlertDialog
+        open={errorModal.open}
+        onOpenChange={(open) => setErrorModal({ ...errorModal, open })}
+      >
+        <AlertDialogContent className="max-w-md">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="text-xl font-bold text-gray-900 flex items-center gap-2">
+              {errorModal.title ===
+              t(
+                "subscription_exists",
+                "Subscription Already Active",
+                "الاشتراك نشط بالفعل"
+              ) ? (
+                <span className="text-2xl">✅</span>
+              ) : (
+                <span className="text-2xl">⚠️</span>
+              )}
+              {errorModal.title}
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-base text-gray-700 leading-relaxed pt-2">
+              {errorModal.message}
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter className="flex gap-2 sm:gap-3">
+            {errorModal.redirectTo ? (
+              <AlertDialogAction
+                onClick={() => {
+                  setErrorModal({ ...errorModal, open: false });
+                  window.location.href = errorModal.redirectTo!;
+                }}
+                className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition-all duration-200"
+              >
+                {t("view_subscription", "View Subscription", "عرض الاشتراك")}
+              </AlertDialogAction>
+            ) : (
+              <AlertDialogAction
+                onClick={() => setErrorModal({ ...errorModal, open: false })}
+                className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition-all duration-200"
+              >
+                {t("ok", "OK", "حسناً")}
+              </AlertDialogAction>
+            )}
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

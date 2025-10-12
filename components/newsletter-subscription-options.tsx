@@ -1,7 +1,9 @@
-import { Dispatch, SetStateAction } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { useLanguage } from "@/lib/language-context";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/lib/user-auth";
+import { Loader2 } from "lucide-react";
 
 const paymentLogos = [
   { src: "/credit-card.png", alt: "Card" },
@@ -21,6 +23,8 @@ export function NewsletterSubscriptionOptions({
 }: NewsletterSubscriptionOptionsProps) {
   const { language, t } = useLanguage();
   const router = useRouter();
+  const { isAuthenticated, user } = useAuth();
+  const [isProcessing, setIsProcessing] = useState(false);
   return (
     <div className="max-w-xl mx-auto bg-white rounded-2xl shadow-lg p-8 border border-gray-200 mt-12">
       <h2 className="text-3xl font-bold text-center mb-2 text-gray-900">
@@ -116,10 +120,7 @@ export function NewsletterSubscriptionOptions({
           <div className="text-2xl font-bold text-red-700 mb-1">
             {t("monthly_price", "$4/month", "$4/شهر")}
           </div>
-          <div className="text-gray-700 mb-2">
-            {t("first_month_free", "First month FREE", "الشهر الأول مجانًا")}
-          </div>
-          <div className="text-xs text-gray-500">
+          <div className="text-xs text-gray-500 mt-2">
             {t(
               "monthly_renew_desc",
               "Renews automatically for $4/month.",
@@ -139,10 +140,30 @@ export function NewsletterSubscriptionOptions({
         ))}
       </div>
       <Button
-        className="w-full py-4 text-lg font-bold bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-xl shadow-xl transition-all duration-300"
-        onClick={() => router.push(`/payment?plan=${selected}`)}
+        className="w-full py-4 text-lg font-bold bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-xl shadow-xl transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+        disabled={isProcessing}
+        onClick={() => {
+          // Check if user is logged in
+          if (!isAuthenticated || !user) {
+            // Save selected plan to sessionStorage so we can return after login
+            sessionStorage.setItem("pendingNewsletterPlan", selected);
+            // Redirect to auth page
+            router.push("/auth?redirect=/newsletter");
+            return;
+          }
+
+          // Redirect to custom payment page with selected plan
+          router.push(`/payment?plan=${selected}`);
+        }}
       >
-        {t("get_access", "Get Digital Access", "احصل على الوصول الرقمي")}
+        {isProcessing ? (
+          <>
+            <Loader2 className="w-5 h-5 animate-spin mr-2" />
+            {t("processing", "Processing...", "جاري المعالجة...")}
+          </>
+        ) : (
+          t("get_access", "Get Digital Access", "احصل على الوصول الرقمي")
+        )}
       </Button>
       <p className="text-xs text-gray-500 text-center mt-2 font-light">
         {t(

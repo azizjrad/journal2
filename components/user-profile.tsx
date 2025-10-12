@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -31,6 +32,9 @@ import api from "@/lib/api-client";
 
 export function UserProfile() {
   const { user, logout, refreshUser } = useAuth();
+  const searchParams = useSearchParams();
+  const tabParam = searchParams.get("tab") || "profile";
+  const [activeTab, setActiveTab] = useState(tabParam);
 
   // Profile state
   const [firstName, setFirstName] = useState("");
@@ -59,11 +63,28 @@ export function UserProfile() {
   const [passwordSuccess, setPasswordSuccess] = useState("");
   const [passwordLoading, setPasswordLoading] = useState(false);
   const [profileData, setProfileData] = useState<any>(null);
+  const [subscriptionData, setSubscriptionData] = useState<any>(null);
+  const [subscriptionLoading, setSubscriptionLoading] = useState(true);
 
   // Load user profile data
   useEffect(() => {
     loadProfileData();
+    loadSubscriptionData();
   }, []);
+
+  const loadSubscriptionData = async () => {
+    try {
+      const response = await api.get("/user/subscription");
+      const data = response.data;
+      if (data.success) {
+        setSubscriptionData(data.subscription);
+      }
+    } catch (error) {
+      console.error("Failed to load subscription:", error);
+    } finally {
+      setSubscriptionLoading(false);
+    }
+  };
 
   // Populate form when user data loads
   useEffect(() => {
@@ -240,21 +261,38 @@ export function UserProfile() {
 
           <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl">
             <CardContent className="p-6">
-              <Tabs defaultValue="profile" className="w-full">
-                <TabsList className="grid w-full grid-cols-2 mb-6 bg-white/5">
+              <Tabs
+                value={activeTab}
+                onValueChange={setActiveTab}
+                className="w-full"
+              >
+                <TabsList className="flex flex-col sm:grid sm:grid-cols-3 w-full mb-6 bg-white/5 gap-2 sm:gap-0 h-auto p-2">
                   <TabsTrigger
                     value="profile"
-                    className="text-white data-[state=active]:bg-red-600"
+                    className="text-white data-[state=active]:bg-red-600 justify-start sm:justify-center px-4 py-3 w-full"
                   >
-                    <Settings className="w-4 h-4 mr-2" />
-                    Profile Settings
+                    <Settings className="w-4 h-4 mr-2 flex-shrink-0" />
+                    <span className="text-sm sm:text-base whitespace-nowrap">
+                      Profile Settings
+                    </span>
                   </TabsTrigger>
                   <TabsTrigger
                     value="password"
-                    className="text-white data-[state=active]:bg-red-600"
+                    className="text-white data-[state=active]:bg-red-600 justify-start sm:justify-center px-4 py-3 w-full"
                   >
-                    <Key className="w-4 h-4 mr-2" />
-                    Change Password
+                    <Key className="w-4 h-4 mr-2 flex-shrink-0" />
+                    <span className="text-sm sm:text-base whitespace-nowrap">
+                      Change Password
+                    </span>
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="subscription"
+                    className="text-white data-[state=active]:bg-red-600 justify-start sm:justify-center px-4 py-3 w-full"
+                  >
+                    <Mail className="w-4 h-4 mr-2 flex-shrink-0" />
+                    <span className="text-sm sm:text-base whitespace-nowrap">
+                      Subscription
+                    </span>
                   </TabsTrigger>
                 </TabsList>
 
@@ -447,6 +485,241 @@ export function UserProfile() {
                       )}
                     </Button>
                   </form>
+                </TabsContent>
+
+                {/* Subscription Tab */}
+                <TabsContent value="subscription">
+                  <div className="space-y-6">
+                    <h3 className="text-lg font-semibold text-white mb-4">
+                      Newsletter Subscription
+                    </h3>
+
+                    {/* Check if user has active subscription */}
+                    {subscriptionLoading ? (
+                      <div className="bg-white/5 rounded-lg p-8 border border-white/10 text-center">
+                        <div className="text-gray-300">
+                          Loading subscription...
+                        </div>
+                      </div>
+                    ) : subscriptionData?.status === "active" ||
+                      subscriptionData?.status === "trialing" ? (
+                      <>
+                        {/* Active Subscription Card */}
+                        <div className="bg-white/5 rounded-lg p-6 border border-white/10 space-y-4">
+                          <div className="flex items-center justify-between mb-4">
+                            <div>
+                              <h4 className="text-xl font-bold text-white mb-1">
+                                {subscriptionData.plan === "annual"
+                                  ? "Annual Digital Access"
+                                  : "Monthly Digital Access"}
+                              </h4>
+                              <Badge
+                                className={
+                                  subscriptionData.status === "trialing"
+                                    ? "bg-blue-600 text-white"
+                                    : "bg-green-600 text-white"
+                                }
+                              >
+                                {subscriptionData.status === "trialing"
+                                  ? "Trial"
+                                  : "Active"}
+                              </Badge>
+                            </div>
+                            <div className="text-right">
+                              <div className="text-2xl font-bold text-white">
+                                $
+                                {subscriptionData.plan === "annual"
+                                  ? "48"
+                                  : "4"}
+                              </div>
+                              <div className="text-sm text-gray-400">
+                                per{" "}
+                                {subscriptionData.plan === "annual"
+                                  ? "year"
+                                  : "month"}
+                              </div>
+                            </div>
+                          </div>
+
+                          <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/10">
+                            <div>
+                              <div className="text-sm text-gray-400 mb-1">
+                                {subscriptionData.status === "trialing"
+                                  ? "Trial Ends"
+                                  : "Next Billing Date"}
+                              </div>
+                              <div className="text-white font-medium">
+                                {subscriptionData.status === "trialing" &&
+                                subscriptionData.trial_end
+                                  ? new Date(
+                                      subscriptionData.trial_end
+                                    ).toLocaleDateString()
+                                  : subscriptionData.current_period_end
+                                  ? new Date(
+                                      subscriptionData.current_period_end
+                                    ).toLocaleDateString()
+                                  : "N/A"}
+                              </div>
+                            </div>
+                            <div>
+                              <div className="text-sm text-gray-400 mb-1">
+                                Payment Method
+                              </div>
+                              <div className="text-white font-medium">
+                                {subscriptionData.payment_method?.brand ||
+                                  subscriptionData.payment_method?.type ||
+                                  "Card"}
+                                {subscriptionData.payment_method?.last4 &&
+                                  ` •••• ${subscriptionData.payment_method.last4}`}
+                              </div>
+                            </div>
+                          </div>
+
+                          {subscriptionData.status === "trialing" && (
+                            <div className="bg-blue-900/20 border border-blue-400/30 rounded-lg p-4">
+                              <p className="text-sm text-blue-200">
+                                🎉 You're on a free trial! Your subscription
+                                will automatically activate when the trial ends.
+                                No charges until then.
+                              </p>
+                            </div>
+                          )}
+
+                          <div className="flex gap-3 pt-4">
+                            <Button
+                              variant="outline"
+                              className="flex-1 text-white border-white/20 bg-white/10 hover:bg-white/20"
+                              onClick={() =>
+                                window.open(
+                                  "https://billing.stripe.com/p/login/test_fakelink",
+                                  "_blank"
+                                )
+                              }
+                            >
+                              <Settings className="w-4 h-4 mr-2" />
+                              Manage Billing
+                            </Button>
+                            <Button
+                              variant="outline"
+                              className="flex-1 text-red-300 border-red-400/50 bg-red-900/20 hover:bg-red-900/40"
+                              onClick={() => {
+                                if (
+                                  confirm(
+                                    "Are you sure you want to cancel your subscription?"
+                                  )
+                                ) {
+                                  window.location.href = "/newsletter";
+                                }
+                              }}
+                            >
+                              Cancel Subscription
+                            </Button>
+                          </div>
+                        </div>
+
+                        {/* Subscription Benefits */}
+                        <div className="bg-white/5 rounded-lg p-6 border border-white/10">
+                          <h4 className="text-lg font-semibold text-white mb-4">
+                            Your Benefits
+                          </h4>
+                          <ul className="space-y-3">
+                            <li className="flex items-center gap-3 text-gray-300">
+                              <div className="w-5 h-5 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                <svg
+                                  className="w-3 h-3 text-white"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="3"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M5 13l4 4L19 7"
+                                  />
+                                </svg>
+                              </div>
+                              Unlimited access to premium articles
+                            </li>
+                            <li className="flex items-center gap-3 text-gray-300">
+                              <div className="w-5 h-5 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                <svg
+                                  className="w-3 h-3 text-white"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="3"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M5 13l4 4L19 7"
+                                  />
+                                </svg>
+                              </div>
+                              Daily newsletter delivered to your inbox
+                            </li>
+                            <li className="flex items-center gap-3 text-gray-300">
+                              <div className="w-5 h-5 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                <svg
+                                  className="w-3 h-3 text-white"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="3"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M5 13l4 4L19 7"
+                                  />
+                                </svg>
+                              </div>
+                              Ad-free reading experience
+                            </li>
+                            <li className="flex items-center gap-3 text-gray-300">
+                              <div className="w-5 h-5 bg-green-600 rounded-full flex items-center justify-center flex-shrink-0">
+                                <svg
+                                  className="w-3 h-3 text-white"
+                                  fill="none"
+                                  stroke="currentColor"
+                                  strokeWidth="3"
+                                  viewBox="0 0 24 24"
+                                >
+                                  <path
+                                    strokeLinecap="round"
+                                    strokeLinejoin="round"
+                                    d="M5 13l4 4L19 7"
+                                  />
+                                </svg>
+                              </div>
+                              Exclusive member-only content
+                            </li>
+                          </ul>
+                        </div>
+                      </>
+                    ) : (
+                      /* No Active Subscription */
+                      <div className="bg-white/5 rounded-lg p-8 border border-white/10 text-center">
+                        <div className="w-16 h-16 bg-red-600/20 rounded-full flex items-center justify-center mx-auto mb-4">
+                          <Mail className="w-8 h-8 text-red-400" />
+                        </div>
+                        <h4 className="text-xl font-bold text-white mb-2">
+                          No Active Subscription
+                        </h4>
+                        <p className="text-gray-300 mb-6">
+                          Subscribe to get unlimited access to premium content
+                          and exclusive newsletters.
+                        </p>
+                        <Button
+                          onClick={() => (window.location.href = "/newsletter")}
+                          className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold px-8"
+                        >
+                          View Subscription Plans
+                        </Button>
+                      </div>
+                    )}
+                  </div>
                 </TabsContent>
 
                 {/* Password Tab */}

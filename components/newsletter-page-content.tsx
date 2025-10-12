@@ -42,6 +42,13 @@ export function NewsletterPageContent({
   const [selectedPlan, setSelectedPlan] = useState("annual");
 
   useEffect(() => {
+    // Restore selected plan from sessionStorage if returning from login
+    const pendingPlan = sessionStorage.getItem("pendingNewsletterPlan");
+    if (pendingPlan) {
+      setSelectedPlan(pendingPlan);
+      sessionStorage.removeItem("pendingNewsletterPlan");
+    }
+
     if (user?.id) {
       // Check subscription status only for authenticated users
       getSubscriptionStatus(user.id)

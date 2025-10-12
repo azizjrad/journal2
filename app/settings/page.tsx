@@ -1,10 +1,6 @@
-import { Metadata } from "next";
-import { UserProfile } from "@/components/user-profile";
+"use client";
 
-export const metadata: Metadata = {
-  title: "Settings - Akhbarna",
-  description: "User account settings and profile management",
-};
+import { UserProfile } from "@/components/user-profile";
 
 export default function SettingsPage() {
   return <UserProfile />;

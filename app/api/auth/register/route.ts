@@ -15,9 +15,21 @@ import {
   getEmailVerificationExpiry,
   checkRateLimit,
 } from "@/lib/auth";
-import { sendEmailVerification } from "@/lib/email-sendgrid";
+import { sendVerificationEmail } from "@/lib/email-sendgrid";
+import { validateCsrf } from "@/lib/csrf";
 
 export async function POST(request: NextRequest) {
+  // CSRF protection
+  if (!validateCsrf(request)) {
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Invalid security token. Please refresh and try again.",
+      },
+      { status: 403 }
+    );
+  }
+
   try {
     const body = await request.json();
     const {
@@ -114,7 +126,7 @@ export async function POST(request: NextRequest) {
     // Try sending email verification first
     let emailSent = false;
     try {
-      emailSent = await sendEmailVerification({
+      emailSent = await sendVerificationEmail({
         email: email.toLowerCase(),
         verificationToken,
         userName: firstName || username,

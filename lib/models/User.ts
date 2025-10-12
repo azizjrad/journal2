@@ -346,7 +346,7 @@ const newsletterSubscriptionSchema = new mongoose.Schema(
     plan: {
       type: String,
       required: true,
-      enum: ["basic", "premium"],
+      enum: ["monthly", "annual"], // Simplified to just monthly or annual
     },
     billing_period: {
       type: String,

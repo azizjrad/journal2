@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { AccessDenied } from "@/components/access-denied";
 
 interface AdminUser {
   id: string;
@@ -127,23 +128,9 @@ export function AdminSessionGuard({ children }: AdminSessionGuardProps) {
     );
   }
 
-  // Check user role
-  if (user.role !== "admin" && user.role !== "writer") {
-    return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 flex items-center justify-center">
-        <div className="text-center">
-          <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl p-8 max-w-md mx-auto">
-            <h2 className="text-2xl font-bold text-white mb-4">
-              Access Denied
-            </h2>
-            <p className="text-gray-300 mb-6">
-              You need admin or writer privileges to access this area.
-            </p>
-            <p className="text-gray-400 text-sm">Current role: {user.role}</p>
-          </div>
-        </div>
-      </div>
-    );
+  // Check user role - only admin can access admin dashboard
+  if (user.role !== "admin") {
+    return <AccessDenied role={user.role} requiredRole="admin" />;
   }
 
   return <>{children}</>;

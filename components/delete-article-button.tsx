@@ -35,9 +35,19 @@ export function DeleteArticleButton({
   const handleDelete = async () => {
     setLoading(true);
     try {
+      // Fetch CSRF token
+      await fetch("/api/auth/csrf-token", { credentials: "include" });
+      const csrfCookie = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("csrf-token="));
+      const csrfToken = csrfCookie ? csrfCookie.split("=")[1] : "";
+
       const response = await fetch(`/api/admin/articles/${articleId}`, {
         method: "DELETE",
         credentials: "include",
+        headers: {
+          "x-csrf-token": csrfToken,
+        },
       });
       if (response.ok) {
         if (onDelete) {

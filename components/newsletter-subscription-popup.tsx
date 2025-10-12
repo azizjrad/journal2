@@ -101,17 +101,20 @@ export function NewsletterSubscriptionPopup({
           className="ml-4 px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={async () => {
             try {
-              const plan = selectedPlan === "annual" ? "premium" : "basic";
+              // Only send billing period (monthly or annual)
               const billing = selectedPlan === "annual" ? "annual" : "monthly";
-              
-              const response = await fetch("/api/newsletter/create-checkout-session", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ plan, billing }),
-              });
-              
+
+              const response = await fetch(
+                "/api/newsletter/create-checkout-session",
+                {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ billing }),
+                }
+              );
+
               const data = await response.json();
-              
+
               if (data.success && data.url) {
                 window.location.href = data.url;
               } else {

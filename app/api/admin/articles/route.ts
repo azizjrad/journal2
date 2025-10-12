@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createArticle, getAllArticlesAdmin } from "@/lib/db";
 import { ensureAdminOrWriter } from "@/lib/ensure-admin";
+import { validateCsrf } from "@/lib/csrf";
 
 export function GET() {
   return (async () => {
@@ -18,6 +19,14 @@ export function GET() {
 }
 
 export async function POST(request: NextRequest) {
+  // CSRF protection
+  if (!validateCsrf(request)) {
+    return NextResponse.json(
+      { error: "Invalid security token" },
+      { status: 403 }
+    );
+  }
+
   try {
     console.log("📝 Starting article creation...");
 

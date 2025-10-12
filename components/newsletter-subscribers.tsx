@@ -6,6 +6,16 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -27,6 +37,7 @@ import {
   Edit,
   MoreVertical,
   UserCheck,
+  XCircle,
 } from "lucide-react";
 
 interface Subscriber {
@@ -71,6 +82,10 @@ export function NewsletterSubscribers({
   const [filterStatus, setFilterStatus] = useState<
     "all" | "active" | "canceled" | "past_due"
   >("all");
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [subscriberToCancel, setSubscriberToCancel] =
+    useState<Subscriber | null>(null);
+  const [canceling, setCanceling] = useState(false);
 
   // Fetch subscribers from API
   const fetchSubscribers = async () => {
@@ -110,6 +125,47 @@ export function NewsletterSubscribers({
       setSubscribersList([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Cancel subscription
+  const handleCancelSubscription = async () => {
+    if (!subscriberToCancel) return;
+
+    try {
+      setCanceling(true);
+
+      const response = await fetch(
+        "/api/admin/newsletter/cancel-subscription",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include",
+          body: JSON.stringify({
+            subscriptionId: subscriberToCancel.id,
+            reason: "Canceled by admin",
+          }),
+        }
+      );
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Refresh the subscribers list
+        await fetchSubscribers();
+        setCancelDialogOpen(false);
+        setSubscriberToCancel(null);
+      } else {
+        console.error("Failed to cancel subscription:", data.error);
+        alert(`Failed to cancel subscription: ${data.error}`);
+      }
+    } catch (error) {
+      console.error("Error canceling subscription:", error);
+      alert("An error occurred while canceling the subscription");
+    } finally {
+      setCanceling(false);
     }
   };
 
@@ -192,12 +248,12 @@ export function NewsletterSubscribers({
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h2 className="text-2xl font-bold text-white mb-2">
+          <h2 className="text-2xl sm:text-3xl font-bold text-white mb-2">
             Newsletter Subscribers
           </h2>
-          <p className="text-gray-300">
+          <p className="text-sm sm:text-base text-gray-300">
             Manage your newsletter subscribers and their preferences
           </p>
         </div>
@@ -205,7 +261,7 @@ export function NewsletterSubscribers({
           <Button
             onClick={() => window.location.reload()}
             variant="outline"
-            className="text-white border-white/20 bg-white/10"
+            className="text-white border-white/20 bg-white/10 w-full sm:w-auto"
           >
             <RefreshCw className="w-4 h-4 mr-2" />
             Refresh
@@ -214,7 +270,7 @@ export function NewsletterSubscribers({
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
         <Card className="bg-white/10 backdrop-blur-xl border-white/20 text-white">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -285,14 +341,14 @@ export function NewsletterSubscribers({
       </div>
 
       {/* Filters */}
-      <div className="flex flex-wrap gap-4 items-center">
-        <div className="relative">
+      <div className="flex flex-col sm:flex-row gap-4 items-stretch sm:items-center">
+        <div className="relative flex-1 sm:flex-initial sm:min-w-[250px]">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
           <Input
             placeholder="Search subscribers..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="pl-10 bg-white/10 border-white/20 text-white placeholder-gray-400"
+            className="pl-10 bg-white/10 border-white/20 text-white placeholder-gray-400 w-full"
           />
         </div>
 
@@ -302,7 +358,7 @@ export function NewsletterSubscribers({
             setFilterPlan(value as "all" | "basic" | "premium")
           }
         >
-          <SelectTrigger className="w-[140px] bg-white/10 backdrop-blur-xl border-white/20 text-white hover:bg-white/20 transition-all duration-200 rounded-lg">
+          <SelectTrigger className="w-full sm:w-[140px] bg-white/10 backdrop-blur-xl border-white/20 text-white hover:bg-white/20 transition-all duration-200 rounded-lg">
             <SelectValue placeholder="All Plans" />
           </SelectTrigger>
           <SelectContent
@@ -338,7 +394,7 @@ export function NewsletterSubscribers({
             setFilterStatus(value as "all" | "active" | "canceled" | "past_due")
           }
         >
-          <SelectTrigger className="w-[140px] bg-white/10 backdrop-blur-xl border-white/20 text-white hover:bg-white/20 transition-all duration-200 rounded-lg">
+          <SelectTrigger className="w-full sm:w-[140px] bg-white/10 backdrop-blur-xl border-white/20 text-white hover:bg-white/20 transition-all duration-200 rounded-lg">
             <SelectValue placeholder="All Status" />
           </SelectTrigger>
           <SelectContent
@@ -377,16 +433,30 @@ export function NewsletterSubscribers({
       <Card className="bg-white/10 backdrop-blur-xl border-white/20 text-white">
         <CardContent className="p-0">
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full min-w-[800px]">
               <thead>
                 <tr className="border-b border-white/10">
-                  <th className="text-left p-4 font-semibold">Subscriber</th>
-                  <th className="text-left p-4 font-semibold">Plan</th>
-                  <th className="text-left p-4 font-semibold">Status</th>
-                  <th className="text-left p-4 font-semibold">Revenue</th>
-                  <th className="text-left p-4 font-semibold">Engagement</th>
-                  <th className="text-left p-4 font-semibold">Last Activity</th>
-                  <th className="text-left p-4 font-semibold">Actions</th>
+                  <th className="text-left p-3 sm:p-4 font-semibold text-sm">
+                    Subscriber
+                  </th>
+                  <th className="text-left p-3 sm:p-4 font-semibold text-sm">
+                    Plan
+                  </th>
+                  <th className="text-left p-3 sm:p-4 font-semibold text-sm">
+                    Status
+                  </th>
+                  <th className="text-left p-3 sm:p-4 font-semibold text-sm">
+                    Revenue
+                  </th>
+                  <th className="text-left p-3 sm:p-4 font-semibold text-sm">
+                    Engagement
+                  </th>
+                  <th className="text-left p-3 sm:p-4 font-semibold text-sm">
+                    Last Activity
+                  </th>
+                  <th className="text-left p-3 sm:p-4 font-semibold text-sm">
+                    Actions
+                  </th>
                 </tr>
               </thead>
               <tbody>
@@ -395,12 +465,12 @@ export function NewsletterSubscribers({
                     key={subscriber.id}
                     className="border-b border-white/5 hover:bg-white/5"
                   >
-                    <td className="p-4">
+                    <td className="p-3 sm:p-4">
                       <div>
-                        <p className="font-medium">
+                        <p className="font-medium text-sm sm:text-base">
                           {subscriber.firstName} {subscriber.lastName}
                         </p>
-                        <p className="text-sm text-gray-400">
+                        <p className="text-xs sm:text-sm text-gray-400 truncate max-w-[200px]">
                           {subscriber.email}
                         </p>
                         <p className="text-xs text-gray-500">
@@ -411,12 +481,12 @@ export function NewsletterSubscribers({
                         </p>
                       </div>
                     </td>
-                    <td className="p-4">
-                      <div className="flex items-center gap-2">
+                    <td className="p-3 sm:p-4">
+                      <div className="flex flex-col gap-1">
                         <Badge
                           className={`${getPlanColor(
                             subscriber.plan
-                          )} text-white`}
+                          )} text-white text-xs w-fit`}
                         >
                           {subscriber.plan}
                         </Badge>
@@ -425,18 +495,18 @@ export function NewsletterSubscribers({
                         </span>
                       </div>
                     </td>
-                    <td className="p-4">
+                    <td className="p-3 sm:p-4">
                       <Badge
                         className={`${getStatusColor(
                           subscriber.status
-                        )} text-white`}
+                        )} text-white text-xs`}
                       >
                         {subscriber.status}
                       </Badge>
                     </td>
-                    <td className="p-4">
+                    <td className="p-3 sm:p-4">
                       <div>
-                        <p className="font-medium">
+                        <p className="font-medium text-sm">
                           ${subscriber.totalPaid.toFixed(2)}
                         </p>
                         {subscriber.nextBilling && (
@@ -449,9 +519,9 @@ export function NewsletterSubscribers({
                         )}
                       </div>
                     </td>
-                    <td className="p-4">
+                    <td className="p-3 sm:p-4">
                       <div>
-                        <p className="font-medium">
+                        <p className="font-medium text-sm">
                           {subscriber.engagement.clickThroughRate}%
                         </p>
                         <p className="text-xs text-gray-400">
@@ -460,8 +530,8 @@ export function NewsletterSubscribers({
                         </p>
                       </div>
                     </td>
-                    <td className="p-4">
-                      <p className="text-sm">
+                    <td className="p-3 sm:p-4">
+                      <p className="text-xs sm:text-sm">
                         {subscriber.lastActivity
                           ? new Date(
                               subscriber.lastActivity
@@ -469,25 +539,35 @@ export function NewsletterSubscribers({
                           : "Never"}
                       </p>
                     </td>
-                    <td className="p-4">
+                    <td className="p-3 sm:p-4">
                       <div className="flex items-center gap-2">
                         <Button
                           size="sm"
                           variant="outline"
-                          className="text-white border-white/20 bg-white/10 h-8 w-8 p-0"
+                          className="text-white border-white/20 bg-white/10 h-8 px-3"
                           onClick={() =>
                             console.log("View subscriber", subscriber.id)
                           }
+                          title="View details"
                         >
-                          <Eye className="w-4 h-4" />
+                          <Eye className="w-4 h-4 sm:mr-2" />
+                          <span className="hidden sm:inline">View</span>
                         </Button>
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="text-white border-white/20 bg-white/10 h-8 w-8 p-0"
-                        >
-                          <MoreVertical className="w-4 h-4" />
-                        </Button>
+                        {subscriber.status === "active" && (
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            className="text-red-400 border-red-400/20 bg-red-500/10 hover:bg-red-500/20 h-8 px-3"
+                            onClick={() => {
+                              setSubscriberToCancel(subscriber);
+                              setCancelDialogOpen(true);
+                            }}
+                            title="Cancel subscription"
+                          >
+                            <XCircle className="w-4 h-4 sm:mr-2" />
+                            <span className="hidden sm:inline">Cancel</span>
+                          </Button>
+                        )}
                       </div>
                     </td>
                   </tr>
@@ -511,6 +591,53 @@ export function NewsletterSubscribers({
           </CardContent>
         </Card>
       )}
+
+      {/* Cancel Subscription Dialog */}
+      <AlertDialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
+        <AlertDialogContent className="bg-gray-900 border-white/20 text-white">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-2 text-red-400">
+              <XCircle className="w-6 h-6" />
+              Cancel Subscription
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-300">
+              Are you sure you want to cancel the subscription for{" "}
+              <span className="font-semibold text-white">
+                {subscriberToCancel?.firstName} {subscriberToCancel?.lastName}
+              </span>{" "}
+              ({subscriberToCancel?.email})?
+              <br />
+              <br />
+              This action will:
+              <ul className="list-disc list-inside mt-2 space-y-1">
+                <li>Immediately cancel their subscription in Stripe</li>
+                <li>Update their status to "canceled" in the database</li>
+                <li>Send them a cancellation confirmation email</li>
+                <li>Remove their access to premium content</li>
+              </ul>
+              <br />
+              <span className="text-yellow-400 font-medium">
+                This action cannot be undone.
+              </span>
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel
+              className="bg-white/10 border-white/20 text-white hover:bg-white/20"
+              disabled={canceling}
+            >
+              Keep Subscription
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleCancelSubscription}
+              className="bg-red-600 hover:bg-red-700 text-white"
+              disabled={canceling}
+            >
+              {canceling ? "Canceling..." : "Yes, Cancel Subscription"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 }

@@ -1983,32 +1983,32 @@ export async function getReports(
     return reports.map((report: any) => {
       const rep = report as any;
       return {
-      _id: rep._id.toString(),
-      article_id: rep.article_id.toString(),
-      article_title: rep.article_title,
-      report_type: rep.report_type,
-      reason: rep.reason,
-      reporter_email: rep.reporter_email,
-      reporter_name: rep.reporter_name,
-      reporter_ip: rep.reporter_ip,
-      status: rep.status,
-      priority: rep.priority,
-      reviewed_at: rep.reviewed_at,
-      reviewed_by: rep.reviewed_by?._id?.toString(),
-      reviewed_by_name: rep.reviewed_by
-        ? `${rep.reviewed_by.first_name || ""} ${
-            rep.reviewed_by.last_name || ""
-          }`.trim() || rep.reviewed_by.username
-        : rep.reviewed_by_name,
-      admin_notes: rep.admin_notes,
-      resolution_notes: rep.resolution_notes,
-      escalated_at: rep.escalated_at,
-      escalated_by: rep.escalated_by?.toString(),
-      closed_at: rep.closed_at,
-      closed_by: rep.closed_by?.toString(),
-      created_at: rep.created_at,
-      updated_at: rep.updated_at,
-    };
+        _id: rep._id.toString(),
+        article_id: rep.article_id.toString(),
+        article_title: rep.article_title,
+        report_type: rep.report_type,
+        reason: rep.reason,
+        reporter_email: rep.reporter_email,
+        reporter_name: rep.reporter_name,
+        reporter_ip: rep.reporter_ip,
+        status: rep.status,
+        priority: rep.priority,
+        reviewed_at: rep.reviewed_at,
+        reviewed_by: rep.reviewed_by?._id?.toString(),
+        reviewed_by_name: rep.reviewed_by
+          ? `${rep.reviewed_by.first_name || ""} ${
+              rep.reviewed_by.last_name || ""
+            }`.trim() || rep.reviewed_by.username
+          : rep.reviewed_by_name,
+        admin_notes: rep.admin_notes,
+        resolution_notes: rep.resolution_notes,
+        escalated_at: rep.escalated_at,
+        escalated_by: rep.escalated_by?.toString(),
+        closed_at: rep.closed_at,
+        closed_by: rep.closed_by?.toString(),
+        created_at: rep.created_at,
+        updated_at: rep.updated_at,
+      };
     });
   } catch (error) {
     console.error("Error fetching reports:", error);
@@ -2313,7 +2313,7 @@ export const getReportStatsCached = unstable_cache(
 export async function getNewsletterSubscribers(
   options: {
     search?: string;
-    plan?: "all" | "basic" | "premium";
+    plan?: "all" | "monthly" | "annual";
     status?: "all" | "active" | "canceled" | "past_due" | "incomplete";
     limit?: number;
     skip?: number;
@@ -2406,7 +2406,7 @@ export async function getNewsletterSubscribers(
           weeklyNewsletter: sub.preferences?.weekly_summary || true,
           breakingNews: sub.preferences?.breaking_news || true,
           premiumContent:
-            sub.preferences?.premium_content || sub.plan === "premium",
+            sub.preferences?.premium_content || sub.plan === "annual",
         },
         lastActivity: user?.last_activity || sub.updated_at,
         engagement: {
@@ -2437,7 +2437,7 @@ export async function getNewsletterStats() {
       NewsletterSubscription.countDocuments(),
       NewsletterSubscription.countDocuments({ status: "active" }),
       NewsletterSubscription.countDocuments({
-        plan: "premium",
+        plan: "annual",
         status: "active",
       }),
       NewsletterSubscription.aggregate([
@@ -2737,7 +2737,7 @@ export async function getContactMessageStats(): Promise<{
 export async function createNewsletterSubscription(data: {
   userId: string;
   subscriptionId: string;
-  plan: "basic" | "premium";
+  plan: "monthly" | "annual"; // Simplified to match billing period
   billingPeriod: "monthly" | "annual";
   amount: number;
   stripeSubscriptionId: string;
@@ -2799,6 +2799,20 @@ export async function getNewsletterSubscriptionByUserId(
     user_id: new Types.ObjectId(userId),
   })
     .sort({ created_at: -1 })
+    .lean();
+
+  return convertDoc(subscription);
+}
+
+export async function getNewsletterSubscriptionById(
+  subscriptionId: string
+): Promise<any> {
+  await dbConnect();
+
+  const subscription = await NewsletterSubscription.findOne({
+    subscription_id: subscriptionId,
+  })
+    .populate("user_id", "email first_name last_name")
     .lean();
 
   return convertDoc(subscription);

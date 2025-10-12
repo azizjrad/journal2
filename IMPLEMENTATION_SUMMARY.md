@@ -3,12 +3,14 @@
 ## ✅ What Has Been Implemented
 
 ### 1. **Stripe Payment Integration** ✓
+
 - Complete Stripe SDK integration
 - Secure checkout session creation
 - Webhook handler for payment events
 - Support for multiple plans (Basic/Premium, Monthly/Annual)
 
 ### 2. **Database Functions** ✓
+
 - `createNewsletterSubscription()` - Creates new subscription records
 - `getNewsletterSubscriptionByStripeId()` - Retrieves subscription by Stripe ID
 - `getNewsletterSubscriptionByUserId()` - Gets user's subscription
@@ -16,22 +18,26 @@
 - `cancelNewsletterSubscription()` - Cancels subscriptions
 
 ### 3. **API Endpoints** ✓
+
 - `/api/newsletter/create-checkout-session` - Creates Stripe checkout session
 - `/api/newsletter/webhook` - Handles Stripe webhooks
 - `/api/internal/send-newsletter` - Sends newsletters (admin only)
 
 ### 4. **Frontend Integration** ✓
+
 - Updated newsletter subscription popup to use Stripe checkout
 - Success page after payment completion
 - Newsletter management dashboard for subscribers
 - Admin dashboard for sending newsletters
 
 ### 5. **Email System** ✓
+
 - `sendNewsletterEmail()` function for sending newsletters
 - Integration with SendGrid
 - Dynamic email templates
 
 ### 6. **Subscription Status Management** ✓
+
 - Automatic status updates via webhooks:
   - `active` - Paid and active subscription
   - `past_due` - Payment failed
@@ -42,6 +48,7 @@
 ## 📋 What You Need to Do
 
 ### 1. **Set Up Stripe Account**
+
 1. Create account at https://stripe.com
 2. Get API keys from Dashboard → Developers → API keys
 3. Create products and prices (see STRIPE_SETUP_GUIDE.md)
@@ -70,6 +77,7 @@ APP_BASE_URL=https://akhbarna.vercel.app (your production URL)
 ### 3. **Set Up Webhooks**
 
 **For Production:**
+
 1. Go to Stripe Dashboard → Developers → Webhooks
 2. Add endpoint: `https://akhbarna.vercel.app/api/newsletter/webhook`
 3. Select events:
@@ -81,6 +89,7 @@ APP_BASE_URL=https://akhbarna.vercel.app (your production URL)
 4. Copy webhook signing secret to environment variables
 
 **For Testing Locally:**
+
 ```bash
 # Install Stripe CLI
 npm install -g stripe
@@ -103,6 +112,7 @@ stripe listen --forward-to localhost:3000/api/newsletter/webhook
 ### 5. **Deploy to Production**
 
 Your code is already pushed to GitHub. Just:
+
 1. Add environment variables in Vercel
 2. Set up production webhook in Stripe
 3. Deploy (Vercel will auto-deploy from master branch)
@@ -110,18 +120,21 @@ Your code is already pushed to GitHub. Just:
 ## 🔄 How It Works
 
 ### Payment Flow:
+
 1. User clicks "Get Digital Access" → Creates Stripe checkout session
 2. User completes payment on Stripe → Stripe sends webhook
 3. Webhook creates `NewsletterSubscription` record with `status: "active"`
 4. User redirected to success page
 
 ### Newsletter Sending Flow:
+
 1. Admin selects subscribers and composes newsletter
 2. System fetches only subscribers with `status: "active"`
 3. Sends email via SendGrid to each active subscriber
 4. Stores sent newsletter history in database
 
 ### Subscription Lifecycle:
+
 - **New subscription** → `status: "active"`
 - **Payment succeeds** → Remains `active`
 - **Payment fails** → `status: "past_due"`

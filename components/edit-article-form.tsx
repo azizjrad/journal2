@@ -193,7 +193,10 @@ export function EditArticleForm({
         }
       } catch (error) {
         console.error("Error loading data:", error);
-        toast.error("Failed to load article data");
+        toast({
+          title: "Failed to load article data",
+          variant: "destructive",
+        });
       } finally {
         setLoadingData(false);
       }
@@ -330,13 +333,18 @@ export function EditArticleForm({
         "image/webp",
       ];
       if (!allowedTypes.includes(file.type)) {
-        toast.error(
-          "Unsupported image type. Only JPEG, PNG, GIF, and WebP are allowed."
-        );
+        toast({
+          title: "Unsupported image type",
+          description: "Only JPEG, PNG, GIF, and WebP are allowed.",
+          variant: "destructive",
+        });
         return;
       }
       if (file.size > 5 * 1024 * 1024) {
-        toast.error("Image size must be less than 5MB");
+        toast({
+          title: "Image size must be less than 5MB",
+          variant: "destructive",
+        });
         return;
       }
 
@@ -456,10 +464,18 @@ export function EditArticleForm({
         return;
       }
 
+      // Fetch CSRF token
+      await fetch("/api/auth/csrf-token", { credentials: "include" });
+      const csrfCookie = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("csrf-token="));
+      const csrfToken = csrfCookie ? csrfCookie.split("=")[1] : "";
+
       const response = await fetch(`/api/admin/articles/${articleId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
+          "x-csrf-token": csrfToken,
         },
         credentials: "include",
         body: JSON.stringify(updateData),
@@ -521,16 +537,27 @@ export function EditArticleForm({
       {/* Fixed Header */}
       <div className="sticky top-0 z-50 bg-slate-900/80 backdrop-blur-xl border-b border-slate-700/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center space-x-4">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center space-y-3 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
               <Button
                 onClick={handleBackClick}
                 variant="outline"
-                className="border-slate-600 bg-slate-800/50 text-slate-300 hover:bg-slate-700/50 hover:text-white transition-all duration-200"
+                className="border-slate-600 bg-slate-800/50 text-slate-300 hover:bg-slate-700/50 hover:text-white transition-all duration-200 w-full sm:w-auto"
               >
                 <ArrowLeft className="h-4 w-4 mr-2" />
                 Back to Dashboard
               </Button>
+              <Dialog open={showPreview} onOpenChange={setShowPreview}>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="border-slate-600 bg-slate-800/50 text-slate-300 hover:bg-slate-700/50 hover:text-white transition-all duration-200 w-full sm:w-auto sm:hidden"
+                  >
+                    <Eye className="h-4 w-4 mr-2" />
+                    Preview
+                  </Button>
+                </DialogTrigger>
+              </Dialog>
               <div>
                 <div className="flex items-center gap-3">
                   <h1 className="text-2xl font-bold text-white">
@@ -542,12 +569,12 @@ export function EditArticleForm({
                     </span>
                   )}
                 </div>
-                <p className="text-slate-400 text-sm">
+                <p className="text-slate-400 text-sm hidden sm:block">
                   Update your article content and settings
                 </p>
               </div>
             </div>
-            <div className="flex items-center space-x-3">
+            <div className="hidden sm:flex items-center space-x-3">
               <Dialog open={showPreview} onOpenChange={setShowPreview}>
                 <DialogTrigger asChild>
                   <Button

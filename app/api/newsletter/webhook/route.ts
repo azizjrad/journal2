@@ -6,6 +6,10 @@ import {
   getNewsletterSubscriptionByStripeId,
   getUserById,
 } from "@/lib/db";
+import {
+  sendSubscriptionConfirmationEmail,
+  sendSubscriptionCancellationEmail,
+} from "@/lib/email-sendgrid";
 import type Stripe from "stripe";
 
 // Disable body parsing for webhooks
@@ -82,7 +86,7 @@ export async function POST(request: NextRequest) {
           );
 
           const userId = session.metadata?.userId;
-          const plan = session.metadata?.plan as "basic" | "premium";
+          const plan = session.metadata?.plan as "monthly" | "annual"; // Plan is now monthly or annual
           const billing = session.metadata?.billing as "monthly" | "annual";
 
           if (!userId || !plan || !billing) {
@@ -115,17 +119,49 @@ export async function POST(request: NextRequest) {
             currentPeriodStart: new Date(
               (subscription as any).current_period_start * 1000
             ),
-            currentPeriodEnd: new Date((subscription as any).current_period_end * 1000),
+            currentPeriodEnd: new Date(
+              (subscription as any).current_period_end * 1000
+            ),
             paymentMethod,
           });
 
           console.log(`✅ Created subscription for user ${userId}`);
+
+          // Send confirmation email
+          try {
+            const user = await getUserById(userId);
+            if (user && user.email) {
+              const amount =
+                subscription.items.data[0].price.unit_amount! / 100;
+              const trialEnd = subscription.trial_end;
+
+              await sendSubscriptionConfirmationEmail({
+                email: user.email,
+                userName: user.first_name || user.username || "there",
+                plan: plan,
+                amount: amount,
+                trialEnd: trialEnd || undefined,
+              });
+
+              console.log(`✅ Sent confirmation email to ${user.email}`);
+            }
+          } catch (emailError) {
+            console.error("Failed to send confirmation email:", emailError);
+            // Don't fail the webhook if email fails
+          }
         }
         break;
       }
 
       case "customer.subscription.updated": {
         const subscription = event.data.object as any;
+
+        // Check if subscription was just set to cancel at period end
+        const dbSubscription = await getNewsletterSubscriptionByStripeId(
+          subscription.id
+        );
+        const wasCancelScheduled = dbSubscription?.cancel_at_period_end;
+        const isCancelScheduled = subscription.cancel_at_period_end;
 
         await updateNewsletterSubscription(subscription.id, {
           status:
@@ -139,18 +175,43 @@ export async function POST(request: NextRequest) {
           currentPeriodStart: new Date(
             subscription.current_period_start * 1000
           ),
-          currentPeriodEnd: new Date(
-            subscription.current_period_end * 1000
-          ),
+          currentPeriodEnd: new Date(subscription.current_period_end * 1000),
           cancelAtPeriodEnd: subscription.cancel_at_period_end,
         });
 
         console.log(`✅ Updated subscription ${subscription.id}`);
+
+        // Send cancellation email if cancel was just scheduled
+        if (!wasCancelScheduled && isCancelScheduled && dbSubscription) {
+          try {
+            const user = await getUserById(dbSubscription.user_id.toString());
+            if (user && user.email) {
+              await sendSubscriptionCancellationEmail({
+                email: user.email,
+                userName: user.first_name || user.username || "there",
+                plan: dbSubscription.plan || "monthly",
+                cancelAtPeriodEnd: true,
+                periodEndDate: new Date(subscription.current_period_end * 1000),
+              });
+
+              console.log(
+                `✅ Sent cancellation scheduled email to ${user.email}`
+              );
+            }
+          } catch (emailError) {
+            console.error("Failed to send cancellation email:", emailError);
+            // Don't fail the webhook if email fails
+          }
+        }
         break;
       }
 
       case "customer.subscription.deleted": {
         const subscription = event.data.object as Stripe.Subscription;
+
+        const dbSubscription = await getNewsletterSubscriptionByStripeId(
+          subscription.id
+        );
 
         await updateNewsletterSubscription(subscription.id, {
           status: "canceled",
@@ -158,6 +219,26 @@ export async function POST(request: NextRequest) {
         });
 
         console.log(`✅ Canceled subscription ${subscription.id}`);
+
+        // Send immediate cancellation email
+        if (dbSubscription) {
+          try {
+            const user = await getUserById(dbSubscription.user_id.toString());
+            if (user && user.email) {
+              await sendSubscriptionCancellationEmail({
+                email: user.email,
+                userName: user.first_name || user.username || "there",
+                plan: dbSubscription.plan || "monthly",
+                cancelAtPeriodEnd: false,
+              });
+
+              console.log(`✅ Sent cancellation email to ${user.email}`);
+            }
+          } catch (emailError) {
+            console.error("Failed to send cancellation email:", emailError);
+            // Don't fail the webhook if email fails
+          }
+        }
         break;
       }
 
@@ -165,18 +246,16 @@ export async function POST(request: NextRequest) {
         const invoice = event.data.object as any;
 
         if (invoice.subscription && typeof invoice.subscription === "string") {
-          const subscription = await stripe.subscriptions.retrieve(
+          const subscription = (await stripe.subscriptions.retrieve(
             invoice.subscription
-          ) as any;
+          )) as any;
 
           await updateNewsletterSubscription(subscription.id, {
             status: "active",
             currentPeriodStart: new Date(
               subscription.current_period_start * 1000
             ),
-            currentPeriodEnd: new Date(
-              subscription.current_period_end * 1000
-            ),
+            currentPeriodEnd: new Date(subscription.current_period_end * 1000),
           });
 
           console.log(

@@ -440,10 +440,10 @@ export function validatePasswordStrength(password: string): {
 }
 
 /**
- * Get email verification expiry date (24 hours from now)
+ * Get email verification expiry date (1 hour from now)
  */
 export function getEmailVerificationExpiry(): Date {
-  return new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+  return new Date(Date.now() + 1 * 60 * 60 * 1000); // 1 hour
 }
 
 /**
