@@ -114,30 +114,54 @@ export default function NewsletterAdmin() {
 
   const handleSend = async () => {
     if (!subject.trim() || !content.trim() || selected.size === 0) {
-      toast.error("Please fill all fields and select at least one subscriber.");
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description:
+          "Please fill all fields and select at least one subscriber.",
+      });
       return;
     }
     setLoading(true);
     try {
+      // Create FormData to support file attachments
+      const formData = new FormData();
+      formData.append("subject", subject);
+      formData.append("content", content);
+      formData.append("subscriberIds", JSON.stringify(Array.from(selected)));
+
+      // Add attachments if any
+      attachments.forEach((file, index) => {
+        formData.append(`attachment_${index}`, file);
+      });
+
       const res = await fetch("/api/internal/send-newsletter", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          subject,
-          content,
-          subscriberIds: Array.from(selected),
-        }),
+        body: formData, // Send as FormData instead of JSON
       });
       const data = await res.json();
       if (res.ok) {
-        toast.success("Newsletter sent successfully!");
+        toast({
+          title: "Success!",
+          description: "Newsletter sent successfully!",
+        });
         setSubject("");
         setContent("");
+        setAttachments([]);
+        setAttachmentPreviews([]);
       } else {
-        toast.error(data.error || "Failed to send newsletter.");
+        toast({
+          variant: "destructive",
+          title: "Error",
+          description: data.error || "Failed to send newsletter.",
+        });
       }
     } catch (err) {
-      toast.error("Failed to send newsletter. Please try again.");
+      toast({
+        variant: "destructive",
+        title: "Error",
+        description: "Failed to send newsletter. Please try again.",
+      });
     } finally {
       setLoading(false);
     }
@@ -223,7 +247,10 @@ export default function NewsletterAdmin() {
                     onCheckedChange={() => toggleSelect(s._id)}
                     id={`sub-${s._id}`}
                   />
-                  <label htmlFor={`sub-${s._id}`}>
+                  <label
+                    htmlFor={`sub-${s._id}`}
+                    className="text-white cursor-pointer hover:text-red-400 transition-colors"
+                  >
                     {s.email}
                     {s.name ? ` (${s.name})` : ""}
                   </label>
@@ -254,44 +281,188 @@ export default function NewsletterAdmin() {
             </Button>
           </div>
           {showPreview && (
-            <div className="mt-8 p-6 rounded-xl bg-white/80 shadow-2xl border border-white/30">
-              <div className="mb-4 flex items-center gap-3">
+            <div className="mt-8 p-6 rounded-xl bg-white shadow-2xl border border-gray-200">
+              <div className="mb-4 flex items-center justify-between">
                 <span className="text-xl font-bold text-gray-800">
-                  Newsletter Preview
+                  📧 Email Preview
+                </span>
+                <span className="text-sm text-gray-500 italic">
+                  This is how subscribers will see your newsletter
                 </span>
               </div>
-              <div className="mb-2 text-lg font-semibold text-gray-900">
-                {subject || (
-                  <span className="italic text-gray-400">(No subject)</span>
-                )}
-              </div>
-              <div
-                className="prose prose-neutral max-w-none text-gray-800"
-                style={{ whiteSpace: "pre-wrap" }}
-              >
-                {content || (
-                  <span className="italic text-gray-400">(No content)</span>
-                )}
+              <div className="border-2 border-gray-300 rounded-lg overflow-hidden">
+                <iframe
+                  srcDoc={`
+                    <!DOCTYPE html>
+                    <html lang="en">
+                    <head>
+                      <meta charset="UTF-8">
+                      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                      <title>${subject || "Newsletter Preview"}</title>
+                      <style>
+                        body {
+                          margin: 0;
+                          padding: 0;
+                          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+                          background-color: #f4f4f4;
+                          line-height: 1.6;
+                        }
+                        .email-container {
+                          max-width: 600px;
+                          margin: 20px auto;
+                          background-color: #ffffff;
+                          border-radius: 12px;
+                          overflow: hidden;
+                          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+                        }
+                        .email-header {
+                          background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+                          padding: 40px 30px;
+                          text-align: center;
+                        }
+                        .logo {
+                          font-size: 42px;
+                          font-weight: bold;
+                          color: #ffffff;
+                          margin: 0;
+                          letter-spacing: -1px;
+                          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+                        }
+                        .tagline {
+                          color: #ffffff;
+                          font-size: 14px;
+                          margin-top: 8px;
+                          opacity: 0.95;
+                          letter-spacing: 1px;
+                        }
+                        .email-body {
+                          padding: 40px 30px;
+                          color: #333333;
+                        }
+                        .email-subject {
+                          font-size: 28px;
+                          font-weight: bold;
+                          color: #1f2937;
+                          margin: 0 0 25px 0;
+                          line-height: 1.3;
+                        }
+                        .email-content {
+                          font-size: 16px;
+                          color: #4b5563;
+                          line-height: 1.8;
+                          margin-bottom: 30px;
+                          white-space: pre-wrap;
+                        }
+                        .email-content p {
+                          margin: 15px 0;
+                        }
+                        .divider {
+                          height: 1px;
+                          background: linear-gradient(to right, transparent, #e5e7eb, transparent);
+                          margin: 30px 0;
+                        }
+                        .cta-button {
+                          display: inline-block;
+                          padding: 14px 32px;
+                          background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+                          color: #ffffff !important;
+                          text-decoration: none;
+                          border-radius: 8px;
+                          font-weight: bold;
+                          font-size: 16px;
+                          margin: 20px 0;
+                          box-shadow: 0 4px 6px rgba(220, 38, 38, 0.3);
+                        }
+                        .email-footer {
+                          background-color: #f9fafb;
+                          padding: 30px;
+                          text-align: center;
+                          border-top: 1px solid #e5e7eb;
+                        }
+                        .footer-text {
+                          color: #6b7280;
+                          font-size: 14px;
+                          margin: 10px 0;
+                        }
+                        .footer-links a {
+                          color: #dc2626;
+                          text-decoration: none;
+                          margin: 0 12px;
+                          font-size: 14px;
+                          font-weight: 600;
+                        }
+                      </style>
+                    </head>
+                    <body>
+                      <div class="email-container">
+                        <div class="email-header">
+                          <h1 class="logo">Akhbarna</h1>
+                          <p class="tagline">Your Trusted News Source</p>
+                        </div>
+                        <div class="email-body">
+                          <h2 class="email-subject">${
+                            subject || "Newsletter Subject"
+                          }</h2>
+                          <div class="divider"></div>
+                          <div class="email-content">
+                            ${
+                              content ||
+                              "<p style='color: #9ca3af; font-style: italic;'>Your newsletter content will appear here...</p>"
+                            }
+                          </div>
+                          <div class="divider"></div>
+                          <p style="text-align: center;">
+                            <a href="#" class="cta-button">Visit Akhbarna</a>
+                          </p>
+                        </div>
+                        <div class="email-footer">
+                          <p class="footer-text">
+                            <strong>Akhbarna</strong> - Delivering quality journalism you can trust
+                          </p>
+                          <div class="footer-links">
+                            <a href="#">About Us</a> |
+                            <a href="#">Contact</a> |
+                            <a href="#">Privacy Policy</a>
+                          </div>
+                          <p class="footer-text">
+                            © ${new Date().getFullYear()} Akhbarna. All rights reserved.
+                          </p>
+                        </div>
+                      </div>
+                    </body>
+                    </html>
+                  `}
+                  style={{
+                    width: "100%",
+                    height: "700px",
+                    border: "none",
+                  }}
+                  title="Newsletter Preview"
+                />
               </div>
               {attachments.length > 0 && (
-                <div className="mt-4">
-                  <div className="font-semibold text-gray-700 mb-2">
-                    Attachments:
+                <div className="mt-4 p-4 bg-blue-50 rounded-lg border border-blue-200">
+                  <div className="font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                    <span>📎</span>
+                    <span>Attachments ({attachments.length}):</span>
                   </div>
                   <div className="flex flex-wrap gap-2">
                     {attachments.map((file, i) => (
-                      <div key={i} className="flex flex-col items-center">
-                        <span className="text-xs text-gray-600">
+                      <div
+                        key={i}
+                        className="flex flex-col items-center bg-white p-2 rounded border border-gray-300"
+                      >
+                        <span className="text-xs text-gray-600 mb-1">
                           {file.name}
                         </span>
                         {file.type.startsWith("image/") ? (
                           <img
                             src={attachmentPreviews[i]}
                             alt={file.name}
-                            className="h-16 w-16 object-cover rounded border border-gray-300"
+                            className="h-16 w-16 object-cover rounded"
                           />
                         ) : (
-                          <span className="h-16 w-16 flex items-center justify-center bg-gray-200 rounded border border-gray-300 text-gray-500">
+                          <span className="h-16 w-16 flex items-center justify-center bg-gray-100 rounded text-gray-500 text-2xl">
                             📄
                           </span>
                         )}

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ensureAdmin } from "@/lib/ensure-admin";
 import { getUserById, updateUserWriterStatus } from "@/lib/db";
+import { sendWriterApprovalEmail } from "@/lib/email-sendgrid";
 
 export async function PATCH(
   request: NextRequest,
@@ -14,7 +15,7 @@ export async function PATCH(
     }
 
     const { id } = await params;
-    const { action } = await request.json();
+    const { action, reason } = await request.json();
 
     if (!action || !["approve", "reject"].includes(action)) {
       return NextResponse.json(
@@ -41,6 +42,18 @@ export async function PATCH(
     const newRole = action === "approve" ? "writer" : "user";
 
     await updateUserWriterStatus(id, newWriterStatus, newRole);
+
+    // Send email notification
+    const emailSent = await sendWriterApprovalEmail({
+      email: user.email,
+      userName: user.first_name || user.username || user.email.split("@")[0],
+      approved: action === "approve",
+      reason: action === "reject" ? reason : undefined,
+    });
+
+    if (!emailSent) {
+      console.error("Failed to send writer approval email to:", user.email);
+    }
 
     // Get updated user data
     const updatedUser = await getUserById(id);

@@ -100,6 +100,8 @@ export async function POST(request: NextRequest) {
         periodEndDate: subscription.current_period_end
           ? new Date(subscription.current_period_end)
           : new Date(),
+        canceledByAdmin: true,
+        reason: reason,
       });
     } catch (emailError) {
       console.error("Failed to send cancellation email:", emailError);

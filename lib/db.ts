@@ -2314,7 +2314,13 @@ export async function getNewsletterSubscribers(
   options: {
     search?: string;
     plan?: "all" | "monthly" | "annual";
-    status?: "all" | "active" | "canceled" | "past_due" | "incomplete";
+    status?:
+      | "all"
+      | "active"
+      | "trialing"
+      | "canceled"
+      | "past_due"
+      | "incomplete";
     limit?: number;
     skip?: number;
   } = {}
@@ -2333,9 +2339,12 @@ export async function getNewsletterSubscribers(
     // Build the query
     const query: any = {};
 
-    // Status filter
+    // Status filter - default to active/trialing only
     if (status !== "all") {
       query.status = status;
+    } else {
+      // Only show active or trialing subscriptions by default
+      query.status = { $in: ["active", "trialing"] };
     }
 
     // Plan filter
@@ -2391,8 +2400,12 @@ export async function getNewsletterSubscribers(
       const clickThroughRate = Math.floor(Math.random() * 40 + 20); // 20-60% CTR
 
       return {
+        _id: sub._id.toString(),
         id: sub._id.toString(),
         email: user?.email || "",
+        name: user?.first_name
+          ? `${user.first_name} ${user.last_name || ""}`.trim()
+          : undefined,
         firstName: user?.first_name || "",
         lastName: user?.last_name || "",
         plan: sub.plan,
@@ -2417,7 +2430,27 @@ export async function getNewsletterSubscribers(
       };
     });
 
-    return transformedSubscribers;
+    // Deduplicate by email address (keep the most recent subscription)
+    const uniqueSubscribers = transformedSubscribers.reduce(
+      (acc: any[], current: any) => {
+        const existing = acc.find((item) => item.email === current.email);
+        if (!existing) {
+          acc.push(current);
+        } else {
+          // Keep the more recent subscription
+          const existingIndex = acc.indexOf(existing);
+          const currentDate = new Date(current.subscriptionDate).getTime();
+          const existingDate = new Date(existing.subscriptionDate).getTime();
+          if (currentDate > existingDate) {
+            acc[existingIndex] = current;
+          }
+        }
+        return acc;
+      },
+      []
+    );
+
+    return uniqueSubscribers;
   } catch (error) {
     console.error("Error fetching newsletter subscribers:", error);
     throw error;
@@ -2748,6 +2781,10 @@ export async function createNewsletterSubscription(data: {
     type: string;
     last4?: string;
     brand?: string;
+    expires?: {
+      month: number;
+      year: number;
+    };
   };
 }): Promise<any> {
   await dbConnect();
@@ -2756,7 +2793,7 @@ export async function createNewsletterSubscription(data: {
     throw new Error("Invalid user ID");
   }
 
-  const subscription = await NewsletterSubscription.create({
+  const subscriptionData: any = {
     user_id: new Types.ObjectId(data.userId),
     subscription_id: data.subscriptionId,
     plan: data.plan,
@@ -2764,12 +2801,18 @@ export async function createNewsletterSubscription(data: {
     status: "active",
     amount: data.amount,
     currency: "USD",
-    payment_method: data.paymentMethod,
     current_period_start: data.currentPeriodStart,
     current_period_end: data.currentPeriodEnd,
     stripe_subscription_id: data.stripeSubscriptionId,
     stripe_customer_id: data.stripeCustomerId,
-  });
+  };
+
+  // Only add payment_method if it exists
+  if (data.paymentMethod) {
+    subscriptionData.payment_method = data.paymentMethod;
+  }
+
+  const subscription = await NewsletterSubscription.create(subscriptionData);
 
   return convertDoc(subscription);
 }

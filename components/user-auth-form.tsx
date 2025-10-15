@@ -136,11 +136,23 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
     setRegSuccess("");
 
     try {
+      // Fetch CSRF token before registration
+      await fetch("/api/auth/csrf-token", { credentials: "include" });
+      const csrfToken = getCookie("csrf-token");
+
+      if (!csrfToken) {
+        setRegError("Security token missing. Please refresh and try again.");
+        setRegLoading(false);
+        return;
+      }
+
       const response = await fetch("/api/auth/register", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "x-csrf-token": csrfToken,
         },
+        credentials: "include",
         body: JSON.stringify({
           username: regUsername,
           email: regEmail,

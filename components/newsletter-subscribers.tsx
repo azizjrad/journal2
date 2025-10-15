@@ -46,7 +46,7 @@ interface Subscriber {
   firstName?: string;
   lastName?: string;
   plan: "basic" | "premium";
-  status: "active" | "canceled" | "past_due";
+  status: "active" | "canceled" | "past_due" | "trialing";
   billingPeriod: "monthly" | "annual";
   subscriptionDate: string;
   nextBilling?: string;
@@ -80,7 +80,7 @@ export function NewsletterSubscribers({
     "all"
   );
   const [filterStatus, setFilterStatus] = useState<
-    "all" | "active" | "canceled" | "past_due"
+    "all" | "active" | "canceled" | "past_due" | "trialing"
   >("all");
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [subscriberToCancel, setSubscriberToCancel] =
@@ -178,6 +178,8 @@ export function NewsletterSubscribers({
     switch (status) {
       case "active":
         return "bg-green-600";
+      case "trialing":
+        return "bg-blue-600";
       case "canceled":
         return "bg-gray-600";
       case "past_due":
@@ -261,7 +263,7 @@ export function NewsletterSubscribers({
           <Button
             onClick={() => window.location.reload()}
             variant="outline"
-            className="text-white border-white/20 bg-white/10 w-full sm:w-auto"
+            className="text-white border-white/20 bg-white/10 hover:bg-white/20 w-full sm:w-auto"
           >
             <RefreshCw className="w-4 h-4 mr-2" />
             Refresh
@@ -270,7 +272,7 @@ export function NewsletterSubscribers({
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <Card className="bg-white/10 backdrop-blur-xl border-white/20 text-white">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -321,20 +323,6 @@ export function NewsletterSubscribers({
                 </p>
               </div>
               <DollarSign className="w-8 h-8 text-green-400" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-white/10 backdrop-blur-xl border-white/20 text-white">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-300">Avg. Engagement</p>
-                <p className="text-2xl font-bold text-yellow-400">
-                  {stats.avgEngagement.toFixed(1)}%
-                </p>
-              </div>
-              <TrendingUp className="w-8 h-8 text-yellow-400" />
             </div>
           </CardContent>
         </Card>
@@ -391,7 +379,9 @@ export function NewsletterSubscribers({
         <Select
           value={filterStatus}
           onValueChange={(value) =>
-            setFilterStatus(value as "all" | "active" | "canceled" | "past_due")
+            setFilterStatus(
+              value as "all" | "active" | "canceled" | "past_due" | "trialing"
+            )
           }
         >
           <SelectTrigger className="w-full sm:w-[140px] bg-white/10 backdrop-blur-xl border-white/20 text-white hover:bg-white/20 transition-all duration-200 rounded-lg">
@@ -412,6 +402,12 @@ export function NewsletterSubscribers({
               className="text-white hover:bg-white/20 focus:bg-white/20 cursor-pointer"
             >
               Active
+            </SelectItem>
+            <SelectItem
+              value="trialing"
+              className="text-white hover:bg-white/20 focus:bg-white/20 cursor-pointer"
+            >
+              Trialing
             </SelectItem>
             <SelectItem
               value="canceled"
@@ -449,9 +445,6 @@ export function NewsletterSubscribers({
                     Revenue
                   </th>
                   <th className="text-left p-3 sm:p-4 font-semibold text-sm">
-                    Engagement
-                  </th>
-                  <th className="text-left p-3 sm:p-4 font-semibold text-sm">
                     Last Activity
                   </th>
                   <th className="text-left p-3 sm:p-4 font-semibold text-sm">
@@ -473,7 +466,7 @@ export function NewsletterSubscribers({
                         <p className="text-xs sm:text-sm text-gray-400 truncate max-w-[200px]">
                           {subscriber.email}
                         </p>
-                        <p className="text-xs text-gray-500">
+                        <p className="text-xs text-gray-400">
                           Joined{" "}
                           {new Date(
                             subscriber.subscriptionDate
@@ -482,18 +475,13 @@ export function NewsletterSubscribers({
                       </div>
                     </td>
                     <td className="p-3 sm:p-4">
-                      <div className="flex flex-col gap-1">
-                        <Badge
-                          className={`${getPlanColor(
-                            subscriber.plan
-                          )} text-white text-xs w-fit`}
-                        >
-                          {subscriber.plan}
-                        </Badge>
-                        <span className="text-xs text-gray-400">
-                          {subscriber.billingPeriod}
-                        </span>
-                      </div>
+                      <Badge
+                        className={`${getPlanColor(
+                          subscriber.plan
+                        )} text-white text-xs w-fit`}
+                      >
+                        {subscriber.billingPeriod}
+                      </Badge>
                     </td>
                     <td className="p-3 sm:p-4">
                       <Badge
@@ -511,23 +499,14 @@ export function NewsletterSubscribers({
                         </p>
                         {subscriber.nextBilling && (
                           <p className="text-xs text-gray-400">
-                            Next:{" "}
+                            {subscriber.status === "trialing"
+                              ? "Trial ends:"
+                              : "Next:"}{" "}
                             {new Date(
                               subscriber.nextBilling
                             ).toLocaleDateString()}
                           </p>
                         )}
-                      </div>
-                    </td>
-                    <td className="p-3 sm:p-4">
-                      <div>
-                        <p className="font-medium text-sm">
-                          {subscriber.engagement.clickThroughRate}%
-                        </p>
-                        <p className="text-xs text-gray-400">
-                          {subscriber.engagement.emailsOpened}/
-                          {subscriber.engagement.totalEmailsSent} opened
-                        </p>
                       </div>
                     </td>
                     <td className="p-3 sm:p-4">
@@ -541,18 +520,6 @@ export function NewsletterSubscribers({
                     </td>
                     <td className="p-3 sm:p-4">
                       <div className="flex items-center gap-2">
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          className="text-white border-white/20 bg-white/10 h-8 px-3"
-                          onClick={() =>
-                            console.log("View subscriber", subscriber.id)
-                          }
-                          title="View details"
-                        >
-                          <Eye className="w-4 h-4 sm:mr-2" />
-                          <span className="hidden sm:inline">View</span>
-                        </Button>
                         {subscriber.status === "active" && (
                           <Button
                             size="sm"

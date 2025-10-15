@@ -26,6 +26,7 @@ export async function GET(request: NextRequest) {
     const validStatuses = [
       "all",
       "active",
+      "trialing",
       "canceled",
       "past_due",
       "incomplete",

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { User } from "@/lib/models/User";
 import { ensureAdmin } from "@/lib/ensure-admin";
 import dbConnect from "@/lib/dbConnect";
+import { sendWriterApprovalEmail } from "@/lib/email-sendgrid";
 
 export async function PATCH(
   request: NextRequest,
@@ -22,7 +23,7 @@ export async function PATCH(
 
     const { id } = await params;
     const body = await request.json();
-    const { writer_status } = body;
+    const { writer_status, reason } = body;
 
     console.log("🔄 Updating writer status:", { id, writer_status });
 
@@ -30,6 +31,15 @@ export async function PATCH(
       return NextResponse.json(
         { success: false, message: "Invalid writer status" },
         { status: 400 }
+      );
+    }
+
+    // Get user before update to check previous status
+    const previousUser = await User.findById(id);
+    if (!previousUser) {
+      return NextResponse.json(
+        { success: false, message: "User not found" },
+        { status: 404 }
       );
     }
 
@@ -60,6 +70,29 @@ export async function PATCH(
     }
 
     console.log("✅ Writer status updated successfully:", updatedUser._id);
+
+    // Send email notification if status changed to approved or rejected
+    if (
+      previousUser.writer_status === "pending" &&
+      (writer_status === "approved" || writer_status === "rejected")
+    ) {
+      const emailSent = await sendWriterApprovalEmail({
+        email: updatedUser.email,
+        userName:
+          updatedUser.first_name ||
+          updatedUser.username ||
+          updatedUser.email.split("@")[0],
+        approved: writer_status === "approved",
+        reason: writer_status === "rejected" ? reason : undefined,
+      });
+
+      if (!emailSent) {
+        console.error(
+          "Failed to send writer approval email to:",
+          updatedUser.email
+        );
+      }
+    }
 
     return NextResponse.json({
       success: true,

@@ -115,6 +115,14 @@ const userSchema = new mongoose.Schema(
     last_login: {
       type: Date,
     },
+    has_used_trial: {
+      type: Boolean,
+      default: false,
+    },
+    trial_used_at: {
+      type: Date,
+      default: null,
+    },
   },
   {
     timestamps: { createdAt: "created_at", updatedAt: "updated_at" },
@@ -356,7 +364,7 @@ const newsletterSubscriptionSchema = new mongoose.Schema(
     status: {
       type: String,
       required: true,
-      enum: ["active", "canceled", "past_due", "incomplete"],
+      enum: ["active", "trialing", "canceled", "past_due", "incomplete"],
       default: "active",
     },
     amount: {

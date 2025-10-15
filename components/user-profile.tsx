@@ -589,12 +589,40 @@ export function UserProfile() {
                             <Button
                               variant="outline"
                               className="flex-1 text-white border-white/20 bg-white/10 hover:bg-white/20"
-                              onClick={() =>
-                                window.open(
-                                  "https://billing.stripe.com/p/login/test_fakelink",
-                                  "_blank"
-                                )
-                              }
+                              onClick={async () => {
+                                try {
+                                  const response = await fetch(
+                                    "/api/newsletter/create-portal-session",
+                                    {
+                                      method: "POST",
+                                      headers: {
+                                        "Content-Type": "application/json",
+                                      },
+                                      body: JSON.stringify({
+                                        customerId:
+                                          subscriptionData.stripe_customer_id,
+                                      }),
+                                    }
+                                  );
+
+                                  if (response.ok) {
+                                    const data = await response.json();
+                                    window.location.href = data.url;
+                                  } else {
+                                    console.error(
+                                      "Failed to create portal session"
+                                    );
+                                    alert(
+                                      "Failed to open billing portal. Please try again."
+                                    );
+                                  }
+                                } catch (error) {
+                                  console.error("Error:", error);
+                                  alert(
+                                    "Failed to open billing portal. Please try again."
+                                  );
+                                }
+                              }}
                             >
                               <Settings className="w-4 h-4 mr-2" />
                               Manage Billing

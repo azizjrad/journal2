@@ -218,25 +218,32 @@ export async function POST(request: NextRequest) {
       },
     };
 
-    // Only annual plan gets free trial
+    // Only annual plan gets free trial - but only if user hasn't used it before
     if (billing === "annual") {
-      // Apply first month free trial (30 days)
-      subscriptionData.trial_period_days = 30;
+      // Check if user has already used their free trial
+      if (!user.has_used_trial) {
+        // Apply first month free trial (30 days)
+        subscriptionData.trial_period_days = 30;
+        // Mark that trial will be used (will be confirmed in webhook)
+        subscriptionData.metadata.will_use_trial = "true";
+      } else {
+        // User already used their trial - no trial this time
+        subscriptionData.metadata.will_use_trial = "false";
+        console.log(
+          `User ${user.id} has already used their free trial. No trial applied.`
+        );
+      }
     }
     // Monthly plan: no trial, immediate $4 charge
-
-    // Prepare discounts array for the checkout session (not subscription_data)
-    const discounts: any[] = [];
-    if (billing === "annual" && process.env.STRIPE_ANNUAL_COUPON_ID) {
-      discounts.push({
-        coupon: process.env.STRIPE_ANNUAL_COUPON_ID,
-      });
-    }
 
     // Create Stripe Checkout Session
     const sessionConfig: any = {
       customer: customerId,
       payment_method_types: payment_method_types,
+      billing_address_collection: "auto", // Signals legitimate transaction
+      phone_number_collection: {
+        enabled: false, // Don't collect phone to avoid additional validation
+      },
       line_items: [
         {
           price: priceId,
@@ -257,11 +264,6 @@ export async function POST(request: NextRequest) {
       },
       subscription_data: subscriptionData,
     };
-
-    // Add discounts if available (for annual plan with coupon)
-    if (discounts.length > 0) {
-      sessionConfig.discounts = discounts;
-    }
 
     const checkoutSession = await stripe.checkout.sessions.create(
       sessionConfig

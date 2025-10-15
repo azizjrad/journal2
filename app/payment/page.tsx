@@ -195,13 +195,19 @@ export default function PaymentPage() {
         "Annual Digital Access (auto-renews)",
         "الاشتراك السنوي الرقمي (يتجدد تلقائيًا)"
       ),
-      price: "$0",
-      oldPrice: "$4",
-      desc: t(
-        "annual_charge_desc",
-        "Charged as $24 after your free trial. Renews automatically for $48/year.",
-        "يتم احتساب $24 لسنة واحدة بعد الفترة التجريبية المجانية. يتجدد تلقائيًا مقابل $48/سنة."
-      ),
+      price: user?.has_used_trial ? "$24" : "$0",
+      oldPrice: user?.has_used_trial ? "" : "$4",
+      desc: user?.has_used_trial
+        ? t(
+            "annual_charge_desc_no_trial",
+            "Charged as $24 for the first year. Renews automatically for $48/year.",
+            "يتم احتساب $24 للسنة الأولى. يتجدد تلقائيًا مقابل $48/سنة."
+          )
+        : t(
+            "annual_charge_desc",
+            "Charged as $24 after your free trial. Renews automatically for $48/year.",
+            "يتم احتساب $24 لسنة واحدة بعد الفترة التجريبية المجانية. يتجدد تلقائيًا مقابل $48/سنة."
+          ),
     },
     monthly: {
       title: t(
@@ -287,12 +293,7 @@ export default function PaymentPage() {
               {paymentMethod === "card" && (
                 <>
                   <span>{t("credit_card", "Credit Card", "بطاقة مصرفية")}</span>
-                  <Image
-                    src="/card-icon.png"
-                    alt="Card"
-                    width={22}
-                    height={22}
-                  />
+                  <Image src="/card.png" alt="Card" width={22} height={22} />
                 </>
               )}
             </div>
