@@ -1,12 +1,33 @@
 import sgMail from "@sendgrid/mail";
 
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
-const FROM_EMAIL = "azizjrad9@gmail.com"; // your verified sender
+const FROM_EMAIL = process.env.FROM_EMAIL || "azizjrad9@gmail.com"; // Use custom domain email for better deliverability
+const FROM_NAME = process.env.FROM_NAME || "Akhbarna";
 const BASE_URL = process.env.APP_BASE_URL || "http://localhost:3000";
 
 if (SENDGRID_API_KEY) {
   sgMail.setApiKey(SENDGRID_API_KEY);
 }
+
+// Email configuration for better deliverability
+const getEmailConfig = () => ({
+  from: {
+    email: FROM_EMAIL,
+    name: FROM_NAME,
+  },
+  replyTo: process.env.REPLY_TO_EMAIL || FROM_EMAIL,
+  // Track opens and clicks for engagement metrics
+  trackingSettings: {
+    clickTracking: { enable: true },
+    openTracking: { enable: true },
+  },
+  // Mail settings for better deliverability
+  mailSettings: {
+    bypassListManagement: { enable: false },
+    footer: { enable: false },
+    sandboxMode: { enable: false },
+  },
+});
 
 export async function sendPasswordResetEmail({
   email,
