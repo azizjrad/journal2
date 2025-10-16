@@ -947,7 +947,7 @@ export async function sendWriterApprovalEmail({
               </ul>
 
               <div style="text-align: center; margin: 30px 0;">
-                <a href="${BASE_URL}/writer/dashboard" class="button">Go to Writer Dashboard</a>
+                <a href="${BASE_URL}/writer" class="button" style="color: #ffffff !important; text-decoration: none;">Go to Writer Dashboard</a>
               </div>
 
               <p style="color: #6b7280; margin-top: 20px;">
