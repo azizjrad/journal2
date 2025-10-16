@@ -3,7 +3,25 @@ import { sendNewsletterEmail } from "@/lib/email-sendgrid";
 import { SentNewsletter } from "@/lib/models/SentNewsletter";
 
 // Beautiful newsletter HTML template
-function createNewsletterHTML(subject: string, content: string): string {
+function createNewsletterHTML(
+  subject: string,
+  content: string,
+  imageCount: number = 0
+): string {
+  // Auto-generate image HTML at the bottom if there are attachments
+  let autoImages = "";
+  if (imageCount > 0) {
+    autoImages = '<div style="margin-top: 30px;">';
+    for (let i = 1; i <= imageCount; i++) {
+      autoImages += `
+        <div style="margin: 20px 0; text-align: center;">
+          <img src="cid:image${i}" alt="Attachment ${i}" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        </div>
+      `;
+    }
+    autoImages += "</div>";
+  }
+
   return `
     <!DOCTYPE html>
     <html lang="en">
@@ -186,6 +204,7 @@ function createNewsletterHTML(subject: string, content: string): string {
           <div class="divider"></div>
           <div class="email-content">
             ${content}
+            ${autoImages}
           </div>
           <div class="divider"></div>
           <p style="text-align: center;">
@@ -280,8 +299,12 @@ export async function sendNewsletterToSubscribers(
       }
     }
 
-    // Create beautiful HTML email template
-    const beautifulHTML = createNewsletterHTML(subject, content);
+    // Create beautiful HTML email template with auto-appended images
+    const beautifulHTML = createNewsletterHTML(
+      subject,
+      content,
+      attachments?.length || 0
+    );
 
     // Send email to each selected subscriber
     for (const sub of selected) {
