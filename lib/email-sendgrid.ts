@@ -1007,6 +1007,384 @@ export async function sendWriterApprovalEmail({
   }
 }
 
+export async function sendContactFormNotificationToAdmin({
+  senderName,
+  senderEmail,
+  subject,
+  message,
+  messageId,
+}: {
+  senderName: string;
+  senderEmail: string;
+  subject: string;
+  message: string;
+  messageId: string;
+}): Promise<boolean> {
+  try {
+    const adminEmail = process.env.ADMIN_EMAIL || FROM_EMAIL;
+    const adminLink = `${BASE_URL}/admin`;
+
+    const msg = {
+      to: adminEmail,
+      from: FROM_EMAIL,
+      subject: `📬 New Contact Form Message - ${subject}`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            body { 
+              margin: 0; 
+              padding: 0; 
+              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+              background-color: #f4f4f4; 
+              line-height: 1.6; 
+            }
+            .container { 
+              max-width: 600px; 
+              margin: 20px auto; 
+              background-color: #ffffff;
+              border-radius: 12px;
+              overflow: hidden;
+              box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+            .header { 
+              background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%); 
+              color: white; 
+              padding: 40px 30px; 
+              text-align: center; 
+            }
+            .header h1 {
+              margin: 0;
+              font-size: 36px;
+              text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            }
+            .badge {
+              display: inline-block;
+              background: rgba(255, 255, 255, 0.2);
+              color: white;
+              padding: 8px 16px;
+              border-radius: 20px;
+              font-size: 14px;
+              font-weight: bold;
+              margin-top: 10px;
+            }
+            .content { 
+              background: #ffffff; 
+              padding: 40px 30px; 
+            }
+            .notification-icon { 
+              width: 80px; 
+              height: 80px; 
+              margin: 0 auto 20px; 
+              background: linear-gradient(135deg, #bae6fd 0%, #7dd3fc 100%);
+              border-radius: 50%; 
+              display: flex; 
+              align-items: center; 
+              justify-content: center; 
+              font-size: 40px;
+              box-shadow: 0 4px 6px rgba(14, 165, 233, 0.2);
+            }
+            .title {
+              text-align: center;
+              color: #1f2937;
+              font-size: 28px;
+              font-weight: bold;
+              margin: 20px 0;
+            }
+            .sender-box { 
+              background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+              border: 2px solid #0ea5e9;
+              border-radius: 12px; 
+              padding: 25px; 
+              margin: 25px 0;
+              box-shadow: 0 2px 4px rgba(14, 165, 233, 0.1);
+            }
+            .sender-box h3 { 
+              color: #0369a1; 
+              margin-top: 0;
+              font-size: 20px;
+              display: flex;
+              align-items: center;
+            }
+            .sender-box h3:before {
+              content: "👤";
+              margin-right: 10px;
+              font-size: 24px;
+            }
+            .info-row {
+              display: flex;
+              padding: 12px 0;
+              border-bottom: 1px solid #bae6fd;
+            }
+            .info-row:last-child {
+              border-bottom: none;
+            }
+            .info-label {
+              font-weight: bold;
+              color: #0c4a6e;
+              width: 120px;
+              flex-shrink: 0;
+            }
+            .info-value {
+              color: #4b5563;
+              word-break: break-word;
+            }
+            .message-box {
+              background: #f9fafb;
+              border: 2px solid #e5e7eb;
+              border-radius: 8px;
+              padding: 20px;
+              margin: 25px 0;
+            }
+            .message-box h3 {
+              color: #1f2937;
+              margin-top: 0;
+              font-size: 18px;
+              display: flex;
+              align-items: center;
+            }
+            .message-box h3:before {
+              content: "💬";
+              margin-right: 10px;
+              font-size: 20px;
+            }
+            .message-content {
+              background: white;
+              padding: 15px;
+              border-radius: 6px;
+              color: #374151;
+              line-height: 1.8;
+              border-left: 4px solid #0ea5e9;
+              white-space: pre-wrap;
+              word-wrap: break-word;
+            }
+            .cta-button { 
+              display: inline-block; 
+              background: linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%);
+              color: #ffffff !important; 
+              padding: 16px 40px; 
+              text-decoration: none; 
+              border-radius: 8px; 
+              font-weight: bold; 
+              font-size: 18px; 
+              margin: 20px 0;
+              box-shadow: 0 4px 6px rgba(14, 165, 233, 0.3);
+              transition: transform 0.2s;
+            }
+            .cta-button:hover {
+              transform: translateY(-2px);
+              box-shadow: 0 6px 12px rgba(14, 165, 233, 0.4);
+            }
+            .button-container {
+              text-align: center;
+              margin: 30px 0;
+            }
+            .action-box {
+              background: #fef3c7;
+              border-left: 4px solid #f59e0b;
+              padding: 20px;
+              margin: 25px 0;
+              border-radius: 4px;
+            }
+            .action-box p {
+              margin: 8px 0;
+              color: #78350f;
+            }
+            .action-box strong {
+              color: #92400e;
+            }
+            .footer { 
+              background-color: #f9fafb;
+              text-align: center; 
+              padding: 30px; 
+              color: #6b7280; 
+              font-size: 14px;
+              border-top: 1px solid #e5e7eb;
+            }
+            .footer p {
+              margin: 10px 0;
+            }
+            .timestamp {
+              background: #f3f4f6;
+              padding: 10px 15px;
+              border-radius: 6px;
+              margin: 20px 0;
+              text-align: center;
+              font-size: 14px;
+              color: #6b7280;
+            }
+            .quick-reply {
+              background: #dcfce7;
+              border: 2px solid #16a34a;
+              border-radius: 8px;
+              padding: 20px;
+              margin: 25px 0;
+            }
+            .quick-reply h4 {
+              color: #15803d;
+              margin-top: 0;
+              font-size: 16px;
+              display: flex;
+              align-items: center;
+            }
+            .quick-reply h4:before {
+              content: "✉️";
+              margin-right: 10px;
+              font-size: 18px;
+            }
+            .quick-reply p {
+              margin: 5px 0;
+              color: #166534;
+              font-size: 14px;
+            }
+            .reply-to {
+              background: white;
+              padding: 10px 15px;
+              border-radius: 6px;
+              margin-top: 10px;
+              color: #0ea5e9;
+              font-weight: bold;
+              word-break: break-all;
+            }
+            @media only screen and (max-width: 600px) {
+              .container {
+                margin: 10px;
+                border-radius: 8px;
+              }
+              .header {
+                padding: 30px 20px;
+              }
+              .content {
+                padding: 30px 20px;
+              }
+              .title {
+                font-size: 22px;
+              }
+              .info-row {
+                flex-direction: column;
+              }
+              .info-label {
+                width: 100%;
+                margin-bottom: 5px;
+              }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>Akhbarna Admin</h1>
+              <div class="badge">📬 New Contact Message</div>
+            </div>
+            
+            <div class="content">
+              <div class="notification-icon">💌</div>
+              
+              <h2 class="title">New Contact Form Submission</h2>
+              
+              <p style="text-align: center; color: #6b7280; font-size: 16px;">
+                You have received a new message through the contact form
+              </p>
+
+              <div class="timestamp">
+                📅 Received: ${new Date().toLocaleDateString("en-US", {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </div>
+              
+              <div class="sender-box">
+                <h3>Sender Information</h3>
+                
+                <div class="info-row">
+                  <div class="info-label">Name:</div>
+                  <div class="info-value"><strong>${senderName}</strong></div>
+                </div>
+                
+                <div class="info-row">
+                  <div class="info-label">Email:</div>
+                  <div class="info-value">
+                    <a href="mailto:${senderEmail}" style="color: #0ea5e9; text-decoration: none; font-weight: bold;">
+                      ${senderEmail}
+                    </a>
+                  </div>
+                </div>
+                
+                <div class="info-row">
+                  <div class="info-label">Subject:</div>
+                  <div class="info-value"><strong>${subject}</strong></div>
+                </div>
+                
+                <div class="info-row">
+                  <div class="info-label">Message ID:</div>
+                  <div class="info-value">
+                    <code style="background: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-size: 12px;">
+                      ${messageId}
+                    </code>
+                  </div>
+                </div>
+              </div>
+
+              <div class="message-box">
+                <h3>Message Content</h3>
+                <div class="message-content">${message}</div>
+              </div>
+
+              <div class="quick-reply">
+                <h4>Quick Reply</h4>
+                <p>Reply directly to this message by clicking below:</p>
+                <div class="reply-to">
+                  <a href="mailto:${senderEmail}?subject=Re: ${encodeURIComponent(
+        subject
+      )}" style="color: #0ea5e9; text-decoration: none;">
+                    📧 ${senderEmail}
+                  </a>
+                </div>
+              </div>
+
+              <div class="action-box">
+                <p><strong>⚡ Action Options:</strong></p>
+                <p>• Reply directly to <strong>${senderEmail}</strong></p>
+                <p>• View full message in admin dashboard</p>
+                <p>• Mark as read/resolved when handled</p>
+              </div>
+
+              <div class="button-container">
+                <a href="${adminLink}" class="cta-button" style="color: #ffffff !important; text-decoration: none;">
+                  📊 View in Admin Dashboard
+                </a>
+              </div>
+
+              <p style="color: #6b7280; text-align: center; margin-top: 30px; font-size: 14px;">
+                You can manage all contact messages in the <strong>Admin → Contact Messages</strong> section
+              </p>
+            </div>
+            
+            <div class="footer">
+              <p style="font-weight: bold; color: #1f2937; margin-bottom: 5px;">Akhbarna Contact System</p>
+              <p>© ${new Date().getFullYear()} Akhbarna. All rights reserved.</p>
+              <p style="margin-top: 15px;">
+                This is an automated notification. You can reply directly to ${senderEmail}
+              </p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `,
+    };
+    await sgMail.send(msg);
+    return true;
+  } catch (error) {
+    console.error("Error sending contact form notification to admin:", error);
+    return false;
+  }
+}
+
 export async function sendWriterApplicationNotificationToAdmin({
   applicantEmail,
   applicantName,

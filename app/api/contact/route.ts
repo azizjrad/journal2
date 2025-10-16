@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createContactMessage } from "@/lib/db";
 import { rateLimiters, createRateLimitResponse } from "@/lib/rate-limit";
+import { sendContactFormNotificationToAdmin } from "@/lib/email-sendgrid";
 
 export async function POST(request: NextRequest) {
   // Apply rate limiting: 3 requests per hour per IP
@@ -70,6 +71,21 @@ export async function POST(request: NextRequest) {
     });
 
     console.log("✅ Contact message created:", contactMessage._id);
+
+    // Send admin notification email
+    try {
+      await sendContactFormNotificationToAdmin({
+        senderName: name.trim(),
+        senderEmail: email.trim().toLowerCase(),
+        subject: subject.trim(),
+        message: message.trim(),
+        messageId: String(contactMessage._id),
+      });
+      console.log("✅ Admin notification email sent for contact message:", contactMessage._id);
+    } catch (emailError) {
+      console.error("❌ Failed to send admin notification email:", emailError);
+      // Don't fail the request if email fails
+    }
 
     return NextResponse.json({
       success: true,
