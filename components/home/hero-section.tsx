@@ -4,9 +4,10 @@ import { useLanguage } from "@/lib/language-context";
 import { HeroCarousel } from "@/components/hero-carousel";
 import { TrendingUp, Clock } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 interface Article {
-  id: string;
+  id: string | number;
   title_en: string;
   title_ar: string;
   excerpt_en: string;
@@ -64,14 +65,16 @@ export function HeroSection({
                       <div className="space-y-3">
                         {/* Article Image */}
                         <div className="relative w-full h-32 rounded-lg overflow-hidden">
-                          <img
+                          <Image
                             src={article.image_url || "/placeholder.svg"}
                             alt={
                               language === "ar"
                                 ? article.title_ar
                                 : article.title_en
                             }
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            fill
+                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 25vw, 300px"
+                            className="object-cover group-hover:scale-105 transition-transform duration-300"
                           />
                         </div>
 
@@ -147,15 +150,17 @@ export function HeroSection({
                         </div>
 
                         {/* Small Article Image - moved to right */}
-                        <div className="flex-shrink-0 w-16 h-12 rounded-lg overflow-hidden ml-3">
-                          <img
+                        <div className="flex-shrink-0 relative w-16 h-12 rounded-lg overflow-hidden ml-3">
+                          <Image
                             src={article.image_url || "/placeholder.svg"}
                             alt={
                               language === "ar"
                                 ? article.title_ar
                                 : article.title_en
                             }
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                            fill
+                            sizes="64px"
+                            className="object-cover group-hover:scale-105 transition-transform duration-300"
                           />
                         </div>
                       </div>

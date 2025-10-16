@@ -112,7 +112,9 @@ async function restoreCollection(db, collectionName, filePath, options = {}) {
     // Insert documents
     const result = await collection.insertMany(data, { ordered: false });
 
-    console.log(`✅ Restored ${result.insertedCount} documents to ${collectionName}`);
+    console.log(
+      `✅ Restored ${result.insertedCount} documents to ${collectionName}`
+    );
     return {
       collection: collectionName,
       count: result.insertedCount,
@@ -158,7 +160,7 @@ function askQuestion(query) {
 async function performRestore(backupName = null, options = {}) {
   const startTime = Date.now();
   console.log("🔄 Starting MongoDB restore...\n");
-  console.log("=" .repeat(60));
+  console.log("=".repeat(60));
 
   if (!MONGODB_URI) {
     console.error("❌ Error: MONGODB_URI not found in environment variables");

@@ -119,9 +119,7 @@ function cleanOldBackups() {
       .sort((a, b) => b.time - a.time);
 
     if (backups.length > MAX_BACKUPS) {
-      console.log(
-        `\n🧹 Cleaning old backups (keeping last ${MAX_BACKUPS})...`
-      );
+      console.log(`\n🧹 Cleaning old backups (keeping last ${MAX_BACKUPS})...`);
       backups.slice(MAX_BACKUPS).forEach((backup) => {
         console.log(`   Deleting: ${backup.name}`);
         fs.rmSync(backup.path, { recursive: true, force: true });
@@ -151,9 +149,7 @@ async function createBinaryBackup(backupFolder) {
     console.log("✅ Binary backup created successfully");
     return true;
   } catch (error) {
-    console.log(
-      "⚠️  mongodump not available (install MongoDB Database Tools)"
-    );
+    console.log("⚠️  mongodump not available (install MongoDB Database Tools)");
     console.log("   Falling back to JSON backup only");
     return false;
   }
@@ -194,7 +190,7 @@ async function compressBackup(backupFolder) {
 async function performBackup() {
   const startTime = Date.now();
   console.log("🚀 Starting MongoDB backup...\n");
-  console.log("=" .repeat(60));
+  console.log("=".repeat(60));
 
   if (!MONGODB_URI) {
     console.error("❌ Error: MONGODB_URI not found in environment variables");

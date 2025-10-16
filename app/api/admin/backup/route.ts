@@ -6,7 +6,7 @@ import { cookies } from "next/headers";
 /**
  * Admin-only API endpoint to trigger database backup
  * Can be called manually or via cron job
- * 
+ *
  * Security:
  * - Requires admin authentication OR valid backup secret
  * - Rate limited to prevent abuse
@@ -46,10 +46,7 @@ export async function POST(request: NextRequest) {
     }
 
     if (!isAuthorized) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     // Connect to database
@@ -123,18 +120,12 @@ export async function GET(request: NextRequest) {
     const token = cookieStore.get("admin-token")?.value;
 
     if (!token) {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const payload = verifyToken(token);
     if (!payload || payload.role !== "admin") {
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     return NextResponse.json({

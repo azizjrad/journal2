@@ -4,6 +4,7 @@ import { useLanguage } from "@/lib/language-context";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/user-auth";
 import { Loader2 } from "lucide-react";
+import Image from "next/image";
 
 const paymentLogos = [
   { src: "/credit-card.png", alt: "Card" },
@@ -131,12 +132,15 @@ export function NewsletterSubscriptionOptions({
       </div>
       <div className="flex items-center justify-center gap-6 mb-8">
         {paymentLogos.map((logo) => (
-          <img
-            key={logo.alt}
-            src={logo.src}
-            alt={logo.alt}
-            className="h-8 w-auto opacity-80 hover:opacity-100 transition"
-          />
+          <div key={logo.alt} className="relative h-8 w-16">
+            <Image
+              src={logo.src}
+              alt={logo.alt}
+              fill
+              sizes="64px"
+              className="object-contain opacity-80 hover:opacity-100 transition"
+            />
+          </div>
         ))}
       </div>
       <Button

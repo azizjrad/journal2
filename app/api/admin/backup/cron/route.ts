@@ -3,7 +3,7 @@ import { NextRequest, NextResponse } from "next/server";
 /**
  * Cron job endpoint for automated backups
  * Called by Vercel Cron (requires Vercel Pro plan)
- * 
+ *
  * Configure in vercel.json:
  * {
  *   "crons": [{
@@ -16,14 +16,11 @@ export async function GET(request: NextRequest) {
   try {
     // Verify this is from Vercel Cron
     const authHeader = request.headers.get("authorization");
-    
+
     // Vercel Cron sends Authorization: Bearer <CRON_SECRET>
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
       console.error("Unauthorized cron request");
-      return NextResponse.json(
-        { error: "Unauthorized" },
-        { status: 401 }
-      );
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     console.log("🕐 Cron backup started:", new Date().toISOString());

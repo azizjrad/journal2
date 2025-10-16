@@ -18,17 +18,20 @@
 ### **You Need THREE Environments:**
 
 #### **1. Local Development** (localhost:3000)
+
 - For coding and quick testing
 - Use `.env.local`
 - Stripe Test Mode
 
 #### **2. Vercel Preview** (akhbarna.vercel.app) ⭐ **USE THIS**
+
 - For testing before production
 - Use Vercel Environment Variables (Preview)
 - Stripe Test Mode
 - Real webhooks work!
 
 #### **3. Production** (your custom domain)
+
 - Live site for users
 - Use Vercel Environment Variables (Production)
 - Stripe Live Mode
@@ -77,6 +80,7 @@ CRON_SECRET=your-generated-32-char-secret
 ### **Step 2: Create Vercel Stripe Webhook**
 
 #### **Why You Need This:**
+
 Localhost webhooks use Stripe CLI → forwards to localhost  
 Vercel needs a **real webhook** → Stripe sends directly
 
@@ -85,11 +89,13 @@ Vercel needs a **real webhook** → Stripe sends directly
 1. Go to: https://dashboard.stripe.com/test/webhooks
 2. Click "Add endpoint"
 3. Set **Endpoint URL**:
+
    ```
    https://akhbarna.vercel.app/api/newsletter/webhook
    ```
 
 4. Select events to listen for:
+
    - ✅ `checkout.session.completed`
    - ✅ `customer.subscription.created`
    - ✅ `customer.subscription.updated`
@@ -113,6 +119,7 @@ Vercel needs a **real webhook** → Stripe sends directly
 #### **Option A: Auto-Deploy (Recommended)**
 
 Every push to `master` automatically deploys:
+
 ```bash
 git add .
 git commit -m "Update configuration for testing"
@@ -120,6 +127,7 @@ git push origin master
 ```
 
 Vercel will:
+
 1. Build your app
 2. Deploy to `akhbarna.vercel.app`
 3. Use Preview environment variables
@@ -136,6 +144,7 @@ vercel
 ### **Step 4: Test Everything!**
 
 #### **Test 1: Basic Functionality** ✅
+
 ```
 ✓ Visit https://akhbarna.vercel.app
 ✓ Browse articles
@@ -144,6 +153,7 @@ vercel
 ```
 
 #### **Test 2: Authentication** ✅
+
 ```
 ✓ Register new account
 ✓ Check email for verification link
@@ -153,6 +163,7 @@ vercel
 ```
 
 #### **Test 3: Password Reset** ✅
+
 ```
 ✓ Click "Forgot Password"
 ✓ Enter email
@@ -163,6 +174,7 @@ vercel
 ```
 
 #### **Test 4: Newsletter Subscription (STRIPE)** 💳
+
 ```
 ✓ Go to /newsletter
 ✓ Click "Subscribe"
@@ -178,6 +190,7 @@ vercel
 ```
 
 #### **Test 5: Contact Form** ✅
+
 ```
 ✓ Go to /contact
 ✓ Fill form
@@ -190,12 +203,14 @@ vercel
 ## 🔍 **Vercel Logs - How to Debug**
 
 ### **Real-time Logs:**
+
 1. Go to: https://vercel.com/azizjrad/akhbarna
 2. Click on latest deployment
 3. Click "Functions" tab
 4. See all API calls, errors, webhooks!
 
 ### **Check Webhook Delivery:**
+
 1. Trigger a payment
 2. Go to Stripe Dashboard → Webhooks
 3. Click on your webhook endpoint
@@ -211,6 +226,7 @@ vercel
 Your emails will come from: `azizjrad9@gmail.com`
 
 **All emails will work:**
+
 - ✅ Email verification → Link points to `https://akhbarna.vercel.app/auth/verify-email?token=xxx`
 - ✅ Password reset → Link points to `https://akhbarna.vercel.app/auth/reset-password?token=xxx`
 - ✅ Newsletter confirmation → Real email sent
@@ -225,6 +241,7 @@ Your emails will come from: `azizjrad9@gmail.com`
 Use these test cards on Vercel:
 
 ### **Successful Payment:**
+
 ```
 Card Number: 4242 4242 4242 4242
 Expiry: 12/34 (any future date)
@@ -233,12 +250,14 @@ ZIP: 12345 (any 5 digits)
 ```
 
 ### **Declined Payment:**
+
 ```
 Card Number: 4000 0000 0000 0002
 (Triggers card declined error)
 ```
 
 ### **Requires Authentication (3D Secure):**
+
 ```
 Card Number: 4000 0027 6000 3184
 (Tests strong customer authentication)
@@ -251,6 +270,7 @@ More test cards: https://stripe.com/docs/testing
 ## 🎯 **Testing Workflow**
 
 ### **Daily Development:**
+
 ```bash
 # Code locally
 npm run dev
@@ -266,6 +286,7 @@ git push origin master
 ```
 
 ### **Before Going Live:**
+
 ```bash
 # Test everything on akhbarna.vercel.app
 # When all tests pass:
@@ -282,6 +303,7 @@ git push origin master
 ## 🚨 **Important: Test vs Production**
 
 ### **On Vercel Test (akhbarna.vercel.app):**
+
 ```
 ✅ Use Stripe TEST keys (sk_test_...)
 ✅ Use test credit cards
@@ -291,6 +313,7 @@ git push origin master
 ```
 
 ### **On Production (custom domain):**
+
 ```
 ⚠️  Use Stripe LIVE keys (sk_live_...)
 ⚠️  Real credit cards charged
@@ -321,21 +344,21 @@ git push origin master
 
 2. For **Preview** environment, add:
 
-| Variable Name | Value | Notes |
-|--------------|-------|-------|
-| `APP_BASE_URL` | `https://akhbarna.vercel.app` | ⚠️ CRITICAL |
-| `NEXT_PUBLIC_SITE_URL` | `https://akhbarna.vercel.app` | For client-side |
-| `MONGODB_URI` | Your MongoDB Atlas URI | Same as local |
-| `JWT_SECRET` | Your secret | Same as local |
-| `REDIS_URL` | Your Redis URL | Same as local |
-| `SENDGRID_API_KEY` | Your SendGrid key | Same as local |
-| `FROM_EMAIL` | `azizjrad9@gmail.com` | Same as local |
-| `STRIPE_SECRET_KEY` | `sk_test_xxxxx` | TEST key |
-| `STRIPE_PUBLISHABLE_KEY` | `pk_test_xxxxx` | TEST key |
-| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | `pk_test_xxxxx` | TEST key |
-| `STRIPE_WEBHOOK_SECRET` | `whsec_xxxxx` | From Stripe dashboard |
-| `BACKUP_SECRET` | 32-char random string | For backups |
-| `CRON_SECRET` | 32-char random string | For cron jobs |
+| Variable Name                        | Value                         | Notes                 |
+| ------------------------------------ | ----------------------------- | --------------------- |
+| `APP_BASE_URL`                       | `https://akhbarna.vercel.app` | ⚠️ CRITICAL           |
+| `NEXT_PUBLIC_SITE_URL`               | `https://akhbarna.vercel.app` | For client-side       |
+| `MONGODB_URI`                        | Your MongoDB Atlas URI        | Same as local         |
+| `JWT_SECRET`                         | Your secret                   | Same as local         |
+| `REDIS_URL`                          | Your Redis URL                | Same as local         |
+| `SENDGRID_API_KEY`                   | Your SendGrid key             | Same as local         |
+| `FROM_EMAIL`                         | `azizjrad9@gmail.com`         | Same as local         |
+| `STRIPE_SECRET_KEY`                  | `sk_test_xxxxx`               | TEST key              |
+| `STRIPE_PUBLISHABLE_KEY`             | `pk_test_xxxxx`               | TEST key              |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | `pk_test_xxxxx`               | TEST key              |
+| `STRIPE_WEBHOOK_SECRET`              | `whsec_xxxxx`                 | From Stripe dashboard |
+| `BACKUP_SECRET`                      | 32-char random string         | For backups           |
+| `CRON_SECRET`                        | 32-char random string         | For cron jobs         |
 
 ---
 
@@ -344,20 +367,24 @@ git push origin master
 ### **Right Now (5 Minutes):**
 
 1. **Go to Vercel Dashboard**
+
    ```
    https://vercel.com/azizjrad/akhbarna/settings/environment-variables
    ```
 
 2. **Add environment variables** (copy from your `.env.local`)
+
    - Set environment to: **Preview**
    - Add all variables listed above
 
 3. **Push to GitHub** (triggers deploy)
+
    ```bash
    git push origin master
    ```
 
 4. **Create Stripe Webhook**
+
    - URL: `https://akhbarna.vercel.app/api/newsletter/webhook`
    - Copy webhook secret
    - Add to Vercel as `STRIPE_WEBHOOK_SECRET`
@@ -372,6 +399,7 @@ git push origin master
 ## ✅ **What You Get**
 
 After setup:
+
 - ✅ Full testing environment on real domain
 - ✅ Stripe payments work (test mode)
 - ✅ Email verification works
@@ -387,27 +415,35 @@ After setup:
 ## 🐛 **Common Issues & Solutions**
 
 ### **Issue: Webhook not receiving events**
+
 **Solution:**
+
 1. Check Stripe dashboard → Webhooks → Your endpoint
 2. Verify URL is exactly: `https://akhbarna.vercel.app/api/newsletter/webhook`
 3. Check Vercel logs for incoming requests
 4. Verify `STRIPE_WEBHOOK_SECRET` matches Stripe dashboard
 
 ### **Issue: Email links point to localhost**
+
 **Solution:**
+
 1. Check `APP_BASE_URL` in Vercel environment variables
 2. Should be: `https://akhbarna.vercel.app`
 3. Redeploy after changing
 
 ### **Issue: Payment fails**
+
 **Solution:**
+
 1. Use test card: `4242 4242 4242 4242`
 2. Check Stripe dashboard for error details
 3. Check Vercel function logs
 4. Verify test keys are set correctly
 
 ### **Issue: Can't login after registering**
+
 **Solution:**
+
 1. Check email for verification link
 2. Make sure email was sent (check SendGrid dashboard)
 3. Click verification link
@@ -427,12 +463,14 @@ After setup:
 ## 🎉 **You're Ready!**
 
 Your test domain `https://akhbarna.vercel.app` is the **perfect place** to test:
+
 - ✅ Stripe payments (test mode)
 - ✅ Email functionality
 - ✅ Webhooks
 - ✅ All features before going live
 
 **Next Steps:**
+
 1. Set up environment variables in Vercel
 2. Create Stripe webhook
 3. Push to deploy

@@ -19,7 +19,7 @@ import Autoplay from "embla-carousel-autoplay";
 import WheelGesturesPlugin from "embla-carousel-wheel-gestures";
 
 interface Article {
-  id: number;
+  id: number | string;
   title_en: string;
   title_ar: string;
   excerpt_en: string;
