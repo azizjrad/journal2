@@ -251,25 +251,31 @@ export async function sendNewsletterToSubscribers(
       return { success: false, error: "No valid active subscribers selected" };
     }
 
-    // Process attachments if provided
+    // Process attachments as INLINE images if provided
     let emailAttachments: Array<{
       content: string;
       filename: string;
       type: string;
       disposition: string;
+      contentId: string;
     }> = [];
 
     if (attachments && attachments.length > 0) {
-      for (const file of attachments) {
+      for (let i = 0; i < attachments.length; i++) {
+        const file = attachments[i];
         const bytes = await file.arrayBuffer();
         const buffer = Buffer.from(bytes);
         const base64Content = buffer.toString("base64");
+
+        // Create a unique content ID for each image
+        const contentId = `image${i + 1}`;
 
         emailAttachments.push({
           content: base64Content,
           filename: file.name,
           type: file.type,
-          disposition: "attachment",
+          disposition: "inline", // Changed from "attachment" to "inline"
+          contentId: contentId, // Add content ID for inline embedding
         });
       }
     }
