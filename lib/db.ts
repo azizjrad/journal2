@@ -2324,9 +2324,9 @@ export async function getNewsletterSubscribers(
       query.status = { $in: ["active", "trialing"] };
     }
 
-    // Plan filter
+    // Plan filter (filter by billing_period: monthly or annual)
     if (plan !== "all") {
-      query.plan = plan;
+      query.billing_period = plan;
     }
 
     // Get subscriptions with populated user data
@@ -2389,7 +2389,11 @@ export async function getNewsletterSubscribers(
         status: sub.status,
         billingPeriod: sub.billing_period,
         subscriptionDate: sub.created_at,
-        nextBilling: sub.current_period_end,
+        // For trialing subscriptions, show trial end date; otherwise show next billing
+        nextBilling:
+          sub.status === "trialing" && sub.trial_end
+            ? sub.trial_end
+            : sub.current_period_end,
         totalPaid: sub.amount || 0,
         preferences: {
           dailyDigest: sub.preferences?.daily_digest || true,
@@ -2444,7 +2448,10 @@ export async function getNewsletterStats() {
       premiumSubscribers,
       totalRevenue,
     ] = await Promise.all([
-      NewsletterSubscription.countDocuments(),
+      // Only count active and trialing subscriptions (exclude canceled/past_due)
+      NewsletterSubscription.countDocuments({
+        status: { $in: ["active", "trialing"] },
+      }),
       NewsletterSubscription.countDocuments({ status: "active" }),
       NewsletterSubscription.countDocuments({
         plan: "annual",

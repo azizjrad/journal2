@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getNewsletterSubscribers, getNewsletterStats } from "@/lib/db";
 import { ensureAdmin } from "@/lib/ensure-admin";
+import { revalidateTag } from "next/cache";
 
 // GET /api/admin/newsletter/subscribers - Get newsletter subscribers
 export async function GET(request: NextRequest) {
@@ -22,7 +23,7 @@ export async function GET(request: NextRequest) {
     const skip = parseInt(searchParams.get("skip") || "0");
 
     // Validate parameters
-    const validPlans = ["all", "basic", "premium"];
+    const validPlans = ["all", "monthly", "annual"];
     const validStatuses = [
       "all",
       "active",
@@ -44,6 +45,12 @@ export async function GET(request: NextRequest) {
         { error: "Invalid status filter" },
         { status: 400 }
       );
+    }
+
+    // Check if refresh is requested
+    const refresh = searchParams.get("refresh");
+    if (refresh === "true") {
+      revalidateTag("newsletter-subscribers");
     }
 
     const [subscribers, stats] = await Promise.all([

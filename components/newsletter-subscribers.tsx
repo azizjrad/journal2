@@ -76,7 +76,7 @@ export function NewsletterSubscribers({
   const [loading, setLoading] = useState(true);
   const [apiStats, setApiStats] = useState<any>(null);
   const [searchTerm, setSearchTerm] = useState("");
-  const [filterPlan, setFilterPlan] = useState<"all" | "basic" | "premium">(
+  const [filterPlan, setFilterPlan] = useState<"all" | "monthly" | "annual">(
     "all"
   );
   const [filterStatus, setFilterStatus] = useState<
@@ -88,7 +88,7 @@ export function NewsletterSubscribers({
   const [canceling, setCanceling] = useState(false);
 
   // Fetch subscribers from API
-  const fetchSubscribers = async () => {
+  const fetchSubscribers = async (forceRefresh = false) => {
     try {
       setLoading(true);
       const params = new URLSearchParams({
@@ -98,6 +98,11 @@ export function NewsletterSubscribers({
         limit: "50",
         skip: "0",
       });
+
+      // Add refresh parameter if requested
+      if (forceRefresh) {
+        params.append("refresh", "true");
+      }
 
       const response = await fetch(
         `/api/admin/newsletter/subscribers?${params}`,
@@ -261,18 +266,21 @@ export function NewsletterSubscribers({
         </div>
         <div className="flex gap-3">
           <Button
-            onClick={() => window.location.reload()}
+            onClick={() => fetchSubscribers(true)}
             variant="outline"
             className="text-white border-white/20 bg-white/10 hover:bg-white/20 w-full sm:w-auto"
+            disabled={loading}
           >
-            <RefreshCw className="w-4 h-4 mr-2" />
+            <RefreshCw
+              className={`w-4 h-4 mr-2 ${loading ? "animate-spin" : ""}`}
+            />
             Refresh
           </Button>
         </div>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
         <Card className="bg-white/10 backdrop-blur-xl border-white/20 text-white">
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
@@ -295,20 +303,6 @@ export function NewsletterSubscribers({
                 </p>
               </div>
               <UserCheck className="w-8 h-8 text-green-400" />
-            </div>
-          </CardContent>
-        </Card>
-
-        <Card className="bg-white/10 backdrop-blur-xl border-white/20 text-white">
-          <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm text-gray-300">Premium</p>
-                <p className="text-2xl font-bold text-purple-400">
-                  {stats.premium}
-                </p>
-              </div>
-              <Crown className="w-8 h-8 text-purple-400" />
             </div>
           </CardContent>
         </Card>
@@ -343,7 +337,7 @@ export function NewsletterSubscribers({
         <Select
           value={filterPlan}
           onValueChange={(value) =>
-            setFilterPlan(value as "all" | "basic" | "premium")
+            setFilterPlan(value as "all" | "monthly" | "annual")
           }
         >
           <SelectTrigger className="w-full sm:w-[140px] bg-white/10 backdrop-blur-xl border-white/20 text-white hover:bg-white/20 transition-all duration-200 rounded-lg">
@@ -362,16 +356,16 @@ export function NewsletterSubscribers({
               All Plans
             </SelectItem>
             <SelectItem
-              value="basic"
+              value="monthly"
               className="text-white hover:bg-white/20 focus:bg-white/20 cursor-pointer"
             >
-              Basic
+              Monthly
             </SelectItem>
             <SelectItem
-              value="premium"
+              value="annual"
               className="text-white hover:bg-white/20 focus:bg-white/20 cursor-pointer"
             >
-              Premium
+              Annual
             </SelectItem>
           </SelectContent>
         </Select>
