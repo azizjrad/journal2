@@ -13,6 +13,10 @@
     "check-subscription": "node scripts/check-subscription-sync.js",
     "cache:clear": "rm -rf .next/cache",
     "cache:stats": "node -e \"console.log('Cache size:', require('fs').statSync('.next/cache').size)\"",
+    "backup": "node scripts/backup-database.js",
+    "backup:restore": "node scripts/restore-database.js",
+    "backup:list": "node scripts/restore-database.js --list",
+    "backup:schedule": "node scripts/backup-scheduler.js",
     "pre-deploy": "node scripts/pre-deploy-check.js",
     "deploy:vercel": "npm run pre-deploy && vercel --prod",
     "deploy:netlify": "npm run pre-deploy && netlify deploy --prod"
