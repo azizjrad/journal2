@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Select,
@@ -34,6 +35,10 @@ import {
   Clock,
   CheckCircle,
   ExternalLink,
+  Reply,
+  Send,
+  Paperclip,
+  X,
 } from "lucide-react";
 
 // Simple toast replacement
@@ -87,8 +92,14 @@ export function ContactMessages() {
   );
   const [showDeleteDialog, setShowDeleteDialog] = useState(false);
   const [showViewDialog, setShowViewDialog] = useState(false);
+  const [showReplyDialog, setShowReplyDialog] = useState(false);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("all");
+  
+  // Reply form states
+  const [replyContent, setReplyContent] = useState("");
+  const [replyAttachments, setReplyAttachments] = useState<File[]>([]);
+  const [sendingReply, setSendingReply] = useState(false);
 
   // Pagination states
   const [currentPage, setCurrentPage] = useState(1);
@@ -211,6 +222,69 @@ export function ContactMessages() {
     }
   };
 
+  const handleSendReply = async () => {
+    if (!selectedMessage || !replyContent.trim()) {
+      toast.error("Please enter a reply message");
+      return;
+    }
+
+    try {
+      setSendingReply(true);
+
+      // Process attachments
+      const attachmentData = await Promise.all(
+        replyAttachments.map(async (file) => {
+          const buffer = await file.arrayBuffer();
+          const base64 = Buffer.from(buffer).toString("base64");
+          return {
+            content: base64,
+            filename: file.name,
+            type: file.type,
+          };
+        })
+      );
+
+      const response = await fetch(
+        `/api/admin/contacts/${selectedMessage.id}/reply`,
+        {
+          method: "POST",
+          credentials: "include",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            reply: replyContent.trim(),
+            attachments: attachmentData.length > 0 ? attachmentData : undefined,
+          }),
+        }
+      );
+
+      if (response.ok) {
+        toast.success("Reply sent successfully!");
+        setShowReplyDialog(false);
+        setReplyContent("");
+        setReplyAttachments([]);
+        setSelectedMessage(null);
+        await fetchMessages();
+      } else {
+        const error = await response.json();
+        toast.error(error.error || "Failed to send reply");
+      }
+    } catch (error) {
+      console.error("Error sending reply:", error);
+      toast.error("Error sending reply");
+    } finally {
+      setSendingReply(false);
+    }
+  };
+
+  const handleAttachmentChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = Array.from(e.target.files || []);
+    setReplyAttachments((prev) => [...prev, ...files]);
+  };
+
+  const removeAttachment = (index: number) => {
+    setReplyAttachments((prev) => prev.filter((_, i) => i !== index));
+  };
+
   const formatDate = (dateString: string) => {
     return new Date(dateString).toLocaleDateString("en-US", {
       year: "numeric",
@@ -288,6 +362,22 @@ export function ContactMessages() {
           </div>
 
           <div className="flex items-center gap-2">
+            {/* Reply Button */}
+            <Button
+              size="sm"
+              variant="outline"
+              onClick={() => {
+                setSelectedMessage(message);
+                setShowReplyDialog(true);
+                setReplyContent("");
+                setReplyAttachments([]);
+              }}
+              disabled={actionLoading === message.id}
+              className="h-8 px-3 bg-green-600/20 hover:bg-green-600/30 text-green-300 hover:text-white border border-green-500/30 hover:border-green-500/50 backdrop-blur-sm transition-all duration-200 rounded-lg"
+            >
+              <Reply className="w-3 h-3" />
+            </Button>
+
             {/* View Button */}
             <Button
               size="sm"
@@ -666,6 +756,137 @@ export function ContactMessages() {
               >
                 Delete Message
               </AlertDialogAction>
+            </AlertDialogFooter>
+          </div>
+        </AlertDialogContent>
+      </AlertDialog>
+
+      {/* Reply Dialog */}
+      <AlertDialog open={showReplyDialog} onOpenChange={setShowReplyDialog}>
+        <AlertDialogContent className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl max-w-3xl">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-2xl"></div>
+          <div className="relative max-h-[85vh] overflow-y-auto">
+            <AlertDialogHeader className="space-y-4 pb-6">
+              <AlertDialogTitle className="text-2xl font-bold text-white flex items-center gap-2">
+                <Reply className="w-6 h-6" />
+                Reply to Contact Message
+              </AlertDialogTitle>
+              {selectedMessage && (
+                <div className="space-y-4">
+                  {/* Original Message Info */}
+                  <div className="bg-white/5 border border-white/10 rounded-lg p-4">
+                    <div className="grid grid-cols-2 gap-3 text-sm">
+                      <div>
+                        <label className="text-gray-400">From</label>
+                        <p className="text-white font-medium">{selectedMessage.name}</p>
+                      </div>
+                      <div>
+                        <label className="text-gray-400">Email</label>
+                        <p className="text-white font-medium">{selectedMessage.email}</p>
+                      </div>
+                    </div>
+                    <div className="mt-3">
+                      <label className="text-gray-400 text-sm">Subject</label>
+                      <p className="text-white font-medium">{selectedMessage.subject}</p>
+                    </div>
+                    <div className="mt-3">
+                      <label className="text-gray-400 text-sm">Original Message</label>
+                      <div className="bg-white/5 rounded p-3 mt-1 max-h-32 overflow-y-auto">
+                        <p className="text-gray-300 text-sm whitespace-pre-wrap">
+                          {selectedMessage.message}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Reply Form */}
+                  <div className="space-y-4">
+                    <div>
+                      <label className="text-white font-medium mb-2 block">
+                        Your Reply
+                      </label>
+                      <Textarea
+                        value={replyContent}
+                        onChange={(e) => setReplyContent(e.target.value)}
+                        placeholder="Type your reply here..."
+                        rows={6}
+                        className="bg-white/10 border-white/20 text-white placeholder:text-gray-400 resize-none focus:ring-2 focus:ring-blue-500"
+                      />
+                      <p className="text-xs text-gray-400 mt-1">
+                        {replyContent.length}/2000 characters
+                      </p>
+                    </div>
+
+                    {/* Attachments */}
+                    <div>
+                      <label className="text-white font-medium mb-2 block flex items-center gap-2">
+                        <Paperclip className="w-4 h-4" />
+                        Attachments (Optional)
+                      </label>
+                      <div className="space-y-2">
+                        {replyAttachments.map((file, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center justify-between bg-white/5 border border-white/10 rounded-lg p-3"
+                          >
+                            <span className="text-sm text-white truncate flex-1">
+                              {file.name}
+                            </span>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              onClick={() => removeAttachment(index)}
+                              className="text-red-400 hover:text-red-300 hover:bg-red-500/10"
+                            >
+                              <X className="w-4 h-4" />
+                            </Button>
+                          </div>
+                        ))}
+                        <label className="cursor-pointer">
+                          <div className="border-2 border-dashed border-white/20 rounded-lg p-4 text-center hover:border-white/40 transition-colors">
+                            <Paperclip className="w-6 h-6 text-gray-400 mx-auto mb-2" />
+                            <p className="text-sm text-gray-300">
+                              Click to add attachments
+                            </p>
+                          </div>
+                          <input
+                            type="file"
+                            multiple
+                            onChange={handleAttachmentChange}
+                            className="hidden"
+                            accept="image/*,.pdf,.doc,.docx,.txt"
+                          />
+                        </label>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </AlertDialogHeader>
+            <AlertDialogFooter className="gap-3">
+              <AlertDialogCancel
+                className="h-12 px-6 bg-gray-800/50 border-white/40 text-white backdrop-blur-sm transition-all duration-200 rounded-xl"
+                disabled={sendingReply}
+              >
+                Cancel
+              </AlertDialogCancel>
+              <Button
+                onClick={handleSendReply}
+                disabled={sendingReply || !replyContent.trim()}
+                className="h-12 px-8 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200 rounded-xl"
+              >
+                {sendingReply ? (
+                  <>
+                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Send className="w-4 h-4 mr-2" />
+                    Send Reply
+                  </>
+                )}
+              </Button>
             </AlertDialogFooter>
           </div>
         </AlertDialogContent>

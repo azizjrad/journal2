@@ -1007,6 +1007,275 @@ export async function sendWriterApprovalEmail({
   }
 }
 
+export async function sendContactReplyEmail({
+  recipientEmail,
+  recipientName,
+  originalSubject,
+  originalMessage,
+  replyMessage,
+  attachments,
+}: {
+  recipientEmail: string;
+  recipientName: string;
+  originalSubject: string;
+  originalMessage: string;
+  replyMessage: string;
+  attachments?: Array<{
+    content: string;
+    filename: string;
+    type: string;
+  }>;
+}): Promise<boolean> {
+  try {
+    const msg: any = {
+      to: recipientEmail,
+      from: FROM_EMAIL,
+      subject: `Re: ${originalSubject}`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            body { 
+              margin: 0; 
+              padding: 0; 
+              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+              background-color: #f4f4f4; 
+              line-height: 1.6; 
+            }
+            .container { 
+              max-width: 600px; 
+              margin: 20px auto; 
+              background-color: #ffffff;
+              border-radius: 12px;
+              overflow: hidden;
+              box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+            .header { 
+              background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%); 
+              color: white; 
+              padding: 40px 30px; 
+              text-align: center; 
+            }
+            .header h1 {
+              margin: 0;
+              font-size: 36px;
+              text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+              letter-spacing: -1px;
+            }
+            .tagline {
+              color: rgba(255, 255, 255, 0.9);
+              font-size: 14px;
+              margin-top: 8px;
+              letter-spacing: 1px;
+            }
+            .content { 
+              background: #ffffff; 
+              padding: 40px 30px; 
+            }
+            .greeting {
+              font-size: 18px;
+              color: #1f2937;
+              margin-bottom: 20px;
+            }
+            .reply-box {
+              background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+              border-left: 4px solid #0ea5e9;
+              border-radius: 8px;
+              padding: 25px;
+              margin: 25px 0;
+              box-shadow: 0 2px 4px rgba(14, 165, 233, 0.1);
+            }
+            .reply-box h3 {
+              color: #0369a1;
+              margin-top: 0;
+              font-size: 18px;
+              display: flex;
+              align-items: center;
+            }
+            .reply-box h3:before {
+              content: "💬";
+              margin-right: 10px;
+              font-size: 20px;
+            }
+            .reply-content {
+              color: #374151;
+              line-height: 1.8;
+              white-space: pre-wrap;
+              word-wrap: break-word;
+            }
+            .original-message-box {
+              background: #f9fafb;
+              border: 2px solid #e5e7eb;
+              border-radius: 8px;
+              padding: 20px;
+              margin: 25px 0;
+            }
+            .original-message-box h4 {
+              color: #6b7280;
+              margin-top: 0;
+              font-size: 14px;
+              text-transform: uppercase;
+              letter-spacing: 0.5px;
+              display: flex;
+              align-items: center;
+            }
+            .original-message-box h4:before {
+              content: "📝";
+              margin-right: 8px;
+            }
+            .original-subject {
+              color: #1f2937;
+              font-weight: bold;
+              margin: 10px 0;
+            }
+            .original-content {
+              background: white;
+              padding: 15px;
+              border-radius: 6px;
+              color: #6b7280;
+              border-left: 3px solid #e5e7eb;
+              white-space: pre-wrap;
+              word-wrap: break-word;
+            }
+            .cta-button {
+              display: inline-block;
+              padding: 14px 32px;
+              background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+              color: #ffffff !important;
+              text-decoration: none;
+              border-radius: 8px;
+              font-weight: bold;
+              font-size: 16px;
+              margin: 20px 0;
+              box-shadow: 0 4px 6px rgba(220, 38, 38, 0.3);
+              transition: transform 0.2s;
+            }
+            .button-container {
+              text-align: center;
+              margin: 30px 0;
+            }
+            .divider {
+              height: 1px;
+              background: linear-gradient(to right, transparent, #e5e7eb, transparent);
+              margin: 30px 0;
+            }
+            .footer {
+              background-color: #f9fafb;
+              padding: 30px;
+              text-align: center;
+              border-top: 1px solid #e5e7eb;
+            }
+            .footer-text {
+              color: #6b7280;
+              font-size: 14px;
+              margin: 10px 0;
+            }
+            .footer-links {
+              margin: 15px 0;
+            }
+            .footer-links a {
+              color: #dc2626;
+              text-decoration: none;
+              margin: 0 10px;
+              font-size: 14px;
+              font-weight: 600;
+            }
+            .footer-links a:hover {
+              text-decoration: underline;
+            }
+            @media only screen and (max-width: 600px) {
+              .container {
+                margin: 10px;
+                border-radius: 8px;
+              }
+              .header {
+                padding: 30px 20px;
+              }
+              .header h1 {
+                font-size: 28px;
+              }
+              .content {
+                padding: 30px 20px;
+              }
+              .greeting {
+                font-size: 16px;
+              }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>Akhbarna</h1>
+              <p class="tagline">Your Trusted News Source</p>
+            </div>
+            
+            <div class="content">
+              <p class="greeting">
+                Hello <strong>${recipientName}</strong>,
+              </p>
+              
+              <p style="color: #4b5563; font-size: 16px; line-height: 1.8;">
+                Thank you for reaching out to Akhbarna. We've received your message and wanted to respond to your inquiry.
+              </p>
+
+              <div class="reply-box">
+                <h3>Our Response</h3>
+                <div class="reply-content">${replyMessage}</div>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="original-message-box">
+                <h4>Your Original Message</h4>
+                <p class="original-subject">Subject: ${originalSubject}</p>
+                <div class="original-content">${originalMessage}</div>
+              </div>
+
+              <p style="color: #6b7280; margin-top: 30px;">
+                If you have any additional questions or need further assistance, please don't hesitate to reach out to us again. We're here to help!
+              </p>
+
+              <div class="button-container">
+                <a href="${BASE_URL}/contact" class="cta-button" style="color: #ffffff !important; text-decoration: none;">
+                  Contact Us Again
+                </a>
+              </div>
+            </div>
+            
+            <div class="footer">
+              <div class="footer-links">
+                <a href="${BASE_URL}/about">About Us</a> •
+                <a href="${BASE_URL}/contact">Contact</a> •
+                <a href="${BASE_URL}/privacy">Privacy Policy</a>
+              </div>
+              <p class="footer-text">
+                <strong>Akhbarna</strong> - Your Trusted News Source
+              </p>
+              <p class="footer-text">
+                © ${new Date().getFullYear()} Akhbarna. All rights reserved.
+              </p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `,
+    };
+
+    // Add attachments if provided
+    if (attachments && attachments.length > 0) {
+      msg.attachments = attachments;
+    }
+
+    await sgMail.send(msg);
+    return true;
+  } catch (error) {
+    console.error("Error sending contact reply email:", error);
+    return false;
+  }
+}
+
 export async function sendContactFormNotificationToAdmin({
   senderName,
   senderEmail,
@@ -1617,7 +1886,9 @@ export async function sendWriterApplicationNotificationToAdmin({
                 
                 <div class="info-row">
                   <div class="info-label">Name:</div>
-                  <div class="info-value">${applicantName || "Not provided"}</div>
+                  <div class="info-value">${
+                    applicantName || "Not provided"
+                  }</div>
                 </div>
                 
                 <div class="info-row">
@@ -1685,7 +1956,10 @@ export async function sendWriterApplicationNotificationToAdmin({
     await sgMail.send(msg);
     return true;
   } catch (error) {
-    console.error("Error sending writer application notification to admin:", error);
+    console.error(
+      "Error sending writer application notification to admin:",
+      error
+    );
     return false;
   }
 }

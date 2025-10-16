@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
-import { replyToContactMessage, getUserById } from "@/lib/db";
+import { replyToContactMessage, getUserById, getContactMessageById } from "@/lib/db";
+import { sendContactReplyEmail } from "@/lib/email-sendgrid";
 import jwt from "jsonwebtoken";
 
 export async function POST(
@@ -38,7 +39,7 @@ export async function POST(
       }
 
       const { id } = await params;
-      const { reply } = await request.json();
+      const { reply, attachments } = await request.json();
 
       // Validate reply
       if (!reply || typeof reply !== "string") {
@@ -64,6 +65,16 @@ export async function POST(
 
       console.log("💬 Admin replying to contact message:", { id, adminUserId });
 
+      // Get the original contact message
+      const contactMessage = await getContactMessageById(id);
+      if (!contactMessage) {
+        return NextResponse.json(
+          { error: "Contact message not found" },
+          { status: 404 }
+        );
+      }
+
+      // Save reply to database
       const success = await replyToContactMessage(
         id,
         reply.trim(),
@@ -75,6 +86,22 @@ export async function POST(
           { error: "Failed to send reply" },
           { status: 400 }
         );
+      }
+
+      // Send email notification to the user
+      try {
+        await sendContactReplyEmail({
+          recipientEmail: contactMessage.email,
+          recipientName: contactMessage.name,
+          originalSubject: contactMessage.subject,
+          originalMessage: contactMessage.message,
+          replyMessage: reply.trim(),
+          attachments: attachments || [],
+        });
+        console.log("✅ Reply email sent to:", contactMessage.email);
+      } catch (emailError) {
+        console.error("❌ Failed to send reply email:", emailError);
+        // Don't fail the request if email fails - reply is already saved
       }
 
       console.log("✅ Reply sent successfully");
