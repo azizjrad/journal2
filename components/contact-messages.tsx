@@ -173,20 +173,34 @@ export function ContactMessages() {
       });
 
       if (response.ok) {
-        // Refetch messages to ensure data consistency
-        await fetchMessages();
-        toast.success("Message marked as read");
+        const data = await response.json();
+        console.log("✅ Mark as read success:", data);
+        // Update local state immediately
+        setMessages((prevMessages) =>
+          prevMessages.map((msg) =>
+            msg.id === messageId ? { ...msg, is_read: true } : msg
+          )
+        );
+        // Update stats
+        setStats((prevStats) => ({
+          ...prevStats,
+          unread: Math.max(0, prevStats.unread - 1),
+        }));
       } else {
         const errorData = await response.json().catch(() => ({}));
         console.error("❌ Mark as read API error:", {
           status: response.status,
+          statusText: response.statusText,
           error: errorData,
         });
-        toast.error(
-          `Failed to mark message as read: ${
-            errorData.error || "Unknown error"
-          }`
-        );
+        // Don't show toast error if already read
+        if (response.status !== 400) {
+          toast.error(
+            `Failed to mark message as read: ${
+              errorData.error || "Unknown error"
+            }`
+          );
+        }
       }
     } catch (error) {
       console.error("Error marking message as read:", error);
@@ -711,7 +725,9 @@ export function ContactMessages() {
                         </label>
                         <p className="text-white font-semibold flex items-center gap-2 break-all">
                           <Mail className="w-4 h-4 text-green-400 flex-shrink-0" />
-                          <span className="break-all">{selectedMessage.email}</span>
+                          <span className="break-all">
+                            {selectedMessage.email}
+                          </span>
                           <a
                             href={`mailto:${selectedMessage.email}`}
                             onClick={(e) => e.stopPropagation()}
