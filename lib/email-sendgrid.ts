@@ -1609,15 +1609,6 @@ export async function sendContactFormNotificationToAdmin({
                   <div class="info-label">Subject:</div>
                   <div class="info-value"><strong>${subject}</strong></div>
                 </div>
-                
-                <div class="info-row">
-                  <div class="info-label">Message ID:</div>
-                  <div class="info-value">
-                    <code style="background: #f3f4f6; padding: 2px 6px; border-radius: 4px; font-size: 12px;">
-                      ${messageId}
-                    </code>
-                  </div>
-                </div>
               </div>
 
               <div class="message-box">

@@ -313,16 +313,23 @@ export function ContactMessages() {
   const MessageCard = ({ message }: { message: ContactMessage }) => {
     return (
       <div
-        className={`bg-white/10 backdrop-blur-sm border rounded-xl p-6 hover:bg-white/15 transition-all duration-300 shadow-lg ${
+        className={`bg-white/10 backdrop-blur-sm border rounded-xl p-6 transition-all duration-300 shadow-lg cursor-pointer ${
           !message.is_read
-            ? "border-blue-400/50 bg-blue-500/10"
-            : "border-white/20"
+            ? "border-blue-400/50 bg-blue-500/10 hover:bg-blue-500/15"
+            : "border-white/20 hover:bg-white/15"
         }`}
+        onClick={() => {
+          setSelectedMessage(message);
+          setShowViewDialog(true);
+          if (!message.is_read) {
+            markAsRead(message.id);
+          }
+        }}
       >
-        <div className="flex items-start justify-between">
-          <div className="flex items-start space-x-4 flex-1">
+        <div className="flex items-start justify-between gap-4">
+          <div className="flex items-start space-x-4 flex-1 min-w-0">
             <div
-              className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold shadow-lg ${
+              className={`w-12 h-12 rounded-full flex items-center justify-center text-white font-semibold shadow-lg flex-shrink-0 ${
                 message.is_read
                   ? "bg-gradient-to-br from-gray-500 to-gray-600"
                   : "bg-gradient-to-br from-blue-500 to-blue-600"
@@ -331,28 +338,28 @@ export function ContactMessages() {
               {message.name.charAt(0).toUpperCase()}
             </div>
             <div className="flex-1 min-w-0">
-              <div className="flex items-center gap-2 mb-1">
-                <h3 className="font-semibold text-white truncate text-lg">
+              <div className="flex items-center gap-2 mb-1 flex-wrap">
+                <h3 className="font-semibold text-white text-lg">
                   {message.name}
                 </h3>
                 {!message.is_read && (
-                  <Badge className="bg-blue-500/20 text-blue-300 border-blue-400/30">
+                  <Badge className="bg-blue-500/20 text-blue-300 border-blue-400/30 text-xs">
                     New
                   </Badge>
                 )}
               </div>
-              <p className="text-gray-300 truncate flex items-center gap-1">
-                <Mail className="w-3 h-3" />
-                {message.email}
+              <p className="text-gray-300 flex items-center gap-1 text-sm mb-2 break-all">
+                <Mail className="w-3 h-3 flex-shrink-0" />
+                <span className="truncate">{message.email}</span>
               </p>
-              <p className="text-lg font-medium text-white mt-2 truncate">
+              <p className="text-lg font-medium text-white mb-2 break-words">
                 {message.subject}
               </p>
-              <p className="text-gray-400 mt-1 line-clamp-2">
+              <p className="text-gray-400 text-sm break-words line-clamp-2">
                 {message.message}
               </p>
 
-              <div className="flex items-center gap-4 mt-3 text-sm text-gray-400">
+              <div className="flex items-center gap-4 mt-3 text-xs text-gray-400">
                 <span className="flex items-center gap-1">
                   <Calendar className="w-3 h-3" />
                   {formatDate(message.created_at)}
@@ -361,28 +368,31 @@ export function ContactMessages() {
             </div>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-shrink-0">
             {/* Reply Button */}
             <Button
               size="sm"
               variant="outline"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 setSelectedMessage(message);
                 setShowReplyDialog(true);
                 setReplyContent("");
                 setReplyAttachments([]);
               }}
               disabled={actionLoading === message.id}
-              className="h-8 px-3 bg-green-600/20 hover:bg-green-600/30 text-green-300 hover:text-white border border-green-500/30 hover:border-green-500/50 backdrop-blur-sm transition-all duration-200 rounded-lg"
+              title="Reply to message"
+              className="h-9 w-9 p-0 bg-green-600/20 hover:bg-green-600/30 text-green-300 hover:text-white border border-green-500/30 hover:border-green-500/50 backdrop-blur-sm transition-all duration-200 rounded-lg"
             >
-              <Reply className="w-3 h-3" />
+              <Reply className="w-4 h-4" />
             </Button>
 
             {/* View Button */}
             <Button
               size="sm"
               variant="outline"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 setSelectedMessage(message);
                 setShowViewDialog(true);
                 if (!message.is_read) {
@@ -390,23 +400,26 @@ export function ContactMessages() {
                 }
               }}
               disabled={actionLoading === message.id}
-              className="h-8 px-3 bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 hover:text-white border border-blue-500/30 hover:border-blue-500/50 backdrop-blur-sm transition-all duration-200 rounded-lg"
+              title="View full message"
+              className="h-9 w-9 p-0 bg-blue-600/20 hover:bg-blue-600/30 text-blue-300 hover:text-white border border-blue-500/30 hover:border-blue-500/50 backdrop-blur-sm transition-all duration-200 rounded-lg"
             >
-              <Eye className="w-3 h-3" />
+              <Eye className="w-4 h-4" />
             </Button>
 
             {/* Delete Button */}
             <Button
               size="sm"
               variant="outline"
-              onClick={() => {
+              onClick={(e) => {
+                e.stopPropagation();
                 setSelectedMessage(message);
                 setShowDeleteDialog(true);
               }}
               disabled={actionLoading === message.id}
-              className="h-8 px-3 bg-red-600/20 hover:bg-red-600/30 text-red-300 hover:text-white border border-red-500/30 hover:border-red-500/50 backdrop-blur-sm transition-all duration-200 rounded-lg"
+              title="Delete message"
+              className="h-9 w-9 p-0 bg-red-600/20 hover:bg-red-600/30 text-red-300 hover:text-white border border-red-500/30 hover:border-red-500/50 backdrop-blur-sm transition-all duration-200 rounded-lg"
             >
-              <Trash2 className="w-3 h-3" />
+              <Trash2 className="w-4 h-4" />
             </Button>
           </div>
         </div>
@@ -663,68 +676,131 @@ export function ContactMessages() {
 
       {/* View Message Dialog */}
       <AlertDialog open={showViewDialog} onOpenChange={setShowViewDialog}>
-        <AlertDialogContent className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl max-w-2xl">
-          <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-2xl"></div>
-          <div className="relative max-h-[80vh] overflow-y-auto">
-            <AlertDialogHeader className="space-y-4 pb-6">
-              <AlertDialogTitle className="text-2xl font-bold text-white">
-                Contact Message
-              </AlertDialogTitle>
+        <AlertDialogContent className="bg-gradient-to-br from-gray-900 to-gray-800 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl max-w-3xl">
+          <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-2xl pointer-events-none"></div>
+          <div className="relative max-h-[85vh] overflow-y-auto">
+            <AlertDialogHeader className="space-y-6 pb-6">
+              <div className="flex items-start justify-between">
+                <AlertDialogTitle className="text-2xl font-bold text-white flex items-center gap-2">
+                  <Mail className="w-6 h-6 text-blue-400" />
+                  Message Details
+                </AlertDialogTitle>
+                {selectedMessage && !selectedMessage.is_read && (
+                  <Badge className="bg-blue-500/20 text-blue-300 border-blue-400/30">
+                    New
+                  </Badge>
+                )}
+              </div>
               {selectedMessage && (
-                <div className="space-y-4">
-                  <div className="grid grid-cols-2 gap-4">
-                    <div>
-                      <label className="text-sm font-medium text-gray-300">
-                        Name
-                      </label>
-                      <p className="text-white">{selectedMessage.name}</p>
-                    </div>
-                    <div>
-                      <label className="text-sm font-medium text-gray-300">
-                        Email
-                      </label>
-                      <p className="text-white flex items-center gap-2">
-                        {selectedMessage.email}
-                        <a
-                          href={`mailto:${selectedMessage.email}`}
-                          className="text-blue-400 hover:text-blue-300"
-                        >
-                          <ExternalLink className="w-3 h-3" />
-                        </a>
-                      </p>
+                <div className="space-y-5">
+                  {/* Sender Info Card */}
+                  <div className="bg-white/5 border border-white/10 rounded-xl p-5">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div>
+                        <label className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2 block">
+                          Sender Name
+                        </label>
+                        <p className="text-white font-semibold text-lg flex items-center gap-2">
+                          <User className="w-4 h-4 text-blue-400" />
+                          {selectedMessage.name}
+                        </p>
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2 block">
+                          Email Address
+                        </label>
+                        <p className="text-white font-semibold flex items-center gap-2 break-all">
+                          <Mail className="w-4 h-4 text-green-400 flex-shrink-0" />
+                          <span className="break-all">{selectedMessage.email}</span>
+                          <a
+                            href={`mailto:${selectedMessage.email}`}
+                            onClick={(e) => e.stopPropagation()}
+                            className="text-blue-400 hover:text-blue-300 flex-shrink-0"
+                            title="Send email"
+                          >
+                            <ExternalLink className="w-4 h-4" />
+                          </a>
+                        </p>
+                      </div>
                     </div>
                   </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-300">
+
+                  {/* Subject Card */}
+                  <div className="bg-white/5 border border-white/10 rounded-xl p-5">
+                    <label className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2 block">
                       Subject
                     </label>
-                    <p className="text-white">{selectedMessage.subject}</p>
+                    <p className="text-white font-semibold text-lg break-words">
+                      {selectedMessage.subject}
+                    </p>
                   </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-300">
-                      Message
+
+                  {/* Message Content Card */}
+                  <div className="bg-white/5 border border-white/10 rounded-xl p-5">
+                    <label className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-3 block">
+                      Message Content
                     </label>
-                    <div className="bg-white/5 border border-white/10 rounded-lg p-4 mt-2">
-                      <p className="text-gray-200 whitespace-pre-wrap">
+                    <div className="bg-white/5 border border-white/10 rounded-lg p-4 max-h-96 overflow-y-auto">
+                      <p className="text-gray-200 whitespace-pre-wrap break-words leading-relaxed">
                         {selectedMessage.message}
                       </p>
                     </div>
                   </div>
-                  <div>
-                    <label className="text-sm font-medium text-gray-300">
-                      Received
-                    </label>
-                    <p className="text-white">
-                      {formatDate(selectedMessage.created_at)}
-                    </p>
+
+                  {/* Metadata Card */}
+                  <div className="bg-white/5 border border-white/10 rounded-xl p-5">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <label className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2 block">
+                          Received On
+                        </label>
+                        <p className="text-white flex items-center gap-2">
+                          <Calendar className="w-4 h-4 text-purple-400" />
+                          {formatDate(selectedMessage.created_at)}
+                        </p>
+                      </div>
+                      <div>
+                        <label className="text-xs font-medium text-gray-400 uppercase tracking-wider mb-2 block">
+                          Status
+                        </label>
+                        <p className="text-white flex items-center gap-2">
+                          {selectedMessage.is_read ? (
+                            <>
+                              <CheckCircle className="w-4 h-4 text-green-400" />
+                              <span className="text-green-400">Read</span>
+                            </>
+                          ) : (
+                            <>
+                              <Clock className="w-4 h-4 text-yellow-400" />
+                              <span className="text-yellow-400">Unread</span>
+                            </>
+                          )}
+                        </p>
+                      </div>
+                    </div>
                   </div>
                 </div>
               )}
             </AlertDialogHeader>
-            <AlertDialogFooter className="gap-3">
-              <AlertDialogCancel className="h-12 px-6 bg-gray-800/50 border-white/40 text-white backdrop-blur-sm transition-all duration-200 rounded-xl">
+            <AlertDialogFooter className="gap-3 mt-6">
+              <AlertDialogCancel className="h-11 px-6 bg-white/10 hover:bg-white/20 border-white/20 text-white backdrop-blur-sm transition-all duration-200 rounded-xl">
                 Close
               </AlertDialogCancel>
+              {selectedMessage && (
+                <Button
+                  onClick={(e) => {
+                    e.preventDefault();
+                    setShowViewDialog(false);
+                    setShowReplyDialog(true);
+                    setReplyContent("");
+                    setReplyAttachments([]);
+                  }}
+                  className="h-11 px-6 bg-gradient-to-r from-green-600 to-green-700 hover:from-green-700 hover:to-green-800 text-white font-semibold shadow-lg hover:shadow-xl transition-all duration-200 rounded-xl"
+                >
+                  <Reply className="w-4 h-4 mr-2" />
+                  Reply
+                </Button>
+              )}
             </AlertDialogFooter>
           </div>
         </AlertDialogContent>
