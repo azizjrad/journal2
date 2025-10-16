@@ -92,6 +92,41 @@ export default function TermsPage() {
 
               <div>
                 <h2 className="text-2xl font-semibold text-gray-900 mb-4">
+                  Subscription and Refund Policy
+                </h2>
+                <p className="text-gray-600 leading-relaxed mb-4">
+                  Akhbarna offers subscription-based premium content with a free
+                  trial period. By subscribing, you agree to the following terms:
+                </p>
+                <ul className="list-disc list-inside text-gray-600 space-y-2 ml-4">
+                  <li>
+                    After your free trial ends, your subscription will
+                    automatically renew and you will be charged the applicable
+                    subscription rate.
+                  </li>
+                  <li>
+                    You may cancel your subscription at any time through your
+                    account settings or by contacting customer support.
+                  </li>
+                  <li>
+                    <strong>Refund Policy:</strong> Payments are generally
+                    non-refundable. However, you may request a refund within 14
+                    days of being charged. Refunds will be issued at our
+                    discretion on a case-by-case basis.
+                  </li>
+                  <li>
+                    To cancel before your trial ends and avoid being charged,
+                    you must cancel at least 24 hours before the trial
+                    expiration date.
+                  </li>
+                  <li>
+                    Subscription fees are subject to change with advance notice.
+                  </li>
+                </ul>
+              </div>
+
+              <div>
+                <h2 className="text-2xl font-semibold text-gray-900 mb-4">
                   Modifications
                 </h2>
                 <p className="text-gray-600 leading-relaxed">

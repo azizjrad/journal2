@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import { verifyAuth } from "@/lib/auth";
+import { cookies } from "next/headers";
+import { verifyToken } from "@/lib/auth";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-08-27.basil" as any,
@@ -8,11 +9,17 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
 
 export async function POST(request: NextRequest) {
   try {
-    // Verify authentication using your existing auth system
-    const authResult = await verifyAuth(request);
+    // Verify authentication using JWT token from cookies
+    const cookieStore = await cookies();
+    const token = cookieStore.get("auth-token")?.value;
 
-    if (!authResult.authenticated || !authResult.user) {
+    if (!token) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const payload = verifyToken(token);
+    if (!payload || !payload.userId) {
+      return NextResponse.json({ error: "Invalid token" }, { status: 401 });
     }
 
     const { customerId } = await request.json();
