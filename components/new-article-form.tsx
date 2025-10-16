@@ -57,10 +57,6 @@ export function NewArticleForm({
   isWriterMode = false,
 }: NewArticleFormProps) {
   const router = useRouter();
-  // DEBUG: Log categories received from backend
-  if (typeof window !== "undefined") {
-    console.log("[DEBUG] Categories received (prop):", initialCategories);
-  }
 
   // State for categories (for client-side fetch)
   const [categories, setCategories] = useState(initialCategories || []);
@@ -75,10 +71,9 @@ export function NewArticleForm({
         .then((res) => res.json())
         .then((data) => {
           setCategories(data);
-          console.log("[DEBUG] Categories fetched from API:", data);
         })
         .catch((err) => {
-          console.error("[DEBUG] Error fetching categories from API:", err);
+          console.error("Error fetching categories from API:", err);
         });
     }
   }, [initialCategories]);

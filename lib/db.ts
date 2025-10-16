@@ -562,8 +562,6 @@ export async function getCategories(): Promise<CategoryInterface[]> {
   await dbConnect();
 
   const categories = await Category.find({}).sort({ name_en: 1 }).lean();
-  // DEBUG: Log categories fetched from DB
-  console.log("[DEBUG] Categories fetched:", categories);
 
   return convertDoc(categories);
 }

@@ -96,12 +96,7 @@ export default async function HomePage() {
       content_ar: bigStory[0].content_ar || "",
     };
   }
-  // DEBUG: Log featuredArticlesRaw and featuredArticles to troubleshoot empty homepage
-  // Remove these logs after debugging
-  function debugLog(label: string, data: any) {
-    // eslint-disable-next-line no-console
-    console.log(`[DEBUG] ${label}:`, JSON.stringify(data, null, 2));
-  }
+
   // Try to get featured articles from Redis cache
   let featuredArticlesRaw: ArticleInterface[];
   try {
@@ -109,10 +104,8 @@ export default async function HomePage() {
     const cached = await redis.get("featuredArticles");
     if (cached) {
       featuredArticlesRaw = JSON.parse(cached);
-      debugLog("featuredArticlesRaw (from Redis)", featuredArticlesRaw);
     } else {
       featuredArticlesRaw = await getFeaturedArticlesCached(5);
-      debugLog("featuredArticlesRaw (from DB)", featuredArticlesRaw);
       await redis.set("featuredArticles", JSON.stringify(featuredArticlesRaw), {
         EX: 60,
       }); // cache for 60s
@@ -120,7 +113,6 @@ export default async function HomePage() {
   } catch (e) {
     // Fallback to DB if Redis fails
     featuredArticlesRaw = await getFeaturedArticlesCached(5);
-    debugLog("featuredArticlesRaw (from DB fallback)", featuredArticlesRaw);
   }
 
   // Other data loads as before
@@ -165,7 +157,6 @@ export default async function HomePage() {
   const featuredArticles: Article[] = featuredArticlesRaw
     .map(toMinimalArticle)
     .filter((a): a is Article => a !== null);
-  debugLog("featuredArticles (final for HomeContent)", featuredArticles);
   const otherArticles: Article[] = otherArticlesRaw
     .map(toMinimalArticle)
     .filter((a): a is Article => a !== null);
