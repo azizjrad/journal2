@@ -32,3 +32,5 @@ next-env.d.ts
 # documentation files (ignore all .md files except README.md)
 *.md
 !README.md
+# Backup files
+backups/
