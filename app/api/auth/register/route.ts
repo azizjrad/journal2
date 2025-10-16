@@ -15,7 +15,10 @@ import {
   getEmailVerificationExpiry,
   checkRateLimit,
 } from "@/lib/auth";
-import { sendVerificationEmail, sendWriterApplicationNotificationToAdmin } from "@/lib/email-sendgrid";
+import {
+  sendVerificationEmail,
+  sendWriterApplicationNotificationToAdmin,
+} from "@/lib/email-sendgrid";
 import { validateCsrf } from "@/lib/csrf";
 
 export async function POST(request: NextRequest) {
@@ -195,7 +198,10 @@ export async function POST(request: NextRequest) {
           applicantId: String(user.id),
         });
       } catch (err) {
-        console.error("Failed to send admin notification for writer application:", err);
+        console.error(
+          "Failed to send admin notification for writer application:",
+          err
+        );
         // Don't fail the registration if admin notification fails
       }
     }

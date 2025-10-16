@@ -81,7 +81,10 @@ export async function POST(request: NextRequest) {
         message: message.trim(),
         messageId: String(contactMessage._id),
       });
-      console.log("✅ Admin notification email sent for contact message:", contactMessage._id);
+      console.log(
+        "✅ Admin notification email sent for contact message:",
+        contactMessage._id
+      );
     } catch (emailError) {
       console.error("❌ Failed to send admin notification email:", emailError);
       // Don't fail the request if email fails

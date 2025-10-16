@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { replyToContactMessage, getUserById, getContactMessageById } from "@/lib/db";
+import {
+  replyToContactMessage,
+  getUserById,
+  getContactMessageById,
+} from "@/lib/db";
 import { sendContactReplyEmail } from "@/lib/email-sendgrid";
 import jwt from "jsonwebtoken";
 

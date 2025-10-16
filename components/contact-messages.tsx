@@ -95,7 +95,7 @@ export function ContactMessages() {
   const [showReplyDialog, setShowReplyDialog] = useState(false);
   const [actionLoading, setActionLoading] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState("all");
-  
+
   // Reply form states
   const [replyContent, setReplyContent] = useState("");
   const [replyAttachments, setReplyAttachments] = useState<File[]>([]);
@@ -778,19 +778,27 @@ export function ContactMessages() {
                     <div className="grid grid-cols-2 gap-3 text-sm">
                       <div>
                         <label className="text-gray-400">From</label>
-                        <p className="text-white font-medium">{selectedMessage.name}</p>
+                        <p className="text-white font-medium">
+                          {selectedMessage.name}
+                        </p>
                       </div>
                       <div>
                         <label className="text-gray-400">Email</label>
-                        <p className="text-white font-medium">{selectedMessage.email}</p>
+                        <p className="text-white font-medium">
+                          {selectedMessage.email}
+                        </p>
                       </div>
                     </div>
                     <div className="mt-3">
                       <label className="text-gray-400 text-sm">Subject</label>
-                      <p className="text-white font-medium">{selectedMessage.subject}</p>
+                      <p className="text-white font-medium">
+                        {selectedMessage.subject}
+                      </p>
                     </div>
                     <div className="mt-3">
-                      <label className="text-gray-400 text-sm">Original Message</label>
+                      <label className="text-gray-400 text-sm">
+                        Original Message
+                      </label>
                       <div className="bg-white/5 rounded p-3 mt-1 max-h-32 overflow-y-auto">
                         <p className="text-gray-300 text-sm whitespace-pre-wrap">
                           {selectedMessage.message}
@@ -819,7 +827,7 @@ export function ContactMessages() {
 
                     {/* Attachments */}
                     <div>
-                      <label className="text-white font-medium mb-2 block flex items-center gap-2">
+                      <label className="text-white font-medium mb-2 flex items-center gap-2">
                         <Paperclip className="w-4 h-4" />
                         Attachments (Optional)
                       </label>
