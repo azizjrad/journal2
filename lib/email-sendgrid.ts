@@ -2113,3 +2113,126 @@ export async function sendSubscriptionRenewalEmail({
     return false;
   }
 }
+
+// Send account deletion notification email
+export async function sendAccountDeletionEmail({
+  email,
+  firstName,
+  lastName,
+  reason,
+}: {
+  email: string;
+  firstName?: string;
+  lastName?: string;
+  reason?: string;
+}) {
+  try {
+    const name = firstName
+      ? `${firstName} ${lastName || ""}`.trim()
+      : email.split("@")[0];
+
+    const msg = {
+      to: email,
+      from: {
+        email: FROM_EMAIL,
+        name: FROM_NAME,
+      },
+      subject: "Your Account Has Been Deleted - Akhbarna",
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Account Deleted</title>
+        </head>
+        <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif; line-height: 1.6; color: #1f2937; margin: 0; padding: 0; background-color: #f3f4f6;">
+          <div style="max-width: 600px; margin: 40px auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">
+            <!-- Header with gradient background -->
+            <div style="background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); padding: 40px 30px; text-align: center;">
+              <div style="background-color: rgba(255, 255, 255, 0.2); width: 80px; height: 80px; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; backdrop-filter: blur(10px);">
+                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+              </div>
+              <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: 700;">Account Deleted</h1>
+            </div>
+
+            <!-- Content -->
+            <div style="padding: 40px 30px;">
+              <p style="font-size: 16px; color: #374151; margin-bottom: 20px;">
+                Hello ${name},
+              </p>
+
+              <p style="font-size: 16px; color: #374151; margin-bottom: 20px;">
+                We're writing to inform you that your Akhbarna account has been deleted by an administrator.
+              </p>
+
+              ${
+                reason
+                  ? `
+              <div style="background-color: #fef2f2; border-left: 4px solid #dc2626; padding: 15px 20px; margin: 25px 0; border-radius: 4px;">
+                <p style="margin: 0; color: #991b1b; font-size: 14px;">
+                  <strong>Reason:</strong> ${reason}
+                </p>
+              </div>
+              `
+                  : ""
+              }
+
+              <div style="background-color: #f9fafb; padding: 20px; border-radius: 8px; margin: 25px 0;">
+                <h3 style="color: #1f2937; font-size: 16px; font-weight: 600; margin: 0 0 15px 0;">
+                  What This Means:
+                </h3>
+                <ul style="margin: 0; padding-left: 20px; color: #4b5563;">
+                  <li style="margin-bottom: 8px;">Your account and all associated data have been permanently removed</li>
+                  <li style="margin-bottom: 8px;">You no longer have access to premium content or features</li>
+                  <li style="margin-bottom: 8px;">Any active subscriptions have been canceled</li>
+                  <li style="margin-bottom: 8px;">You will not receive any further emails from us</li>
+                </ul>
+              </div>
+
+              <p style="font-size: 16px; color: #374151; margin-bottom: 20px;">
+                If you believe this was done in error or have any questions, please contact our support team immediately.
+              </p>
+
+              <div style="text-align: center; margin: 30px 0;">
+                <a href="${BASE_URL}/contact" style="display: inline-block; background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%); color: #ffffff; text-decoration: none; padding: 14px 32px; border-radius: 8px; font-weight: 600; font-size: 16px; box-shadow: 0 4px 6px rgba(220, 38, 38, 0.2);">
+                  Contact Support
+                </a>
+              </div>
+
+              <div style="background-color: #fffbeb; border: 1px solid #fcd34d; padding: 15px; border-radius: 8px; margin: 25px 0;">
+                <p style="margin: 0; color: #92400e; font-size: 14px; line-height: 1.5;">
+                  <strong>⚠️ Note:</strong> If you wish to use Akhbarna in the future, you'll need to create a new account.
+                </p>
+              </div>
+
+              <p style="font-size: 14px; color: #6b7280; margin-top: 30px;">
+                Thank you for being part of the Akhbarna community.
+              </p>
+            </div>
+
+            <!-- Footer -->
+            <div style="background-color: #f9fafb; padding: 25px 30px; border-top: 1px solid #e5e7eb;">
+              <p style="font-size: 12px; color: #6b7280; margin: 0 0 10px 0; text-align: center;">
+                © ${new Date().getFullYear()} Akhbarna. All rights reserved.
+              </p>
+              <p style="font-size: 12px; color: #9ca3af; margin: 0; text-align: center;">
+                <a href="${BASE_URL}/contact" style="color: #dc2626;">Contact Support</a>
+              </p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `,
+    };
+    await sgMail.send(msg);
+    return true;
+  } catch (error) {
+    console.error("Error sending account deletion email:", error);
+    return false;
+  }
+}

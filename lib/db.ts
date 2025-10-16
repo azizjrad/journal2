@@ -1255,7 +1255,47 @@ export async function deleteUser(id: string): Promise<void> {
     );
   }
 
+  // Send account deletion email notification
+  try {
+    const { sendAccountDeletionEmail } = await import("./email-sendgrid");
+    await sendAccountDeletionEmail({
+      email: user.email,
+      firstName: user.first_name,
+      lastName: user.last_name,
+      reason: "Your account has been deleted by an administrator.",
+    });
+    console.log(`✅ Sent account deletion email to: ${user.email}`);
+  } catch (emailError) {
+    console.error("❌ Failed to send account deletion email:", emailError);
+    // Continue with deletion even if email fails
+  }
+
+  // Delete all related data
+  const userId = new Types.ObjectId(id);
+
+  // Delete newsletter subscriptions (if any)
+  await NewsletterSubscription.deleteMany({ user_id: userId });
+  console.log(`✅ Deleted newsletter subscriptions for user: ${id}`);
+
+  // Delete user profile (if exists)
+  await UserProfile.deleteOne({ user_id: userId });
+  console.log(`✅ Deleted user profile for user: ${id}`);
+
+  // Delete writer application (if exists)
+  await WriterApplication.deleteOne({ user_id: userId });
+  console.log(`✅ Deleted writer application for user: ${id}`);
+
+  // Delete article reports made by this user
+  await ArticleReport.deleteMany({ reporter_id: userId });
+  console.log(`✅ Deleted article reports by user: ${id}`);
+
+  // Delete contact messages from this user
+  await ContactMessage.deleteMany({ email: user.email });
+  console.log(`✅ Deleted contact messages from user: ${id}`);
+
+  // Finally, delete the user
   await User.findByIdAndDelete(id);
+  console.log(`✅ Deleted user: ${id}`);
 }
 
 export async function getAllUsers(role?: string): Promise<UserInterface[]> {
@@ -2832,11 +2872,19 @@ export async function getNewsletterSubscriptionById(
 ): Promise<any> {
   await dbConnect();
 
-  const subscription = await NewsletterSubscription.findOne({
-    subscription_id: subscriptionId,
-  })
+  // Try to find by MongoDB _id first, then fall back to subscription_id
+  let subscription = await NewsletterSubscription.findById(subscriptionId)
     .populate("user_id", "email first_name last_name")
     .lean();
+
+  // If not found by _id, try subscription_id
+  if (!subscription) {
+    subscription = await NewsletterSubscription.findOne({
+      subscription_id: subscriptionId,
+    })
+      .populate("user_id", "email first_name last_name")
+      .lean();
+  }
 
   return convertDoc(subscription);
 }
@@ -2870,11 +2918,21 @@ export async function updateNewsletterSubscription(
     updateData.cancel_at_period_end = updates.cancelAtPeriodEnd;
   if (updates.paymentMethod) updateData.payment_method = updates.paymentMethod;
 
-  const subscription = await NewsletterSubscription.findOneAndUpdate(
-    { subscription_id: subscriptionId },
+  // Try to find by MongoDB _id first, then fall back to subscription_id
+  let subscription = await NewsletterSubscription.findByIdAndUpdate(
+    subscriptionId,
     { $set: updateData },
     { new: true }
   ).lean();
+
+  // If not found by _id, try subscription_id
+  if (!subscription) {
+    subscription = await NewsletterSubscription.findOneAndUpdate(
+      { subscription_id: subscriptionId },
+      { $set: updateData },
+      { new: true }
+    ).lean();
+  }
 
   return convertDoc(subscription);
 }

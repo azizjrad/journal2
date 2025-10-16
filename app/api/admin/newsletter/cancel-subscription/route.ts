@@ -56,8 +56,17 @@ export async function POST(request: NextRequest) {
     }
 
     // Get user data for email
-    const user = await getUserById(subscription.user_id.toString());
-    if (!user) {
+    // user_id is populated by getNewsletterSubscriptionById, so it's already a user object
+    const user =
+      typeof subscription.user_id === "object" && subscription.user_id?.email
+        ? subscription.user_id
+        : await getUserById(
+            typeof subscription.user_id === "string"
+              ? subscription.user_id
+              : subscription.user_id?.toString() || ""
+          );
+
+    if (!user || !user.email) {
       return NextResponse.json(
         { success: false, error: "User not found" },
         { status: 404 }

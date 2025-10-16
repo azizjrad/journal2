@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
+import { toast } from "@/lib/use-toast";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -158,17 +159,35 @@ export function NewsletterSubscribers({
       const data = await response.json();
 
       if (data.success) {
+        // Show success toast
+        toast({
+          title: "Subscription Canceled",
+          description: `Successfully canceled subscription for ${subscriberToCancel.firstName} ${subscriberToCancel.lastName}`,
+          variant: "default",
+        });
+
         // Refresh the subscribers list
-        await fetchSubscribers();
+        await fetchSubscribers(true);
         setCancelDialogOpen(false);
         setSubscriberToCancel(null);
       } else {
+        // Show error toast
+        toast({
+          title: "Cancellation Failed",
+          description: data.error || "Failed to cancel subscription",
+          variant: "destructive",
+        });
         console.error("Failed to cancel subscription:", data.error);
-        alert(`Failed to cancel subscription: ${data.error}`);
       }
     } catch (error) {
+      // Show error toast
+      toast({
+        title: "Error",
+        description:
+          "An unexpected error occurred while canceling the subscription",
+        variant: "destructive",
+      });
       console.error("Error canceling subscription:", error);
-      alert("An error occurred while canceling the subscription");
     } finally {
       setCanceling(false);
     }
@@ -212,7 +231,8 @@ export function NewsletterSubscribers({
         .toLowerCase()
         .includes(searchTerm.toLowerCase());
 
-    const matchesPlan = filterPlan === "all" || subscriber.plan === filterPlan;
+    const matchesPlan =
+      filterPlan === "all" || subscriber.billingPeriod === filterPlan;
     const matchesStatus =
       filterStatus === "all" || subscriber.status === filterStatus;
 
@@ -567,20 +587,19 @@ export function NewsletterSubscribers({
                 {subscriberToCancel?.firstName} {subscriberToCancel?.lastName}
               </span>{" "}
               ({subscriberToCancel?.email})?
-              <br />
-              <br />
-              This action will:
-              <ul className="list-disc list-inside mt-2 space-y-1">
+            </AlertDialogDescription>
+            <div className="text-sm text-gray-300 space-y-3 pt-2">
+              <p>This action will:</p>
+              <ul className="list-disc list-inside space-y-1 pl-2">
                 <li>Immediately cancel their subscription in Stripe</li>
                 <li>Update their status to "canceled" in the database</li>
                 <li>Send them a cancellation confirmation email</li>
                 <li>Remove their access to premium content</li>
               </ul>
-              <br />
-              <span className="text-yellow-400 font-medium">
+              <p className="text-yellow-400 font-medium">
                 This action cannot be undone.
-              </span>
-            </AlertDialogDescription>
+              </p>
+            </div>
           </AlertDialogHeader>
           <AlertDialogFooter>
             <AlertDialogCancel

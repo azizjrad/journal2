@@ -13,6 +13,16 @@ import { Badge } from "@/components/ui/badge";
 import { Breadcrumb } from "@/components/breadcrumb";
 import Header from "@/components/header";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
+import {
   User,
   Mail,
   MapPin,
@@ -26,9 +36,12 @@ import {
   EyeOff,
   Save,
   LogOut,
+  XCircle,
+  AlertTriangle,
 } from "lucide-react";
 import { useAuth } from "@/lib/user-auth";
 import api from "@/lib/api-client";
+import { useToast } from "@/lib/use-toast";
 
 export function UserProfile() {
   const { user, logout, refreshUser } = useAuth();
@@ -59,6 +72,9 @@ export function UserProfile() {
   const [profileError, setProfileError] = useState("");
   const [profileSuccess, setProfileSuccess] = useState("");
   const [profileLoading, setProfileLoading] = useState(false);
+  const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
+  const [canceling, setCanceling] = useState(false);
+  const { toast } = useToast();
   const [passwordError, setPasswordError] = useState("");
   const [passwordSuccess, setPasswordSuccess] = useState("");
   const [passwordLoading, setPasswordLoading] = useState(false);
@@ -83,6 +99,56 @@ export function UserProfile() {
       console.error("Failed to load subscription:", error);
     } finally {
       setSubscriptionLoading(false);
+    }
+  };
+
+  // Cancel subscription handler
+  const handleCancelSubscription = async () => {
+    try {
+      setCanceling(true);
+
+      const response = await fetch("/api/newsletter/cancel", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        toast({
+          title: "Subscription Canceled",
+          description:
+            "Your subscription has been successfully canceled. You'll retain access until the end of your billing period.",
+          className: "bg-white/10 backdrop-blur-xl border-white/20 text-white",
+        });
+        setCancelDialogOpen(false);
+        // Reload subscription data
+        await loadSubscriptionData();
+        await refreshUser();
+      } else {
+        toast({
+          title: "Cancellation Failed",
+          description:
+            data.error || "Failed to cancel subscription. Please try again.",
+          variant: "destructive",
+          className:
+            "bg-red-500/10 backdrop-blur-xl border-red-500/20 text-white",
+        });
+      }
+    } catch (error) {
+      console.error("Error canceling subscription:", error);
+      toast({
+        title: "Error",
+        description: "An unexpected error occurred. Please try again.",
+        variant: "destructive",
+        className:
+          "bg-red-500/10 backdrop-blur-xl border-red-500/20 text-white",
+      });
+    } finally {
+      setCanceling(false);
     }
   };
 
@@ -630,16 +696,9 @@ export function UserProfile() {
                             <Button
                               variant="outline"
                               className="flex-1 text-red-300 border-red-400/50 bg-red-900/20 hover:bg-red-900/40"
-                              onClick={() => {
-                                if (
-                                  confirm(
-                                    "Are you sure you want to cancel your subscription?"
-                                  )
-                                ) {
-                                  window.location.href = "/newsletter";
-                                }
-                              }}
+                              onClick={() => setCancelDialogOpen(true)}
                             >
+                              <XCircle className="w-4 h-4 mr-2" />
                               Cancel Subscription
                             </Button>
                           </div>
@@ -891,6 +950,106 @@ export function UserProfile() {
           </Card>
         </div>
       </div>
+
+      {/* Cancel Subscription Confirmation Dialog */}
+      <AlertDialog open={cancelDialogOpen} onOpenChange={setCancelDialogOpen}>
+        <AlertDialogContent className="bg-gradient-to-br from-gray-900 to-gray-800 border-red-500/30 text-white max-w-md backdrop-blur-xl">
+          <AlertDialogHeader>
+            <AlertDialogTitle className="flex items-center gap-3 text-red-400 text-xl">
+              <div className="w-12 h-12 bg-red-500/20 rounded-full flex items-center justify-center">
+                <AlertTriangle className="w-6 h-6 text-red-400" />
+              </div>
+              Cancel Subscription?
+            </AlertDialogTitle>
+            <AlertDialogDescription className="text-gray-300 text-base pt-2">
+              Are you sure you want to cancel your newsletter subscription?
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+
+          <div className="space-y-4 py-4">
+            {/* What happens section */}
+            <div className="bg-white/5 rounded-lg p-4 border border-white/10">
+              <p className="text-sm font-semibold text-white mb-3">
+                What happens next:
+              </p>
+              <ul className="space-y-2 text-sm text-gray-300">
+                <li className="flex items-start gap-2">
+                  <span className="text-red-400 mt-0.5">•</span>
+                  <span>Your subscription will be canceled immediately</span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-red-400 mt-0.5">•</span>
+                  <span>
+                    You'll retain access until{" "}
+                    {subscriptionData?.current_period_end
+                      ? new Date(
+                          subscriptionData.current_period_end
+                        ).toLocaleDateString()
+                      : "the end of your billing period"}
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-red-400 mt-0.5">•</span>
+                  <span>
+                    No refunds will be issued for the remaining period
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <span className="text-red-400 mt-0.5">•</span>
+                  <span>You can resubscribe anytime</span>
+                </li>
+              </ul>
+            </div>
+
+            {/* Benefits lost section */}
+            <div className="bg-yellow-500/10 rounded-lg p-4 border border-yellow-500/20">
+              <p className="text-sm font-semibold text-yellow-400 mb-2">
+                You'll lose access to:
+              </p>
+              <ul className="space-y-1 text-sm text-gray-300">
+                <li className="flex items-center gap-2">
+                  <XCircle className="w-3 h-3 text-yellow-400" />
+                  <span>Premium articles and exclusive content</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <XCircle className="w-3 h-3 text-yellow-400" />
+                  <span>Daily newsletter in your inbox</span>
+                </li>
+                <li className="flex items-center gap-2">
+                  <XCircle className="w-3 h-3 text-yellow-400" />
+                  <span>Ad-free reading experience</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+          <AlertDialogFooter className="gap-2 sm:gap-2">
+            <AlertDialogCancel
+              className="bg-white/10 border-white/20 text-white hover:bg-white/20 hover:text-white"
+              disabled={canceling}
+            >
+              Keep Subscription
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleCancelSubscription}
+              disabled={canceling}
+              className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white border-0"
+            >
+              {canceling ? (
+                <>
+                  <span className="animate-spin mr-2">⏳</span>
+                  Canceling...
+                </>
+              ) : (
+                <>
+                  <XCircle className="w-4 h-4 mr-2" />
+                  Yes, Cancel Subscription
+                </>
+              )}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 }
