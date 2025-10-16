@@ -72,10 +72,9 @@ export default function TermsPage() {
                   In no event shall Akhbarna or its suppliers be liable for any
                   damages (including, without limitation, damages for loss of
                   data or profit, or due to business interruption) arising out
-                  of the use or inability to use the materials on Libya Monitor,
-                  even if Akhbarna or an authorized representative has been
-                  notified orally or in writing of the possibility of such
-                  damage.
+                  of the use or inability to use the materials on Akhbarna, even
+                  if Akhbarna or an authorized representative has been notified
+                  orally or in writing of the possibility of such damage.
                 </p>
               </div>
 
@@ -85,7 +84,7 @@ export default function TermsPage() {
                 </h2>
                 <p className="text-gray-600 leading-relaxed">
                   The materials appearing on Akhbarna could include technical,
-                  typographical, or photographic errors. Libya Monitor does not
+                  typographical, or photographic errors. Akhbarna does not
                   warrant that any of the materials on its website are accurate,
                   complete, or current.
                 </p>
@@ -110,10 +109,10 @@ export default function TermsPage() {
                   If you have any questions about these Terms of Service, please
                   contact us at{" "}
                   <a
-                    href="mailto:contact@libyamonitor.com"
+                    href="mailto:contact@akhbarna.com"
                     className="text-red-600 hover:text-red-700"
                   >
-                    contact@libyamonitor.com
+                    contact@akhbarna.com
                   </a>
                   .
                 </p>

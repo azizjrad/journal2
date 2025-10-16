@@ -124,22 +124,15 @@ export async function ensureAdmin(
         }
         return acc;
       }, {} as Record<string, string>);
-    console.log("[ensureAdmin] Cookies:", cookies);
 
     // Only accept 'admin-token' for admin JWT authentication
     const jwtToken = cookies["admin-token"];
-    console.log(
-      "[ensureAdmin] admin-token value:",
-      jwtToken ? jwtToken.slice(0, 12) + "..." : null
-    );
     if (jwtToken) {
       try {
         const { verifyToken } = await import("@/lib/auth");
         const payload = verifyToken(jwtToken);
-        console.log("[ensureAdmin] Decoded JWT payload:", payload);
         if (payload && payload.userId && payload.role === "admin") {
           const user = await User.findById(payload.userId);
-          console.log("[ensureAdmin] User from JWT:", user);
           if (user && user.role === "admin" && user.is_active) {
             return {
               isAdmin: true,

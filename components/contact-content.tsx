@@ -73,11 +73,11 @@ export function ContactContent() {
               Reach out to us for any inquiries or support
             </p>
             <a
-              href="mailto:contact@libyamonitor.com"
+              href="mailto:contact@akhbarna.com"
               className="inline-flex items-center gap-2 text-red-600 hover:text-red-700 transition-colors text-lg font-medium"
             >
               <Mail className="w-5 h-5" />
-              contact@libyamonitor.com
+              contact@akhbarna.com
             </a>
           </div>
         </div>

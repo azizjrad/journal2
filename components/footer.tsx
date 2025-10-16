@@ -55,7 +55,7 @@ export function Footer({ categories }: FooterProps) {
             <div className="space-y-3">
               <div className="flex items-center gap-3 text-gray-300 text-sm">
                 <Phone className="w-4 h-4 text-red-500" />
-                <span>+218 XX XXX XXXX</span>
+                <span>+218 XX XXX XXX</span>
               </div>
               <div className="flex items-center gap-3 text-gray-300 text-sm">
                 <Mail className="w-4 h-4 text-red-500" />

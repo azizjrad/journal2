@@ -884,16 +884,7 @@ export async function createArticle(
       // Remove image_data and image_content_type
     };
 
-    console.log("Creating article with sanitized data:", {
-      title_en: sanitizedArticle.title_en,
-      slug: sanitizedArticle.slug,
-      category_id: sanitizedArticle.category_id,
-      author_id: sanitizedArticle.author_id,
-      is_published: sanitizedArticle.is_published,
-    });
-
     const result = await Article.create(sanitizedArticle);
-    console.log("Article created successfully with ID:", result._id);
     return convertDoc(result);
   } catch (mongoError: any) {
     console.error("MongoDB error during article creation:", mongoError);
@@ -1010,18 +1001,15 @@ export async function createUser(user: {
   role?: "admin" | "writer" | "user";
   writer_status?: "pending" | "approved" | "rejected" | null;
 }): Promise<UserInterface> {
-  console.log("🔄 DB: Starting createUser function");
   await dbConnect();
 
   // Input validation
   if (!user.username || !user.email || !user.password_hash) {
-    console.log("❌ DB: Missing required fields");
     throw new Error("Username, email, and password are required");
   }
 
   // Validate text inputs for security
   if (!validateInput(user.username) || !validateInput(user.email)) {
-    console.log("❌ DB: Invalid input detected");
     throw new Error("Invalid input detected");
   }
 
@@ -1036,16 +1024,9 @@ export async function createUser(user: {
     writer_status: user.writer_status || null,
   };
 
-  console.log("💾 DB: Creating user with sanitized data:", {
-    ...sanitizedUser,
-    password_hash: "[HASHED]",
-  });
-
   try {
     const result = await User.create(sanitizedUser);
-    console.log("✅ DB: User created successfully in database");
     const convertedResult = convertDoc(result);
-    console.log("🔄 DB: Converted result:", convertedResult);
     return convertedResult;
   } catch (error) {
     console.error("❌ DB: Error creating user:", error);
@@ -1238,8 +1219,6 @@ export async function updateUserPassword(
   if (!result) {
     throw new Error("User not found or password update failed");
   }
-
-  console.log("✅ Password updated successfully for user:", id);
 }
 
 export async function updateLastLogin(id: string): Promise<void> {
@@ -2669,8 +2648,6 @@ export async function getContactMessageById(
 export async function markContactMessageAsRead(id: string): Promise<boolean> {
   await dbConnect();
 
-  console.log("🔍 markContactMessageAsRead called with ID:", id);
-
   if (!Types.ObjectId.isValid(id)) {
     console.error("❌ Invalid ObjectId:", id);
     return false;
@@ -2682,8 +2659,6 @@ export async function markContactMessageAsRead(id: string): Promise<boolean> {
       { is_read: true, updated_at: new Date() },
       { new: true }
     );
-
-    console.log("📊 Database update result:", result ? "Success" : "Not found");
     return !!result;
   } catch (error) {
     console.error("❌ Database error in markContactMessageAsRead:", error);

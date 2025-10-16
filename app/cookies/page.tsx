@@ -142,10 +142,10 @@ export default function CookiesPage() {
                   If you have any questions about our use of cookies, please
                   contact us at{" "}
                   <a
-                    href="mailto:contact@libyamonitor.com"
+                    href="mailto:contact@akhbarna.com"
                     className="text-red-600 hover:text-red-700"
                   >
-                    contact@libyamonitor.com
+                    contact@akhbarna.com
                   </a>
                   .
                 </p>
