@@ -10,8 +10,8 @@ import { Toaster } from "@/components/ui/toaster";
 import ServiceWorkerRegistration from "@/components/service-worker-registration";
 import OfflineIndicator from "@/components/offline-indicator";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import Header from "@/components/header";
-import React from "react";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -130,6 +130,7 @@ export default async function RootLayout({
         <Toaster />
         <ServiceWorkerRegistration />
         <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

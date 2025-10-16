@@ -1,7 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createContactMessage } from "@/lib/db";
+import { rateLimiters, createRateLimitResponse } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
+  // Apply rate limiting: 3 requests per hour per IP
+  const rateLimitResult = rateLimiters.contact.check(request);
+  if (!rateLimitResult.success) {
+    return createRateLimitResponse(
+      rateLimitResult,
+      "Too many contact form submissions. Please try again later."
+    );
+  }
+
   try {
     const { name, email, subject, message } = await request.json();
 

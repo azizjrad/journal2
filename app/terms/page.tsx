@@ -96,7 +96,8 @@ export default function TermsPage() {
                 </h2>
                 <p className="text-gray-600 leading-relaxed mb-4">
                   Akhbarna offers subscription-based premium content with a free
-                  trial period. By subscribing, you agree to the following terms:
+                  trial period. By subscribing, you agree to the following
+                  terms:
                 </p>
                 <ul className="list-disc list-inside text-gray-600 space-y-2 ml-4">
                   <li>
