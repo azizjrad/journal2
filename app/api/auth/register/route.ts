@@ -15,7 +15,7 @@ import {
   getEmailVerificationExpiry,
   checkRateLimit,
 } from "@/lib/auth";
-import { sendVerificationEmail } from "@/lib/email-sendgrid";
+import { sendVerificationEmail, sendWriterApplicationNotificationToAdmin } from "@/lib/email-sendgrid";
 import { validateCsrf } from "@/lib/csrf";
 
 export async function POST(request: NextRequest) {
@@ -184,6 +184,21 @@ export async function POST(request: NextRequest) {
       clientIP,
       userAgent
     );
+
+    // Send admin notification if writer application
+    if (accountType === "writer" && user.id) {
+      try {
+        await sendWriterApplicationNotificationToAdmin({
+          applicantEmail: email.toLowerCase(),
+          applicantName: `${firstName || ""} ${lastName || ""}`.trim(),
+          applicantUsername: username.toLowerCase(),
+          applicantId: String(user.id),
+        });
+      } catch (err) {
+        console.error("Failed to send admin notification for writer application:", err);
+        // Don't fail the registration if admin notification fails
+      }
+    }
 
     // Remove password hash from response
     const { password_hash, ...userResponse } = user;

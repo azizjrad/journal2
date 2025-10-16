@@ -1007,6 +1007,311 @@ export async function sendWriterApprovalEmail({
   }
 }
 
+export async function sendWriterApplicationNotificationToAdmin({
+  applicantEmail,
+  applicantName,
+  applicantUsername,
+  applicantId,
+}: {
+  applicantEmail: string;
+  applicantName?: string;
+  applicantUsername: string;
+  applicantId: string;
+}): Promise<boolean> {
+  try {
+    const adminEmail = process.env.ADMIN_EMAIL || FROM_EMAIL;
+    const verifyLink = `${BASE_URL}/admin`;
+
+    const msg = {
+      to: adminEmail,
+      from: FROM_EMAIL,
+      subject: "🆕 New Writer Application - Akhbarna",
+      html: `
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            body { 
+              margin: 0; 
+              padding: 0; 
+              font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+              background-color: #f4f4f4; 
+              line-height: 1.6; 
+            }
+            .container { 
+              max-width: 600px; 
+              margin: 20px auto; 
+              background-color: #ffffff;
+              border-radius: 12px;
+              overflow: hidden;
+              box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            }
+            .header { 
+              background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%); 
+              color: white; 
+              padding: 40px 30px; 
+              text-align: center; 
+            }
+            .header h1 {
+              margin: 0;
+              font-size: 36px;
+              text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+            }
+            .badge {
+              display: inline-block;
+              background: rgba(255, 255, 255, 0.2);
+              color: white;
+              padding: 8px 16px;
+              border-radius: 20px;
+              font-size: 14px;
+              font-weight: bold;
+              margin-top: 10px;
+            }
+            .content { 
+              background: #ffffff; 
+              padding: 40px 30px; 
+            }
+            .notification-icon { 
+              width: 80px; 
+              height: 80px; 
+              margin: 0 auto 20px; 
+              background: linear-gradient(135deg, #ddd6fe 0%, #c4b5fd 100%);
+              border-radius: 50%; 
+              display: flex; 
+              align-items: center; 
+              justify-content: center; 
+              font-size: 40px;
+              box-shadow: 0 4px 6px rgba(124, 58, 237, 0.2);
+            }
+            .title {
+              text-align: center;
+              color: #1f2937;
+              font-size: 28px;
+              font-weight: bold;
+              margin: 20px 0;
+            }
+            .applicant-box { 
+              background: linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%);
+              border: 2px solid #7c3aed;
+              border-radius: 12px; 
+              padding: 25px; 
+              margin: 25px 0;
+              box-shadow: 0 2px 4px rgba(124, 58, 237, 0.1);
+            }
+            .applicant-box h3 { 
+              color: #5b21b6; 
+              margin-top: 0;
+              font-size: 20px;
+              display: flex;
+              align-items: center;
+            }
+            .applicant-box h3:before {
+              content: "👤";
+              margin-right: 10px;
+              font-size: 24px;
+            }
+            .info-row {
+              display: flex;
+              padding: 12px 0;
+              border-bottom: 1px solid #e9d5ff;
+            }
+            .info-row:last-child {
+              border-bottom: none;
+            }
+            .info-label {
+              font-weight: bold;
+              color: #6b21a8;
+              width: 120px;
+              flex-shrink: 0;
+            }
+            .info-value {
+              color: #4b5563;
+              word-break: break-word;
+            }
+            .cta-button { 
+              display: inline-block; 
+              background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+              color: #ffffff !important; 
+              padding: 16px 40px; 
+              text-decoration: none; 
+              border-radius: 8px; 
+              font-weight: bold; 
+              font-size: 18px; 
+              margin: 20px 0;
+              box-shadow: 0 4px 6px rgba(124, 58, 237, 0.3);
+              transition: transform 0.2s;
+            }
+            .cta-button:hover {
+              transform: translateY(-2px);
+              box-shadow: 0 6px 12px rgba(124, 58, 237, 0.4);
+            }
+            .button-container {
+              text-align: center;
+              margin: 30px 0;
+            }
+            .action-box {
+              background: #fef3c7;
+              border-left: 4px solid #f59e0b;
+              padding: 20px;
+              margin: 25px 0;
+              border-radius: 4px;
+            }
+            .action-box p {
+              margin: 8px 0;
+              color: #78350f;
+            }
+            .action-box strong {
+              color: #92400e;
+            }
+            .footer { 
+              background-color: #f9fafb;
+              text-align: center; 
+              padding: 30px; 
+              color: #6b7280; 
+              font-size: 14px;
+              border-top: 1px solid #e5e7eb;
+            }
+            .footer p {
+              margin: 10px 0;
+            }
+            .timestamp {
+              background: #f3f4f6;
+              padding: 10px 15px;
+              border-radius: 6px;
+              margin: 20px 0;
+              text-align: center;
+              font-size: 14px;
+              color: #6b7280;
+            }
+            @media only screen and (max-width: 600px) {
+              .container {
+                margin: 10px;
+                border-radius: 8px;
+              }
+              .header {
+                padding: 30px 20px;
+              }
+              .content {
+                padding: 30px 20px;
+              }
+              .title {
+                font-size: 22px;
+              }
+              .info-row {
+                flex-direction: column;
+              }
+              .info-label {
+                width: 100%;
+                margin-bottom: 5px;
+              }
+            }
+          </style>
+        </head>
+        <body>
+          <div class="container">
+            <div class="header">
+              <h1>Akhbarna Admin</h1>
+              <div class="badge">🔔 New Writer Application</div>
+            </div>
+            
+            <div class="content">
+              <div class="notification-icon">✍️</div>
+              
+              <h2 class="title">New Writer Application Received!</h2>
+              
+              <p style="text-align: center; color: #6b7280; font-size: 16px;">
+                A new user has applied to become a writer for Akhbarna
+              </p>
+
+              <div class="timestamp">
+                📅 Received: ${new Date().toLocaleDateString("en-US", {
+                  weekday: "long",
+                  year: "numeric",
+                  month: "long",
+                  day: "numeric",
+                  hour: "2-digit",
+                  minute: "2-digit",
+                })}
+              </div>
+              
+              <div class="applicant-box">
+                <h3>Applicant Details</h3>
+                
+                <div class="info-row">
+                  <div class="info-label">Name:</div>
+                  <div class="info-value">${applicantName || "Not provided"}</div>
+                </div>
+                
+                <div class="info-row">
+                  <div class="info-label">Username:</div>
+                  <div class="info-value">@${applicantUsername}</div>
+                </div>
+                
+                <div class="info-row">
+                  <div class="info-label">Email:</div>
+                  <div class="info-value">${applicantEmail}</div>
+                </div>
+                
+                <div class="info-row">
+                  <div class="info-label">User ID:</div>
+                  <div class="info-value"><code style="background: #f3f4f6; padding: 2px 6px; border-radius: 4px;">${applicantId}</code></div>
+                </div>
+                
+                <div class="info-row">
+                  <div class="info-label">Status:</div>
+                  <div class="info-value">
+                    <span style="background: #fef3c7; color: #92400e; padding: 4px 12px; border-radius: 12px; font-weight: bold; font-size: 14px;">
+                      ⏳ Pending Review
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="action-box">
+                <p><strong>⚡ Action Required:</strong></p>
+                <p>• Review the applicant's profile and information</p>
+                <p>• Approve or reject their writer application</p>
+                <p>• The applicant will be notified of your decision via email</p>
+              </div>
+
+              <div class="button-container">
+                <a href="${verifyLink}" class="cta-button" style="color: #ffffff !important; text-decoration: none;">
+                  🔍 Verify Writer Application
+                </a>
+              </div>
+
+              <p style="color: #6b7280; text-align: center; margin-top: 30px; font-size: 14px;">
+                Click the button above to access the admin dashboard and review this application.
+              </p>
+
+              <div style="background: #f9fafb; padding: 20px; border-radius: 8px; margin: 25px 0;">
+                <h4 style="margin-top: 0; color: #1f2937; font-size: 16px;">📊 Quick Stats</h4>
+                <p style="color: #6b7280; margin: 8px 0; font-size: 14px;">
+                  View all pending writer applications in the <strong>Admin → Users</strong> section
+                </p>
+              </div>
+            </div>
+            
+            <div class="footer">
+              <p style="font-weight: bold; color: #1f2937; margin-bottom: 5px;">Akhbarna Admin Panel</p>
+              <p>© ${new Date().getFullYear()} Akhbarna. All rights reserved.</p>
+              <p style="margin-top: 15px;">
+                This is an automated notification. Do not reply to this email.
+              </p>
+            </div>
+          </div>
+        </body>
+        </html>
+      `,
+    };
+    await sgMail.send(msg);
+    return true;
+  } catch (error) {
+    console.error("Error sending writer application notification to admin:", error);
+    return false;
+  }
+}
+
 export async function sendSubscriptionRenewalEmail({
   email,
   userName,
