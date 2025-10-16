@@ -1,26 +1,17 @@
 import { MetadataRoute } from "next";
-import { dbConnect } from "@/lib/db";
+import { dbConnect, getArticles, getCategories } from "@/lib/db";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.APP_BASE_URL || "https://akhbarna.com";
 
   try {
-    const db = await dbConnect();
-    const articlesCollection = db.collection("articles");
-    const categoriesCollection = db.collection("categories");
+    await dbConnect();
 
-    // Fetch all published articles
-    const articles = await articlesCollection
-      .find({ status: "published" })
-      .project({ slug: 1, updatedAt: 1, createdAt: 1 })
-      .sort({ createdAt: -1 })
-      .toArray();
+    // Fetch all published articles (limit to 1000 for sitemap)
+    const articles = await getArticles(1000);
 
     // Fetch all categories
-    const categories = await categoriesCollection
-      .find({})
-      .project({ slug: 1 })
-      .toArray();
+    const categories = await getCategories();
 
     // Static pages
     const staticPages: MetadataRoute.Sitemap = [
