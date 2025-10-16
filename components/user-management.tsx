@@ -1440,7 +1440,7 @@ export function UserManagement() {
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter className="gap-3">
-              <AlertDialogCancel className="h-12 px-6 bg-gray-800/50 border-white/40 text-white backdrop-blur-sm transition-all duration-200 rounded-xl">
+              <AlertDialogCancel className="h-12 px-6 bg-gray-800/50 hover:bg-gray-700/60 border border-white/40 hover:border-white/60 text-white backdrop-blur-sm transition-all duration-200 rounded-xl hover:shadow-lg">
                 Cancel
               </AlertDialogCancel>
               <AlertDialogAction
