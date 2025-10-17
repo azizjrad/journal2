@@ -119,40 +119,6 @@ function PopularArticlesList({ articles }: PopularArticlesListProps) {
   );
 }
 
-interface RecentActivityProps {
-  activities: any[];
-}
-
-function RecentActivity({ activities }: RecentActivityProps) {
-  return (
-    <div className="space-y-3">
-      {activities.slice(0, 8).map((activity, index) => (
-        <div
-          key={index}
-          className="flex items-center gap-3 p-3 bg-white/10 backdrop-blur-sm border-l-4 border-blue-400/50 rounded-r-lg hover:bg-white/15 transition-all duration-300"
-        >
-          <div
-            className={`w-3 h-3 rounded-full ${
-              activity.type === "view" ? "bg-blue-400" : "bg-green-400"
-            } shadow-lg`}
-          />
-          <div className="flex-grow">
-            <p className="text-sm text-white">
-              <span className="font-medium text-blue-300">
-                {activity.type === "view" ? "View" : "Engagement"}
-              </span>{" "}
-              on "{activity.title_en}"
-            </p>
-            <p className="text-xs text-gray-400">
-              {new Date(activity.timestamp).toLocaleString()}
-            </p>
-          </div>
-        </div>
-      ))}
-    </div>
-  );
-}
-
 export function AnalyticsDashboard({ initialData }: AnalyticsDashboardProps) {
   const [data, setData] = useState<AnalyticsData>(initialData);
   const [loading, setLoading] = useState(false);
@@ -308,7 +274,7 @@ export function AnalyticsDashboard({ initialData }: AnalyticsDashboardProps) {
 
       {/* Charts and Data */}
       <Tabs defaultValue="overview" className="space-y-6">
-        <TabsList className="grid w-full grid-cols-4 bg-white/10 backdrop-blur-sm border border-white/20">
+        <TabsList className="grid w-full grid-cols-3 bg-white/10 backdrop-blur-sm border border-white/20">
           <TabsTrigger
             value="overview"
             className="data-[state=active]:bg-blue-600/20 data-[state=active]:text-white text-gray-300"
@@ -326,12 +292,6 @@ export function AnalyticsDashboard({ initialData }: AnalyticsDashboardProps) {
             className="data-[state=active]:bg-blue-600/20 data-[state=active]:text-white text-gray-300"
           >
             Categories
-          </TabsTrigger>
-          <TabsTrigger
-            value="activity"
-            className="data-[state=active]:bg-blue-600/20 data-[state=active]:text-white text-gray-300"
-          >
-            Activity
           </TabsTrigger>
         </TabsList>
 
@@ -383,13 +343,6 @@ export function AnalyticsDashboard({ initialData }: AnalyticsDashboardProps) {
                 </div>
               ))}
             </div>
-          </div>
-        </TabsContent>
-
-        <TabsContent value="activity" className="space-y-6">
-          <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 shadow-lg">
-            <h3 className="font-semibold text-white mb-4">Recent Activity</h3>
-            <RecentActivity activities={data.recentActivity} />
           </div>
         </TabsContent>
       </Tabs>
