@@ -799,7 +799,7 @@ export function ContactMessages() {
               )}
             </AlertDialogHeader>
             <AlertDialogFooter className="gap-3 mt-6">
-              <AlertDialogCancel className="h-11 px-6 bg-white/10 hover:bg-white/20 border-white/20 text-white backdrop-blur-sm transition-all duration-200 rounded-xl">
+              <AlertDialogCancel className="h-11 px-6 bg-white/10 hover:bg-white/20 border-white/20 text-white hover:text-white backdrop-blur-sm transition-all duration-200 rounded-xl">
                 Close
               </AlertDialogCancel>
               {selectedMessage && (
@@ -837,7 +837,7 @@ export function ContactMessages() {
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter className="gap-3">
-              <AlertDialogCancel className="h-12 px-6 bg-gray-800/50 border-white/40 text-white backdrop-blur-sm transition-all duration-200 rounded-xl">
+              <AlertDialogCancel className="h-12 px-6 bg-gray-800/50 hover:bg-gray-800/70 border-white/40 text-white hover:text-white backdrop-blur-sm transition-all duration-200 rounded-xl">
                 Cancel
               </AlertDialogCancel>
               <AlertDialogAction
@@ -965,7 +965,7 @@ export function ContactMessages() {
             </AlertDialogHeader>
             <AlertDialogFooter className="gap-3">
               <AlertDialogCancel
-                className="h-12 px-6 bg-gray-800/50 border-white/40 text-white backdrop-blur-sm transition-all duration-200 rounded-xl"
+                className="h-12 px-6 bg-gray-800/50 hover:bg-gray-800/70 border-white/40 text-white hover:text-white backdrop-blur-sm transition-all duration-200 rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
                 disabled={sendingReply}
               >
                 Cancel
