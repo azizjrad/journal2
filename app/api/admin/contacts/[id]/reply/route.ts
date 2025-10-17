@@ -29,16 +29,48 @@ export async function POST(
           adminToken,
           process.env.JWT_SECRET!
         ) as any;
+        
+        console.log("🔍 Token payload:", { userId: tokenPayload.userId });
+        
         const adminUser = await getUserById(tokenPayload.userId);
+        
+        console.log("🔍 Admin user retrieved:", {
+          exists: !!adminUser,
+          role: adminUser?.role,
+          id: adminUser?._id,
+          email: adminUser?.email,
+        });
 
-        if (!adminUser || adminUser.role !== "admin" || !adminUser._id) {
+        if (!adminUser) {
+          console.error("❌ User not found for ID:", tokenPayload.userId);
+          return NextResponse.json(
+            { error: "User not found" },
+            { status: 403 }
+          );
+        }
+
+        if (adminUser.role !== "admin") {
+          console.error("❌ User is not admin:", adminUser.email, adminUser.role);
           return NextResponse.json(
             { error: "Admin access required" },
             { status: 403 }
           );
         }
-        adminUserId = adminUser._id.toString();
+
+        // getUserById returns 'id' field, not '_id'
+        const userId = adminUser._id || adminUser.id;
+        if (!userId) {
+          console.error("❌ Admin user has no id:", adminUser);
+          return NextResponse.json(
+            { error: "Invalid user data" },
+            { status: 500 }
+          );
+        }
+
+        adminUserId = userId.toString();
+        console.log("✅ Admin authenticated:", { adminUserId, email: adminUser.email });
       } catch (error) {
+        console.error("❌ Token verification error:", error);
         return NextResponse.json({ error: "Invalid token" }, { status: 401 });
       }
 

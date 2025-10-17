@@ -1275,8 +1275,12 @@ export async function deleteUser(id: string): Promise<void> {
 
   try {
     // Delete newsletter subscriptions (if any)
-    const subsDeleted = await NewsletterSubscription.deleteMany({ user_id: userId });
-    console.log(`✅ Deleted ${subsDeleted.deletedCount} newsletter subscriptions for user: ${id}`);
+    const subsDeleted = await NewsletterSubscription.deleteMany({
+      user_id: userId,
+    });
+    console.log(
+      `✅ Deleted ${subsDeleted.deletedCount} newsletter subscriptions for user: ${id}`
+    );
   } catch (error) {
     console.error("❌ Error deleting newsletter subscriptions:", error);
   }
@@ -1284,7 +1288,9 @@ export async function deleteUser(id: string): Promise<void> {
   try {
     // Delete user profile (if exists)
     const profileDeleted = await UserProfile.deleteOne({ user_id: userId });
-    console.log(`✅ Deleted user profile for user: ${id} (${profileDeleted.deletedCount} records)`);
+    console.log(
+      `✅ Deleted user profile for user: ${id} (${profileDeleted.deletedCount} records)`
+    );
   } catch (error) {
     console.error("❌ Error deleting user profile:", error);
   }
@@ -1292,7 +1298,9 @@ export async function deleteUser(id: string): Promise<void> {
   try {
     // Delete article reports made by this user
     const reportsDeleted = await Report.deleteMany({ reporter_id: userId });
-    console.log(`✅ Deleted ${reportsDeleted.deletedCount} article reports by user: ${id}`);
+    console.log(
+      `✅ Deleted ${reportsDeleted.deletedCount} article reports by user: ${id}`
+    );
   } catch (error) {
     console.error("❌ Error deleting article reports:", error);
   }
@@ -1300,7 +1308,9 @@ export async function deleteUser(id: string): Promise<void> {
   try {
     // Delete contact messages from this user
     const contactsDeleted = await Contact.deleteMany({ email: user.email });
-    console.log(`✅ Deleted ${contactsDeleted.deletedCount} contact messages from user: ${id}`);
+    console.log(
+      `✅ Deleted ${contactsDeleted.deletedCount} contact messages from user: ${id}`
+    );
   } catch (error) {
     console.error("❌ Error deleting contact messages:", error);
   }
@@ -1308,31 +1318,45 @@ export async function deleteUser(id: string): Promise<void> {
   try {
     // Delete user sessions
     const sessionsDeleted = await UserSession.deleteMany({ user_id: userId });
-    console.log(`✅ Deleted ${sessionsDeleted.deletedCount} user sessions for user: ${id}`);
+    console.log(
+      `✅ Deleted ${sessionsDeleted.deletedCount} user sessions for user: ${id}`
+    );
   } catch (error) {
     console.error("❌ Error deleting user sessions:", error);
   }
 
   try {
     // Delete password reset tokens
-    const resetTokensDeleted = await PasswordResetToken.deleteMany({ user_id: userId });
-    console.log(`✅ Deleted ${resetTokensDeleted.deletedCount} password reset tokens for user: ${id}`);
+    const resetTokensDeleted = await PasswordResetToken.deleteMany({
+      user_id: userId,
+    });
+    console.log(
+      `✅ Deleted ${resetTokensDeleted.deletedCount} password reset tokens for user: ${id}`
+    );
   } catch (error) {
     console.error("❌ Error deleting password reset tokens:", error);
   }
 
   try {
     // Delete email verification tokens
-    const emailTokensDeleted = await EmailVerificationToken.deleteMany({ user_id: userId });
-    console.log(`✅ Deleted ${emailTokensDeleted.deletedCount} email verification tokens for user: ${id}`);
+    const emailTokensDeleted = await EmailVerificationToken.deleteMany({
+      user_id: userId,
+    });
+    console.log(
+      `✅ Deleted ${emailTokensDeleted.deletedCount} email verification tokens for user: ${id}`
+    );
   } catch (error) {
     console.error("❌ Error deleting email verification tokens:", error);
   }
 
   try {
     // Delete user activity logs
-    const activityLogsDeleted = await UserActivityLog.deleteMany({ user_id: userId });
-    console.log(`✅ Deleted ${activityLogsDeleted.deletedCount} activity logs for user: ${id}`);
+    const activityLogsDeleted = await UserActivityLog.deleteMany({
+      user_id: userId,
+    });
+    console.log(
+      `✅ Deleted ${activityLogsDeleted.deletedCount} activity logs for user: ${id}`
+    );
   } catch (error) {
     console.error("❌ Error deleting activity logs:", error);
   }

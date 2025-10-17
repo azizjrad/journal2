@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { writeFile } from "fs/promises";
-import path from "path";
+import { uploadToCloudinary } from "@/lib/cloudinary";
 
 export async function POST(request: NextRequest) {
   try {
@@ -45,27 +44,25 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Convert file to buffer
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Generate a unique filename
-    const timestamp = Date.now();
-    const ext = file.name.split(".").pop() || "png";
-    const random = Math.random().toString(36).substring(2, 12);
-    const filename = `${timestamp}-${random}.${ext}`;
-    const uploadPath = path.join(process.cwd(), "public", "uploads", filename);
+    // Upload to Cloudinary
+    console.log("[UPLOAD] Uploading to Cloudinary...");
+    const result = await uploadToCloudinary(buffer, "articles");
+    console.log(`[UPLOAD] Successfully uploaded to Cloudinary:`, result.url);
 
-    // Save file to local filesystem
-    await writeFile(uploadPath, buffer);
-    console.log(`[UPLOAD] Saved file to ${uploadPath}`);
-
-    // Return the public URL for DB storage
-    const url = `/uploads/${filename}`;
+    // Return the Cloudinary URL for DB storage
     return NextResponse.json({
-      url,
+      url: result.url,
+      publicId: result.publicId,
       originalName: file.name,
       size: file.size,
       contentType: file.type,
+      width: result.width,
+      height: result.height,
+      format: result.format,
     });
   } catch (error) {
     console.error("Error uploading file:", error);

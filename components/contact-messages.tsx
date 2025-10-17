@@ -892,7 +892,7 @@ export function ContactMessages() {
                         Original Message
                       </label>
                       <div className="bg-white/5 rounded p-3 mt-1 max-h-32 overflow-y-auto">
-                        <p className="text-gray-300 text-sm whitespace-pre-wrap">
+                        <p className="text-gray-300 text-sm whitespace-pre-wrap break-words overflow-wrap-anywhere">
                           {selectedMessage.message}
                         </p>
                       </div>
