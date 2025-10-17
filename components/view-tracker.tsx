@@ -101,7 +101,7 @@ const setupEngagementTracking = (articleId: string, startTime: number) => {
       // Use sendBeacon for better performance on page unload
       const data = JSON.stringify({
         articleId,
-        engagementType: "reading_time",
+        engagementType: "read_time",
         value: readingTime,
         reason,
       });

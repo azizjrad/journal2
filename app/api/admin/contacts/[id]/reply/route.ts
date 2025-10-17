@@ -29,11 +29,11 @@ export async function POST(
           adminToken,
           process.env.JWT_SECRET!
         ) as any;
-        
+
         console.log("🔍 Token payload:", { userId: tokenPayload.userId });
-        
+
         const adminUser = await getUserById(tokenPayload.userId);
-        
+
         console.log("🔍 Admin user retrieved:", {
           exists: !!adminUser,
           role: adminUser?.role,
@@ -50,7 +50,11 @@ export async function POST(
         }
 
         if (adminUser.role !== "admin") {
-          console.error("❌ User is not admin:", adminUser.email, adminUser.role);
+          console.error(
+            "❌ User is not admin:",
+            adminUser.email,
+            adminUser.role
+          );
           return NextResponse.json(
             { error: "Admin access required" },
             { status: 403 }
@@ -68,7 +72,10 @@ export async function POST(
         }
 
         adminUserId = userId.toString();
-        console.log("✅ Admin authenticated:", { adminUserId, email: adminUser.email });
+        console.log("✅ Admin authenticated:", {
+          adminUserId,
+          email: adminUser.email,
+        });
       } catch (error) {
         console.error("❌ Token verification error:", error);
         return NextResponse.json({ error: "Invalid token" }, { status: 401 });
