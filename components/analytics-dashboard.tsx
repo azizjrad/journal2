@@ -82,56 +82,6 @@ function MetricCard({
   );
 }
 
-interface TimelineChartProps {
-  data:
-    | { date: string; views: number }[]
-    | { date: string; engagements: number }[];
-  type: "views" | "engagements";
-}
-
-function TimelineChart({ data, type }: TimelineChartProps) {
-  const maxValue = Math.max(
-    ...data.map((d) => ("views" in d ? d.views : d.engagements))
-  );
-
-  return (
-    <div className="space-y-4">
-      <div className="grid grid-cols-7 gap-2 text-xs text-gray-300">
-        {["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"].map((day) => (
-          <div key={day} className="text-center">
-            {day}
-          </div>
-        ))}
-      </div>
-      <div className="grid grid-cols-7 gap-2 h-32">
-        {data.slice(-7).map((item, index) => {
-          const value = "views" in item ? item.views : item.engagements;
-          const height = maxValue > 0 ? (value / maxValue) * 100 : 0;
-          return (
-            <div key={index} className="flex flex-col justify-end">
-              <div
-                className={`bg-gradient-to-t ${
-                  type === "views"
-                    ? "from-blue-500 to-blue-400"
-                    : "from-green-500 to-green-400"
-                } rounded-t transition-all hover:opacity-80 cursor-pointer backdrop-blur-sm`}
-                style={{
-                  height: `${height}%`,
-                  minHeight: value > 0 ? "4px" : "0px",
-                }}
-                title={`${item.date}: ${value} ${type}`}
-              />
-              <div className="text-xs text-center mt-1 text-gray-400">
-                {new Date(item.date).getDate()}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-    </div>
-  );
-}
-
 interface PopularArticlesListProps {
   articles: any[];
 }
@@ -386,27 +336,14 @@ export function AnalyticsDashboard({ initialData }: AnalyticsDashboardProps) {
         </TabsList>
 
         <TabsContent value="overview" className="space-y-6">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 shadow-lg">
-              <div className="flex items-center gap-2 mb-4">
-                <BarChart3 className="h-5 w-5 text-blue-300" />
-                <h3 className="font-semibold text-white">Views Timeline</h3>
-              </div>
-              <TimelineChart data={data.viewsTimeline} type="views" />
+          <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 shadow-lg">
+            <div className="flex items-center gap-2 mb-4">
+              <BarChart3 className="h-5 w-5 text-blue-300" />
+              <h3 className="font-semibold text-white">Overview Statistics</h3>
             </div>
-
-            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl p-6 shadow-lg">
-              <div className="flex items-center gap-2 mb-4">
-                <Activity className="h-5 w-5 text-green-300" />
-                <h3 className="font-semibold text-white">
-                  Engagement Timeline
-                </h3>
-              </div>
-              <TimelineChart
-                data={data.engagementTimeline}
-                type="engagements"
-              />
-            </div>
+            <p className="text-gray-300 text-sm">
+              Your analytics data is being collected. View detailed statistics in the tabs above.
+            </p>
           </div>
         </TabsContent>
 
