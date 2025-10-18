@@ -11,7 +11,6 @@ import ServiceWorkerRegistration from "@/components/service-worker-registration"
 import OfflineIndicator from "@/components/offline-indicator";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
-import Header from "@/components/header";
 
 const inter = Inter({ subsets: ["latin"] });
 

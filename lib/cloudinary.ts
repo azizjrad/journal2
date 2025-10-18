@@ -1,10 +1,42 @@
 import { v2 as cloudinary } from "cloudinary";
 
-// Configure Cloudinary
-cloudinary.config({
+// Validate required environment variables
+const requiredEnvVars = {
   cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
+};
+
+// Log configuration status (without sensitive data)
+if (process.env.NODE_ENV === "development") {
+  console.log("[Cloudinary] Configuration status:", {
+    cloud_name: requiredEnvVars.cloud_name ? "✅ Set" : "❌ Missing",
+    api_key: requiredEnvVars.api_key ? "✅ Set" : "❌ Missing",
+    api_secret: requiredEnvVars.api_secret ? "✅ Set" : "❌ Missing",
+  });
+}
+
+// Check for missing variables
+const missingVars = Object.entries(requiredEnvVars)
+  .filter(([_, value]) => !value)
+  .map(([key]) => key);
+
+if (missingVars.length > 0) {
+  console.error(
+    `[Cloudinary] Missing required environment variables: ${missingVars.join(
+      ", "
+    )}`
+  );
+  console.error(
+    "[Cloudinary] Please set these in your .env.local file and Vercel environment variables"
+  );
+}
+
+// Configure Cloudinary
+cloudinary.config({
+  cloud_name: requiredEnvVars.cloud_name,
+  api_key: requiredEnvVars.api_key,
+  api_secret: requiredEnvVars.api_secret,
   secure: true,
 });
 

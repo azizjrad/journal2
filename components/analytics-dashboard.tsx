@@ -302,7 +302,8 @@ export function AnalyticsDashboard({ initialData }: AnalyticsDashboardProps) {
               <h3 className="font-semibold text-white">Overview Statistics</h3>
             </div>
             <p className="text-gray-300 text-sm">
-              Your analytics data is being collected. View detailed statistics in the tabs above.
+              Your analytics data is being collected. View detailed statistics
+              in the tabs above.
             </p>
           </div>
         </TabsContent>

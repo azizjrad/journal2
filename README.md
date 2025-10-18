@@ -118,6 +118,7 @@ The Akhbarna admin dashboard is a powerful, feature-rich control center designed
 <td width="50%">
 
 **Create & Edit Articles**
+
 - ✍️ Bilingual rich text editor (Arabic/English)
 - 🖼️ Cloudinary image upload & management
 - 🏷️ Category and tag assignment
@@ -131,6 +132,7 @@ The Akhbarna admin dashboard is a powerful, feature-rich control center designed
 <td width="50%">
 
 **Article Operations**
+
 - 📋 List all articles with filters
 - 🔎 Search by title, category, author
 - 📊 Sort by date, views, status
@@ -151,6 +153,7 @@ The Akhbarna admin dashboard is a powerful, feature-rich control center designed
 <td width="50%">
 
 **User Administration**
+
 - 👥 List all registered users
 - 🔍 Search by name, email, role
 - 👤 View user profiles & activity
@@ -164,6 +167,7 @@ The Akhbarna admin dashboard is a powerful, feature-rich control center designed
 <td width="50%">
 
 **User Details**
+
 - Registration date & last login
 - Newsletter subscription status
 - Article creation count (writers)
@@ -184,6 +188,7 @@ The Akhbarna admin dashboard is a powerful, feature-rich control center designed
 <td width="50%">
 
 **Subscription Dashboard**
+
 - 📧 Total subscribers count
 - 💳 Active/Trialing/Canceled status
 - 💰 Revenue tracking
@@ -197,6 +202,7 @@ The Akhbarna admin dashboard is a powerful, feature-rich control center designed
 <td width="50%">
 
 **Subscriber Management**
+
 - View all subscribers with filters
 - Search by email or name
 - Subscription status (Active/Trial/Canceled)
@@ -217,6 +223,7 @@ The Akhbarna admin dashboard is a powerful, feature-rich control center designed
 <td width="50%">
 
 **Key Metrics**
+
 - 📊 Total article views
 - 🎯 Total engagements
 - 📈 Popular articles count
@@ -230,6 +237,7 @@ The Akhbarna admin dashboard is a powerful, feature-rich control center designed
 <td width="50%">
 
 **Detailed Analytics**
+
 - 🏆 Top performing articles
 - 📂 Popular categories by views
 - 👁️ View tracking per article
@@ -250,6 +258,7 @@ The Akhbarna admin dashboard is a powerful, feature-rich control center designed
 <td width="50%">
 
 **Message Management**
+
 - 📬 View all contact submissions
 - 🔔 Unread message notifications
 - 👁️ Read/Unread status toggle
@@ -263,6 +272,7 @@ The Akhbarna admin dashboard is a powerful, feature-rich control center designed
 <td width="50%">
 
 **Reply System**
+
 - ✉️ Send email replies directly
 - 📎 View original message
 - 👤 User information display
@@ -283,6 +293,7 @@ The Akhbarna admin dashboard is a powerful, feature-rich control center designed
 <td width="50%">
 
 **Category Operations**
+
 - 📁 Create new categories
 - ✏️ Edit category details
 - 🗑️ Delete categories
@@ -296,6 +307,7 @@ The Akhbarna admin dashboard is a powerful, feature-rich control center designed
 <td width="50%">
 
 **Category Analytics**
+
 - View count per category
 - Popular categories ranking
 - Content distribution
@@ -316,6 +328,7 @@ The Akhbarna admin dashboard is a powerful, feature-rich control center designed
 <td width="50%">
 
 **Content Reports**
+
 - 🚩 User-submitted reports
 - 📋 Report categories (spam, offensive, etc.)
 - 👁️ Review reported content
@@ -329,6 +342,7 @@ The Akhbarna admin dashboard is a powerful, feature-rich control center designed
 <td width="50%">
 
 **Moderation Tools**
+
 - Quick article preview
 - Bulk report processing
 - Auto-moderation rules
@@ -677,33 +691,33 @@ NODE_ENV=development
 
 #### 📋 **Environment Variables Reference**
 
-| Variable                              | Required | Default      | Description                                      |
-| ------------------------------------- | -------- | ------------ | ------------------------------------------------ |
-| `MONGODB_URI`                         | ✅ Yes   | -            | MongoDB Atlas connection string                  |
-| `JWT_SECRET`                          | ✅ Yes   | -            | Secret key for JWT token signing                 |
-| `JWT_EXPIRES_IN`                      | ❌ No    | `7d`         | JWT token expiration time                        |
-| `CSRF_SECRET`                         | ✅ Yes   | -            | CSRF protection secret key                       |
-| `NEXT_PUBLIC_APP_URL`                 | ✅ Yes   | -            | Application base URL                             |
-| `NEXTAUTH_URL`                        | ✅ Yes   | -            | NextAuth authentication URL                      |
-| `NEXT_PUBLIC_SITE_URL`                | ✅ Yes   | -            | Public site URL                                  |
-| `SENDGRID_API_KEY`                    | ⚠️ Recommended | -       | SendGrid API key for emails                      |
-| `SENDGRID_FROM_EMAIL`                 | ⚠️ Recommended | -       | Email sender address                             |
-| `SENDGRID_FROM_NAME`                  | ❌ No    | `Akhbarna`   | Email sender name                                |
-| `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`   | ✅ Yes   | -            | Cloudinary cloud name                            |
-| `CLOUDINARY_API_KEY`                  | ✅ Yes   | -            | Cloudinary API key                               |
-| `CLOUDINARY_API_SECRET`               | ✅ Yes   | -            | Cloudinary API secret                            |
-| `STRIPE_SECRET_KEY`                   | ⚠️ Recommended | -       | Stripe secret key                                |
-| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY`  | ⚠️ Recommended | -       | Stripe publishable key                           |
-| `STRIPE_WEBHOOK_SECRET`               | ⚠️ Recommended | -       | Stripe webhook secret                            |
-| `STRIPE_PRICE_ID`                     | ⚠️ Recommended | -       | Newsletter subscription price ID                 |
-| `REDIS_URL`                           | ✅ Yes   | -            | Redis connection URL                             |
-| `REDIS_PASSWORD`                      | ⚠️ Recommended | -       | Redis password                                   |
-| `REDIS_DB`                            | ❌ No    | `0`          | Redis database number                            |
-| `MONGODB_MAX_POOL_SIZE`               | ❌ No    | `10`         | MongoDB connection pool size                     |
-| `CACHE_TTL_ARTICLES`                  | ❌ No    | `600000`     | Article cache TTL (ms)                           |
-| `RATE_LIMIT_WINDOW`                   | ❌ No    | `900000`     | Rate limit window (ms)                           |
-| `RATE_LIMIT_MAX_REQUESTS`             | ❌ No    | `100`        | Max requests per window                          |
-| `NODE_ENV`                            | ❌ No    | `development`| Node environment                                 |
+| Variable                             | Required       | Default       | Description                      |
+| ------------------------------------ | -------------- | ------------- | -------------------------------- |
+| `MONGODB_URI`                        | ✅ Yes         | -             | MongoDB Atlas connection string  |
+| `JWT_SECRET`                         | ✅ Yes         | -             | Secret key for JWT token signing |
+| `JWT_EXPIRES_IN`                     | ❌ No          | `7d`          | JWT token expiration time        |
+| `CSRF_SECRET`                        | ✅ Yes         | -             | CSRF protection secret key       |
+| `NEXT_PUBLIC_APP_URL`                | ✅ Yes         | -             | Application base URL             |
+| `NEXTAUTH_URL`                       | ✅ Yes         | -             | NextAuth authentication URL      |
+| `NEXT_PUBLIC_SITE_URL`               | ✅ Yes         | -             | Public site URL                  |
+| `SENDGRID_API_KEY`                   | ⚠️ Recommended | -             | SendGrid API key for emails      |
+| `SENDGRID_FROM_EMAIL`                | ⚠️ Recommended | -             | Email sender address             |
+| `SENDGRID_FROM_NAME`                 | ❌ No          | `Akhbarna`    | Email sender name                |
+| `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`  | ✅ Yes         | -             | Cloudinary cloud name            |
+| `CLOUDINARY_API_KEY`                 | ✅ Yes         | -             | Cloudinary API key               |
+| `CLOUDINARY_API_SECRET`              | ✅ Yes         | -             | Cloudinary API secret            |
+| `STRIPE_SECRET_KEY`                  | ⚠️ Recommended | -             | Stripe secret key                |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | ⚠️ Recommended | -             | Stripe publishable key           |
+| `STRIPE_WEBHOOK_SECRET`              | ⚠️ Recommended | -             | Stripe webhook secret            |
+| `STRIPE_PRICE_ID`                    | ⚠️ Recommended | -             | Newsletter subscription price ID |
+| `REDIS_URL`                          | ✅ Yes         | -             | Redis connection URL             |
+| `REDIS_PASSWORD`                     | ⚠️ Recommended | -             | Redis password                   |
+| `REDIS_DB`                           | ❌ No          | `0`           | Redis database number            |
+| `MONGODB_MAX_POOL_SIZE`              | ❌ No          | `10`          | MongoDB connection pool size     |
+| `CACHE_TTL_ARTICLES`                 | ❌ No          | `600000`      | Article cache TTL (ms)           |
+| `RATE_LIMIT_WINDOW`                  | ❌ No          | `900000`      | Rate limit window (ms)           |
+| `RATE_LIMIT_MAX_REQUESTS`            | ❌ No          | `100`         | Max requests per window          |
+| `NODE_ENV`                           | ❌ No          | `development` | Node environment                 |
 
 ### 🗄️ **Database Setup**
 

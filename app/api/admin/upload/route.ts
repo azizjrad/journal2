@@ -64,10 +64,41 @@ export async function POST(request: NextRequest) {
       height: result.height,
       format: result.format,
     });
-  } catch (error) {
-    console.error("Error uploading file:", error);
+  } catch (error: any) {
+    console.error("[UPLOAD] Error uploading file:", error);
+    console.error("[UPLOAD] Error details:", {
+      message: error.message,
+      stack: error.stack,
+      name: error.name,
+    });
+
+    // Check if it's a Cloudinary configuration error
+    if (error.message?.includes("Must supply api_key")) {
+      return NextResponse.json(
+        {
+          error:
+            "Cloudinary not configured. Please set CLOUDINARY_API_KEY environment variable.",
+        },
+        { status: 500 }
+      );
+    }
+
+    if (error.message?.includes("Must supply cloud_name")) {
+      return NextResponse.json(
+        {
+          error:
+            "Cloudinary not configured. Please set NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME environment variable.",
+        },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json(
-      { error: "Failed to upload file" },
+      {
+        error: "Failed to upload file",
+        details:
+          process.env.NODE_ENV === "development" ? error.message : undefined,
+      },
       { status: 500 }
     );
   }
