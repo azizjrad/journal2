@@ -99,11 +99,25 @@ const nextConfig = {
   },
   // Enable static export optimization
   output: "standalone",
+
+  // Compression
+  compress: true,
+
+  // Optimize for production
+  productionBrowserSourceMaps: false,
+  
   // Enable experimental features for better performance
   experimental: {
     optimizeCss: true,
     optimizePackageImports: ["lucide-react", "@radix-ui/react-icons"],
+    serverComponentsExternalPackages: ["mongoose"],
   },
+
+  // Reduce build time and improve performance
+  swcMinify: true,
+  
+  // Enable React strict mode
+  reactStrictMode: true,
 };
 
 export default nextConfig;

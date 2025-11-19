@@ -72,26 +72,14 @@ export const viewport = {
   colorScheme: "dark light",
 };
 
-// Fetch categories from API (server component)
-async function fetchCategories() {
-  try {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_SITE_URL || ""}/api/categories`,
-      { cache: "no-store" }
-    );
-    if (!res.ok) return [];
-    return await res.json();
-  } catch {
-    return [];
-  }
-}
+// Enable static generation with revalidation
+export const revalidate = 300; // 5 minutes
 
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const categories = await fetchCategories();
 
   return (
     <html lang="en">

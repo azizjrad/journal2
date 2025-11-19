@@ -43,12 +43,14 @@ export async function dbConnect() {
   if (!(global as any).mongoose.promise) {
     const options = {
       bufferCommands: false,
-      maxPoolSize: process.env.NODE_ENV === "production" ? 5 : 10, // Limit connections in production
-      serverSelectionTimeoutMS: 10000, // 10 seconds
-      socketTimeoutMS: 30000, // 30 seconds
-      maxIdleTimeMS: 30000, // Close idle connections after 30 seconds
+      maxPoolSize: process.env.NODE_ENV === "production" ? 10 : 5, // Increase pool in production
+      minPoolSize: process.env.NODE_ENV === "production" ? 5 : 2, // Maintain minimum connections
+      serverSelectionTimeoutMS: 5000, // Reduce to 5 seconds for faster failures
+      socketTimeoutMS: 45000, // 45 seconds
+      maxIdleTimeMS: 60000, // Keep connections alive longer
       retryWrites: true,
       w: "majority" as const,
+      connectTimeoutMS: 10000, // 10 seconds connection timeout
     };
 
     (global as any).mongoose.promise = mongoose.connect(MONGODB_URI, options);

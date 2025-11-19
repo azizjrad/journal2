@@ -1,4 +1,24 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
 export default function MainSiteLoading() {
+  const [show, setShow] = useState(false);
+
+  useEffect(() => {
+    // Only show loading after 300ms delay to avoid flash on fast loads
+    const timer = setTimeout(() => {
+      setShow(true);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // Don't render anything if not showing (prevents flash)
+  if (!show) {
+    return null;
+  }
+
   return (
     <div className="fixed inset-0 z-50 bg-gray-100/80">
       {/* Simulated main site content background pattern */}
