@@ -41,9 +41,9 @@ export function SearchResultCard({ article }: SearchResultCardProps) {
   return (
     <article className="border-b border-gray-200 pb-8 last:border-b-0">
       <Link href={`/article/${article.id}`} className="group block">
-        <div className="flex gap-6">
+        <div className="flex flex-col md:flex-row gap-4 md:gap-6">
           {/* Article Image */}
-          <div className="flex-shrink-0 w-48 h-32 relative overflow-hidden bg-gray-100 rounded-lg">
+          <div className="flex-shrink-0 w-full md:w-48 h-48 md:h-32 relative overflow-hidden bg-gray-100 rounded-lg">
             <Image
               src={article.image_url || "/placeholder.svg"}
               alt={title}
@@ -68,17 +68,17 @@ export function SearchResultCard({ article }: SearchResultCardProps) {
             )}
 
             {/* Article Title */}
-            <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-3 line-clamp-2 group-hover:text-red-600 transition-colors duration-200">
+            <h2 className="text-lg md:text-xl lg:text-2xl font-bold text-gray-900 mb-2 md:mb-3 line-clamp-2 group-hover:text-red-600 transition-colors duration-200">
               {title}
             </h2>
 
             {/* Article Excerpt */}
-            <p className="text-gray-600 text-base leading-relaxed mb-4 line-clamp-3">
+            <p className="text-gray-600 text-sm md:text-base leading-relaxed mb-3 md:mb-4 line-clamp-2 md:line-clamp-3">
               {excerpt}
             </p>
 
             {/* Meta Information */}
-            <div className="flex items-center gap-6 text-sm text-gray-500">
+            <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-6 text-xs md:text-sm text-gray-500">
               {/* Author */}
               <div className="flex items-center gap-2">
                 <User className="w-4 h-4" />
@@ -94,10 +94,10 @@ export function SearchResultCard({ article }: SearchResultCardProps) {
 
               {/* Date */}
               <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4" />
+                <Calendar className="w-4 h-4 flex-shrink-0" />
                 <time
                   dateTime={article.published_at}
-                  className="uppercase tracking-wide"
+                  className="uppercase tracking-wide break-words"
                 >
                   {formatDate(article.published_at)}
                 </time>

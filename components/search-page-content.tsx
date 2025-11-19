@@ -30,8 +30,9 @@ export function SearchPageContent({
     if (hasFilters && resultsRef.current) {
       const yOffset = -100; // Offset from top (adjust for header)
       const element = resultsRef.current;
-      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
-      
+      const y =
+        element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+
       window.scrollTo({ top: y, behavior: "smooth" });
     }
   }, [filters.query, filters.sortBy, filters.sortOrder, hasFilters]);
@@ -47,8 +48,8 @@ export function SearchPageContent({
   return (
     <main className="container mx-auto px-4 lg:px-6">
       {/* Hero Search Section */}
-      <div className="py-24 text-center border-b border-gray-200">
-        <h1 className="text-4xl md:text-6xl font-bold text-gray-900 mb-20">
+      <div className="py-12 md:py-24 text-center border-b border-gray-200">
+        <h1 className="text-2xl md:text-4xl lg:text-6xl font-bold text-gray-900 mb-8 md:mb-20 px-4">
           {t("search_stories_from", "Search stories from", "ابحث في القصص من")}{" "}
           <span className="bg-gradient-to-r from-red-600 to-red-800 bg-clip-text text-transparent">
             {t("site_title", "DIGITAL JOURNAL", "الجريدة الرقمية")}

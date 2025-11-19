@@ -43,9 +43,9 @@ export function SearchBar({
             }`}
           >
             {/* Search Icon */}
-            <div className="pl-6 pr-4">
+            <div className="pl-3 md:pl-6 pr-2 md:pr-4">
               <Search
-                className={`w-6 h-6 transition-colors duration-300 ${
+                className={`w-5 h-5 md:w-6 md:h-6 transition-colors duration-300 ${
                   isFocused ? "text-red-500" : "text-gray-400"
                 }`}
               />
@@ -67,7 +67,7 @@ export function SearchBar({
                 "Enter Search Terms",
                 "أدخل مصطلحات البحث"
               )}
-              className="flex-1 py-5 px-2 text-lg text-gray-900 placeholder-gray-500 bg-transparent border-none outline-none"
+              className="flex-1 py-3 md:py-5 px-2 text-sm md:text-lg text-gray-900 placeholder-gray-500 bg-transparent border-none outline-none"
               autoComplete="off"
               dir={language === "ar" ? "rtl" : "ltr"}
             />
@@ -87,7 +87,7 @@ export function SearchBar({
             <button
               type="submit"
               disabled={!query.trim()}
-              className={`px-10 py-5 text-lg font-bold tracking-wider transition-all duration-300 ${
+              className={`px-4 md:px-10 py-3 md:py-5 text-sm md:text-lg font-bold tracking-wider transition-all duration-300 ${
                 query.trim()
                   ? "bg-black text-white hover:bg-gray-800 hover:scale-105 active:scale-95"
                   : "bg-gray-300 text-gray-500 cursor-not-allowed"
