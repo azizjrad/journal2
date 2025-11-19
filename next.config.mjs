@@ -100,6 +100,9 @@ const nextConfig = {
   // Enable static export optimization
   output: "standalone",
 
+  // External packages for server components
+  serverExternalPackages: ["mongoose"],
+
   // Compression
   compress: true,
 
@@ -110,11 +113,7 @@ const nextConfig = {
   experimental: {
     optimizeCss: true,
     optimizePackageImports: ["lucide-react", "@radix-ui/react-icons"],
-    serverComponentsExternalPackages: ["mongoose"],
   },
-
-  // Reduce build time and improve performance
-  swcMinify: true,
 
   // Enable React strict mode
   reactStrictMode: true,
