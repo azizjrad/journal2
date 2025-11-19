@@ -5,6 +5,7 @@ import { SearchBar } from "@/components/search-bar";
 import { SearchSortDropdown } from "@/components/search-sort-dropdown";
 import { ArticlesList } from "@/components/articles-list";
 import { SearchFilters } from "@/lib/db";
+import { useEffect, useRef } from "react";
 
 interface SearchPageContentProps {
   filters: SearchFilters;
@@ -22,6 +23,18 @@ export function SearchPageContent({
   popularSearches,
 }: SearchPageContentProps) {
   const { language, t } = useLanguage();
+  const resultsRef = useRef<HTMLDivElement>(null);
+
+  // Scroll to results when filters change
+  useEffect(() => {
+    if (hasFilters && resultsRef.current) {
+      const yOffset = -100; // Offset from top (adjust for header)
+      const element = resultsRef.current;
+      const y = element.getBoundingClientRect().top + window.pageYOffset + yOffset;
+      
+      window.scrollTo({ top: y, behavior: "smooth" });
+    }
+  }, [filters.query, filters.sortBy, filters.sortOrder, hasFilters]);
 
   // Determine current sort value for dropdown
   const getCurrentSort = () => {
@@ -55,7 +68,7 @@ export function SearchPageContent({
       </div>
 
       {/* Content Section */}
-      <div className="py-12">
+      <div className="py-12" ref={resultsRef}>
         {/* Results Header - only show when there's a search */}
         {hasFilters && (
           <div className="flex flex-col md:flex-row md:items-center justify-between mb-10 gap-4">
