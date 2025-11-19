@@ -105,7 +105,7 @@ const nextConfig = {
 
   // Optimize for production
   productionBrowserSourceMaps: false,
-  
+
   // Enable experimental features for better performance
   experimental: {
     optimizeCss: true,
@@ -115,7 +115,7 @@ const nextConfig = {
 
   // Reduce build time and improve performance
   swcMinify: true,
-  
+
   // Enable React strict mode
   reactStrictMode: true,
 };

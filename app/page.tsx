@@ -22,9 +22,6 @@ import MainLayout from "@/components/main-layout";
 // Enable static generation with revalidation every 60 seconds
 export const revalidate = 60;
 
-// Enable dynamic rendering only when needed
-export const dynamic = "force-static";
-
 export default async function HomePage() {
   // Fetch latest article for each main category and big story
   const [business, culture, politics, science, bigStory] = await Promise.all([

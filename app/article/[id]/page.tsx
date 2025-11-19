@@ -19,6 +19,9 @@ import { notFound } from "next/navigation";
 import { ArticleContent } from "./article-content";
 import { getAuthorDisplayText } from "@/lib/author-utils";
 
+// Enable ISR with revalidation for articles
+export const revalidate = 300; // 5 minutes
+
 interface ArticlePageProps {
   params: Promise<{ id: string }>;
 }

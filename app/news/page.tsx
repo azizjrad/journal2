@@ -12,6 +12,12 @@ import { Footer } from "@/components/footer";
 import { Metadata } from "next";
 import { NewsPageContent } from "@/components/news-page-content";
 
+// Enable ISR with revalidation
+export const revalidate = 60;
+
+// Dynamic rendering for pagination
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "All News - Digital Journal - الجريدة الرقمية",
   description:

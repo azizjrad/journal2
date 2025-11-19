@@ -11,6 +11,9 @@ import { Footer } from "@/components/footer";
 import { SearchPageContent } from "@/components/search-page-content";
 import { Metadata } from "next";
 
+// Dynamic rendering for search functionality
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Search - Digital Journal",
   description:
