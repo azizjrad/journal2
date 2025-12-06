@@ -4,30 +4,24 @@ import {
   createPasswordResetToken,
   logUserActivity,
 } from "@/lib/db";
-import {
-  generateSecureToken,
-  checkRateLimit,
-  getPasswordResetExpiry,
-} from "@/lib/auth";
+import { generateSecureToken, getPasswordResetExpiry } from "@/lib/auth";
 import { sendPasswordResetEmail } from "@/lib/email-sendgrid";
+import { authLimiter } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
   try {
+    // Rate limiting with new advanced limiter
+    const clientIP = request.headers.get("x-forwarded-for") || "unknown";
+    const rateLimitResult = await authLimiter.check(
+      request,
+      `reset-${clientIP}`
+    );
+    if (!rateLimitResult.success) {
+      return rateLimitResult.response;
+    }
+
     const body = await request.json();
     const { email } = body;
-
-    // Rate limiting
-    const clientIP = request.headers.get("x-forwarded-for") || "unknown";
-    if (!checkRateLimit(`reset-${clientIP}`, 3, 60 * 60 * 1000)) {
-      // 3 attempts per hour
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Too many password reset attempts. Please try again later.",
-        },
-        { status: 429 }
-      );
-    }
 
     // Validation
     if (!email) {

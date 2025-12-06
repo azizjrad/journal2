@@ -13,13 +13,13 @@ import {
   validatePasswordStrength,
   generateSecureToken,
   getEmailVerificationExpiry,
-  checkRateLimit,
 } from "@/lib/auth";
 import {
   sendVerificationEmail,
   sendWriterApplicationNotificationToAdmin,
 } from "@/lib/email-sendgrid";
 import { validateCsrf } from "@/lib/csrf";
+import { rateLimiters, createRateLimitResponse } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
   // CSRF protection
@@ -34,6 +34,15 @@ export async function POST(request: NextRequest) {
   }
 
   try {
+    // Rate limiting: 5 attempts per 15 minutes
+    const rateLimitResult = rateLimiters.auth.check(request);
+    if (!rateLimitResult.success) {
+      return createRateLimitResponse(
+        rateLimitResult,
+        "Too many registration attempts. Please try again later."
+      );
+    }
+
     const body = await request.json();
     const {
       username,
@@ -43,19 +52,6 @@ export async function POST(request: NextRequest) {
       lastName,
       accountType = "user", // New field for account type selection
     } = body;
-
-    // Rate limiting
-    const clientIP = request.headers.get("x-forwarded-for") || "unknown";
-    if (!checkRateLimit(`register-${clientIP}`, 3, 60 * 60 * 1000)) {
-      // 3 attempts per hour
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Too many registration attempts. Please try again later.",
-        },
-        { status: 429 }
-      );
-    }
 
     // Validation
     if (!username || !email || !password) {

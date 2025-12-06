@@ -1,26 +1,24 @@
 import { NextRequest, NextResponse } from "next/server";
-import { authenticateUser, checkRateLimit, clearRateLimit } from "@/lib/auth";
+import { authenticateUser } from "@/lib/auth";
+import { rateLimiters, createRateLimitResponse } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
   try {
-    const body = await request.json();
-    const { email, password } = body;
-
     // Get client info
     const clientIP = request.headers.get("x-forwarded-for") || "unknown";
     const userAgent = request.headers.get("user-agent") || undefined;
 
-    // Rate limiting
-    if (!checkRateLimit(`login-${clientIP}`, 5, 15 * 60 * 1000)) {
-      // 5 attempts per 15 minutes
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Too many login attempts. Please try again later.",
-        },
-        { status: 429 }
+    // Rate limiting: 5 attempts per 15 minutes
+    const rateLimitResult = rateLimiters.auth.check(request);
+    if (!rateLimitResult.success) {
+      return createRateLimitResponse(
+        rateLimitResult,
+        "Too many login attempts. Please try again later."
       );
     }
+
+    const body = await request.json();
+    const { email, password } = body;
 
     // Validation
     if (!email || !password) {
@@ -34,9 +32,6 @@ export async function POST(request: NextRequest) {
     const result = await authenticateUser(email, password, clientIP, userAgent);
 
     if (result.success) {
-      // Clear rate limit on successful login
-      clearRateLimit(`login-${clientIP}`);
-
       // Set HTTP-only cookie with the token
       const response = NextResponse.json({
         success: true,
