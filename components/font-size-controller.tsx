@@ -30,7 +30,7 @@ export function FontSizeController() {
         variant={fontSize === "small" ? "default" : "ghost"}
         size="sm"
         onClick={() => changeFontSize("small")}
-        className="text-xs px-2 py-1"
+        className="text-xs px-2 py-1 hover:text-black"
         title={t("small_font", "Small Font", "خط صغير")}
       >
         A-
@@ -39,7 +39,7 @@ export function FontSizeController() {
         variant={fontSize === "normal" ? "default" : "ghost"}
         size="sm"
         onClick={() => changeFontSize("normal")}
-        className="text-sm px-2 py-1"
+        className="text-sm px-2 py-1 hover:text-black"
         title={t("normal_font", "Normal Font", "خط عادي")}
       >
         A
@@ -48,7 +48,7 @@ export function FontSizeController() {
         variant={fontSize === "large" ? "default" : "ghost"}
         size="sm"
         onClick={() => changeFontSize("large")}
-        className="text-base px-2 py-1"
+        className="text-base px-2 py-1 hover:text-black"
         title={t("large_font", "Large Font", "خط كبير")}
       >
         A+

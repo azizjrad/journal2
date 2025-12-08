@@ -58,7 +58,7 @@ export async function dbConnect() {
       w: "majority" as const,
       connectTimeoutMS: 10000, // 10 seconds connection timeout
       // Add compression for better performance
-      compressors: ["zlib"],
+      compressors: ["zlib" as const],
       // Auto index for better performance
       autoIndex: process.env.NODE_ENV !== "production",
     };
