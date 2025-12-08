@@ -33,7 +33,12 @@ export async function dbConnect() {
 
   // Use global variable to avoid multiple connections
   if ((global as any).mongoose?.conn) {
-    return (global as any).mongoose.conn;
+    // Check if connection is still alive
+    if (mongoose.connection.readyState === 1) {
+      return (global as any).mongoose.conn;
+    }
+    // If connection is dead, reset it
+    (global as any).mongoose = { conn: null, promise: null };
   }
 
   if (!(global as any).mongoose) {
@@ -43,22 +48,41 @@ export async function dbConnect() {
   if (!(global as any).mongoose.promise) {
     const options = {
       bufferCommands: false,
-      maxPoolSize: process.env.NODE_ENV === "production" ? 10 : 5, // Increase pool in production
-      minPoolSize: process.env.NODE_ENV === "production" ? 5 : 2, // Maintain minimum connections
-      serverSelectionTimeoutMS: 5000, // Reduce to 5 seconds for faster failures
-      socketTimeoutMS: 45000, // 45 seconds
-      maxIdleTimeMS: 60000, // Keep connections alive longer
+      // Serverless-optimized settings
+      maxPoolSize: process.env.NODE_ENV === "production" ? 5 : 5, // Smaller pool for serverless
+      minPoolSize: 1, // Keep at least 1 connection
+      serverSelectionTimeoutMS: 10000, // 10 seconds - more time for cold starts
+      socketTimeoutMS: 60000, // 60 seconds - longer for slow queries
+      maxIdleTimeMS: 10000, // Close idle connections after 10s (serverless optimization)
       retryWrites: true,
       w: "majority" as const,
       connectTimeoutMS: 10000, // 10 seconds connection timeout
+      // Add compression for better performance
+      compressors: ["zlib"],
+      // Auto index for better performance
+      autoIndex: process.env.NODE_ENV !== "production",
     };
 
-    (global as any).mongoose.promise = mongoose.connect(MONGODB_URI, options);
+    (global as any).mongoose.promise = mongoose
+      .connect(MONGODB_URI, options)
+      .catch((err) => {
+        console.error("❌ MongoDB connection error:", err);
+        // Reset promise on error so next request can retry
+        (global as any).mongoose.promise = null;
+        throw err;
+      });
   }
 
-  (global as any).mongoose.conn = await (global as any).mongoose.promise;
-  console.log("✅ Connected to MongoDB Atlas successfully");
-  return (global as any).mongoose.conn;
+  try {
+    (global as any).mongoose.conn = await (global as any).mongoose.promise;
+    console.log("✅ Connected to MongoDB Atlas successfully");
+    return (global as any).mongoose.conn;
+  } catch (error) {
+    console.error("❌ MongoDB connection failed:", error);
+    // Reset for retry on next request
+    (global as any).mongoose = { conn: null, promise: null };
+    throw error;
+  }
 }
 
 /**

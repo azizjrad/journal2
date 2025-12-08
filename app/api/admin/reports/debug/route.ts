@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import dbConnect from "@/lib/dbConnect";
+import { dbConnect } from "@/lib/db";
 import { Report } from "@/lib/models/Article";
 import { ensureAdmin } from "@/lib/ensure-admin";
 

@@ -6,10 +6,10 @@ import {
   getUserByEmail,
   getUserById,
   updateLastLogin,
+  dbConnect,
 } from "./db";
 import { UserSession, UserActivityLog } from "./models/User";
 import { Types } from "mongoose";
-import dbConnect from "./dbConnect";
 
 // JWT Configuration
 const JWT_SECRET =

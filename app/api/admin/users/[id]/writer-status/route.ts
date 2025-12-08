@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { User } from "@/lib/models/User";
 import { ensureAdmin } from "@/lib/ensure-admin";
-import dbConnect from "@/lib/dbConnect";
+import { dbConnect } from "@/lib/db";
 import { sendWriterApprovalEmail } from "@/lib/email-sendgrid";
 
 export async function PATCH(
