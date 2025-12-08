@@ -212,11 +212,19 @@ export interface AnalyticsData {
   recentActivity: any[];
 }
 
+// Type for MongoDB document
+interface MongoDoc {
+  _id?: any;
+  __v?: number;
+  toObject?: () => any;
+  [key: string]: any;
+}
+
 // Helper function to convert MongoDB doc to plain object with id
-function convertDoc(doc: any): any {
+function convertDoc<T = any>(doc: MongoDoc | MongoDoc[] | null): T | null {
   if (!doc) return null;
   if (Array.isArray(doc)) {
-    return doc.map((item) => convertDoc(item));
+    return doc.map((item) => convertDoc(item)) as T;
   }
 
   // Get plain object
@@ -234,7 +242,15 @@ function convertDoc(doc: any): any {
   // Remove any remaining MongoDB-specific properties
   delete serialized.__v;
 
-  return serialized;
+  return serialized as T;
+}
+
+// Safe array converter that never returns null
+function convertDocArray<T = any>(docs: MongoDoc[] | null): T[] {
+  if (!docs || !Array.isArray(docs)) return [];
+  return docs
+    .map((doc) => convertDoc<T>(doc))
+    .filter((item): item is T => item !== null);
 }
 
 // ===============================================
@@ -352,12 +368,15 @@ export async function getArticlesByCategory(
 
   const articles = await query.lean();
 
-  return articles.map((article) => ({
-    ...convertDoc(article),
-    category_name_en: article.category_id?.name_en,
-    category_name_ar: article.category_id?.name_ar,
-    category_slug: article.category_id?.slug,
-  }));
+  return articles.map((article) => {
+    const converted = convertDoc<ArticleInterface>(article);
+    return {
+      ...converted,
+      category_name_en: article.category_id?.name_en,
+      category_name_ar: article.category_id?.name_ar,
+      category_slug: article.category_id?.slug,
+    } as ArticleInterface;
+  });
 }
 
 export async function searchArticles(
@@ -452,12 +471,15 @@ export async function advancedSearchArticles(
       .limit(50)
       .lean();
 
-    return articles.map((article) => ({
-      ...convertDoc(article),
-      category_name_en: article.category_id?.name_en,
-      category_name_ar: article.category_id?.name_ar,
-      category_slug: article.category_id?.slug,
-    }));
+    return articles.map((article) => {
+      const converted = convertDoc<ArticleInterface>(article);
+      return {
+        ...converted,
+        category_name_en: article.category_id?.name_en,
+        category_name_ar: article.category_id?.name_ar,
+        category_slug: article.category_id?.slug,
+      } as ArticleInterface;
+    });
   } catch (error) {
     console.error("Error in advancedSearchArticles:", error);
     return [];
@@ -565,7 +587,7 @@ export async function getCategories(): Promise<CategoryInterface[]> {
 
   const categories = await Category.find({}).sort({ name_en: 1 }).lean();
 
-  return convertDoc(categories);
+  return convertDocArray<CategoryInterface>(categories);
 }
 
 export async function getCategoryBySlug(
@@ -610,7 +632,9 @@ export async function createCategory(
   };
 
   const result = await Category.create(sanitizedCategory);
-  return convertDoc(result);
+  const converted = convertDoc<CategoryInterface>(result);
+  if (!converted) throw new Error("Failed to create category");
+  return converted;
 }
 
 export async function updateCategory(
@@ -663,7 +687,9 @@ export async function updateCategory(
     throw new Error("Category not found");
   }
 
-  return convertDoc(result);
+  const converted = convertDoc<CategoryInterface>(result);
+  if (!converted) throw new Error("Failed to update category");
+  return converted;
 }
 
 export async function deleteCategory(id: string): Promise<boolean> {
@@ -705,7 +731,7 @@ export async function getTags(): Promise<TagInterface[]> {
 
   const tags = await Tag.find({}).sort({ name_en: 1 }).lean();
 
-  return convertDoc(tags);
+  return convertDocArray<TagInterface>(tags);
 }
 
 export const getRecentArticlesCached = unstable_cache(
@@ -764,12 +790,15 @@ export async function getAllArticlesAdmin(): Promise<ArticleInterface[]> {
     .sort({ created_at: -1 })
     .lean();
 
-  return articles.map((article) => ({
-    ...convertDoc(article),
-    category_name_en: article.category_id?.name_en,
-    category_name_ar: article.category_id?.name_ar,
-    category_slug: article.category_id?.slug,
-  }));
+  return articles.map((article) => {
+    const converted = convertDoc<ArticleInterface>(article);
+    return {
+      ...converted,
+      category_name_en: article.category_id?.name_en,
+      category_name_ar: article.category_id?.name_ar,
+      category_slug: article.category_id?.slug,
+    } as ArticleInterface;
+  });
 }
 
 // Generate a URL-friendly slug from text
@@ -1169,7 +1198,9 @@ export async function updateUser(
     throw new Error("User not found");
   }
 
-  return convertDoc(result);
+  const converted = convertDoc<UserInterface>(result);
+  if (!converted) throw new Error("Failed to update user");
+  return converted;
 }
 
 // Update user writer status and role
@@ -1381,7 +1412,7 @@ export async function getAllUsers(role?: string): Promise<UserInterface[]> {
     .sort({ created_at: -1 })
     .lean();
 
-  return convertDoc(users);
+  return convertDocArray<UserInterface>(users);
 }
 
 // User Profile functions
@@ -1410,7 +1441,9 @@ export async function createUserProfile(
     ...sanitizedProfile,
   });
 
-  return convertDoc(result);
+  const converted = convertDoc<UserProfileInterface>(result);
+  if (!converted) throw new Error("Failed to create user profile");
+  return converted;
 }
 
 export async function getUserProfile(
@@ -1478,7 +1511,9 @@ export async function updateUserProfile(
     });
   }
 
-  return convertDoc(result);
+  const converted = convertDoc<UserProfileInterface>(result);
+  if (!converted) throw new Error("Failed to update user profile");
+  return converted;
 }
 
 // Activity logging function
@@ -1786,11 +1821,14 @@ export async function getAnalyticsData(
     return {
       totalViews,
       totalEngagements,
-      popularArticles: popularArticles.map((article) => ({
-        ...convertDoc(article),
-        category_name_en: article.category_id?.name_en,
-        category_name_ar: article.category_id?.name_ar,
-      })),
+      popularArticles: popularArticles.map((article) => {
+        const converted = convertDoc<ArticleInterface>(article);
+        return {
+          ...converted,
+          category_name_en: article.category_id?.name_en,
+          category_name_ar: article.category_id?.name_ar,
+        } as ArticleInterface;
+      }),
       popularCategories: categoryStats.map((cat) => ({
         name: cat.name,
         count: cat.count,
@@ -2688,7 +2726,9 @@ export async function createContactMessage(data: {
   const contact = new Contact(sanitizedData);
   const savedContact = await contact.save();
 
-  return convertDoc(savedContact);
+  const converted = convertDoc<ContactInterface>(savedContact);
+  if (!converted) throw new Error("Failed to create contact message");
+  return converted;
 }
 
 export async function getContactMessages(
@@ -2739,7 +2779,7 @@ export async function getContactMessages(
     .lean();
 
   return {
-    messages: convertDoc(messages),
+    messages: convertDocArray<ContactInterface>(messages),
     totalCount,
     totalPages,
     currentPage: page,

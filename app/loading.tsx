@@ -6,15 +6,31 @@ export default function MainSiteLoading() {
   const [show, setShow] = useState(false);
 
   useEffect(() => {
-    // Only show loading after 300ms delay to avoid flash on fast loads
+    // Detect slow network or only show after significant delay
+    const slowNetworkThreshold = 1000; // Show after 1 second (means loading is actually slow)
+
+    // Check if network is slow using Network Information API
+    const connection =
+      (navigator as any).connection ||
+      (navigator as any).mozConnection ||
+      (navigator as any).webkitConnection;
+    const isSlowNetwork =
+      connection &&
+      (connection.effectiveType === "slow-2g" ||
+        connection.effectiveType === "2g" ||
+        connection.saveData);
+
+    // Show immediately if network is detected as slow, otherwise wait longer
+    const delay = isSlowNetwork ? 500 : slowNetworkThreshold;
+
     const timer = setTimeout(() => {
       setShow(true);
-    }, 300);
+    }, delay);
 
     return () => clearTimeout(timer);
   }, []);
 
-  // Don't render anything if not showing (prevents flash)
+  // Don't render anything if not showing (prevents flash on fast loads)
   if (!show) {
     return null;
   }

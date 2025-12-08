@@ -15,7 +15,13 @@ import {
 } from "@/components/ui/carousel";
 import { Calendar } from "lucide-react";
 import Autoplay from "embla-carousel-autoplay";
-// @ts-ignore
+import type { EmblaPluginType } from "embla-carousel";
+
+// Type declaration for embla-carousel-wheel-gestures
+declare module "embla-carousel-wheel-gestures" {
+  export default function WheelGesturesPlugin(): EmblaPluginType;
+}
+
 import WheelGesturesPlugin from "embla-carousel-wheel-gestures";
 
 interface Article {

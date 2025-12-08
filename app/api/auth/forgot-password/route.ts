@@ -6,18 +6,17 @@ import {
 } from "@/lib/db";
 import { generateSecureToken, getPasswordResetExpiry } from "@/lib/auth";
 import { sendPasswordResetEmail } from "@/lib/email-sendgrid";
-import { authLimiter } from "@/lib/rate-limit";
+import { rateLimiters, createRateLimitResponse } from "@/lib/rate-limit";
 
 export async function POST(request: NextRequest) {
   try {
-    // Rate limiting with new advanced limiter
-    const clientIP = request.headers.get("x-forwarded-for") || "unknown";
-    const rateLimitResult = await authLimiter.check(
-      request,
-      `reset-${clientIP}`
-    );
+    // Rate limiting: 5 attempts per 15 minutes
+    const rateLimitResult = rateLimiters.auth.check(request);
     if (!rateLimitResult.success) {
-      return rateLimitResult.response;
+      return createRateLimitResponse(
+        rateLimitResult,
+        "Too many password reset attempts. Please try again later."
+      );
     }
 
     const body = await request.json();

@@ -14,30 +14,8 @@ import {
 import type Stripe from "stripe";
 import { User } from "@/lib/models/User";
 
-// Disable body parsing for webhooks
-export const config = {
-  api: {
-    bodyParser: false,
-  },
-};
-
-async function buffer(readable: ReadableStream<Uint8Array>): Promise<Buffer> {
-  const chunks: Uint8Array[] = [];
-  const reader = readable.getReader();
-
-  try {
-    // eslint-disable-next-line no-constant-condition
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      chunks.push(value);
-    }
-  } finally {
-    reader.releaseLock();
-  }
-
-  return Buffer.concat(chunks);
-}
+// Route segment config for Next.js 16+
+export const runtime = "nodejs";
 
 export async function POST(request: NextRequest) {
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -53,7 +31,8 @@ export async function POST(request: NextRequest) {
   let event: Stripe.Event;
 
   try {
-    const body = await buffer(request.body!);
+    // Get raw body as text for webhook signature verification
+    const body = await request.text();
     const signature = request.headers.get("stripe-signature");
 
     if (!signature) {
@@ -97,9 +76,9 @@ export async function POST(request: NextRequest) {
           console.log("🔍 Retrieved subscription:", {
             id: subscription.id,
             status: subscription.status,
-            current_period_start: subscription.current_period_start,
-            current_period_end: subscription.current_period_end,
-            trial_end: subscription.trial_end,
+            current_period_start: (subscription as any).current_period_start,
+            current_period_end: (subscription as any).current_period_end,
+            trial_end: (subscription as any).trial_end,
           });
 
           const userId = session.metadata?.userId;
@@ -141,16 +120,17 @@ export async function POST(request: NextRequest) {
           }
 
           // Handle trial subscriptions where current_period_start/end might be undefined
-          const currentPeriodStart = subscription.current_period_start
-            ? new Date(subscription.current_period_start * 1000)
-            : subscription.trial_start
-            ? new Date(subscription.trial_start * 1000)
+          const subscriptionAny = subscription as any;
+          const currentPeriodStart = subscriptionAny.current_period_start
+            ? new Date(subscriptionAny.current_period_start * 1000)
+            : subscriptionAny.trial_start
+            ? new Date(subscriptionAny.trial_start * 1000)
             : new Date();
 
-          const currentPeriodEnd = subscription.current_period_end
-            ? new Date(subscription.current_period_end * 1000)
-            : subscription.trial_end
-            ? new Date(subscription.trial_end * 1000)
+          const currentPeriodEnd = subscriptionAny.current_period_end
+            ? new Date(subscriptionAny.current_period_end * 1000)
+            : subscriptionAny.trial_end
+            ? new Date(subscriptionAny.trial_end * 1000)
             : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days from now as fallback
 
           console.log("🔍 About to create subscription in DB with:", {
@@ -183,7 +163,7 @@ export async function POST(request: NextRequest) {
             // If subscription has a trial and user hasn't used trial before, mark it as used
             if (
               subscription.status === "trialing" &&
-              subscription.trial_end &&
+              (subscription as any).trial_end &&
               session.metadata?.will_use_trial === "true"
             ) {
               await User.findByIdAndUpdate(userId, {
@@ -206,7 +186,7 @@ export async function POST(request: NextRequest) {
             if (user && user.email) {
               const amount =
                 subscription.items.data[0].price.unit_amount! / 100;
-              const trialEnd = subscription.trial_end;
+              const trialEnd = (subscription as any).trial_end;
 
               await sendSubscriptionConfirmationEmail({
                 email: user.email,

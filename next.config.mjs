@@ -9,9 +9,6 @@ const nextConfig = {
   // Set the workspace root explicitly
   outputFileTracingRoot: path.join(__dirname, "./"),
 
-  eslint: {
-    ignoreDuringBuilds: true,
-  },
   typescript: {
     ignoreBuildErrors: true,
   },
