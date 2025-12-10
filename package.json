@@ -51,6 +51,7 @@
     "@radix-ui/react-toggle-group": "1.1.1",
     "@radix-ui/react-tooltip": "1.1.6",
     "@sendgrid/mail": "^8.1.6",
+    "@sentry/nextjs": "^10.29.0",
     "@stripe/stripe-js": "^8.0.0",
     "@types/bcryptjs": "^2.4.6",
     "@types/jsonwebtoken": "^9.0.10",

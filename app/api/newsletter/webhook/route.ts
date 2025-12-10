@@ -13,6 +13,11 @@ import {
 } from "@/lib/email-sendgrid";
 import type Stripe from "stripe";
 import { User } from "@/lib/models/User";
+import {
+  trackWebhookError,
+  trackPaymentError,
+  addBreadcrumb,
+} from "@/lib/sentry";
 
 // Route segment config for Next.js 16+
 export const runtime = "nodejs";
@@ -22,6 +27,11 @@ export async function POST(request: NextRequest) {
 
   if (!webhookSecret) {
     console.error("STRIPE_WEBHOOK_SECRET is not set");
+    trackWebhookError(
+      new Error("STRIPE_WEBHOOK_SECRET not configured"),
+      "stripe_webhook",
+      undefined
+    );
     return NextResponse.json(
       { error: "Webhook secret not configured" },
       { status: 500 }
@@ -43,8 +53,18 @@ export async function POST(request: NextRequest) {
     }
 
     event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+
+    // Track successful webhook receipt
+    addBreadcrumb(`Stripe webhook received: ${event.type}`, "webhook", {
+      event_id: event.id,
+    });
   } catch (err) {
     console.error("Webhook signature verification failed:", err);
+    trackWebhookError(
+      err instanceof Error ? err : new Error("Signature verification failed"),
+      "stripe_webhook",
+      undefined
+    );
     return NextResponse.json(
       {
         error: `Webhook Error: ${
@@ -382,6 +402,11 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ received: true });
   } catch (error) {
     console.error("Webhook handler error:", error);
+    trackWebhookError(
+      error instanceof Error ? error : new Error("Unknown webhook error"),
+      "stripe_webhook",
+      event?.id
+    );
     return NextResponse.json(
       { error: "Webhook handler failed" },
       { status: 500 }

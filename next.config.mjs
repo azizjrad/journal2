@@ -1,3 +1,4 @@
+import { withSentryConfig } from "@sentry/nextjs";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -94,8 +95,9 @@ const nextConfig = {
       },
     ],
   },
-  // Enable static export optimization
-  output: "standalone",
+  // Enable standalone output only on Linux (Vercel)
+  // Disabled on Windows to avoid file copy errors
+  output: process.platform === "win32" ? undefined : "standalone",
 
   // External packages for server components
   serverExternalPackages: ["mongoose"],
@@ -116,4 +118,30 @@ const nextConfig = {
   reactStrictMode: true,
 };
 
-export default nextConfig;
+export default withSentryConfig(nextConfig, {
+  // Sentry webpack plugin options
+  org: "akhbarna",
+  project: "javascript-nextjs",
+
+  // Only print logs in CI or when errors occur
+  silent: !process.env.CI,
+
+  // Upload source maps for better error tracking
+  widenClientFileUpload: true,
+
+  // Hide source code from source maps (security)
+  hideSourceMaps: true,
+
+  // Route Sentry requests through Next.js to bypass ad-blockers
+  tunnelRoute: "/monitoring",
+
+  // Remove Sentry logger statements in production
+  disableLogger: true,
+
+  // Enable Vercel Cron Monitors
+  automaticVercelMonitors: true,
+
+  // Disable copying traced files (fixes Windows build warnings)
+  disableServerWebpackPlugin: process.platform === "win32",
+  disableClientWebpackPlugin: false,
+});
