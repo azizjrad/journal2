@@ -232,9 +232,17 @@ export default function Header({
                 href="/"
                 className="flex items-center space-x-2 rtl:space-x-reverse"
               >
-                <div className="text-2xl font-black text-red-700 tracking-tight hover:text-red-800 transition-colors duration-300">
-                  {t("site_title", "Akhbarna", "أخبارنا")}
-                </div>
+                {language === "en" ? (
+                  <img 
+                    src="/logonews.png" 
+                    alt="The Maghreb Orbit" 
+                    className="h-20 w-auto hover:opacity-90 transition-opacity duration-300"
+                  />
+                ) : (
+                  <div className="text-2xl font-black text-red-700 tracking-tight hover:text-red-800 transition-colors duration-300">
+                    المدار المغاربي
+                  </div>
+                )}
               </Link>
 
               {/* Categories next to logo (hidden on mobile) */}

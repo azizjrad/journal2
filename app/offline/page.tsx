@@ -71,7 +71,9 @@ export default function OfflinePage() {
 
         {/* Branding */}
         <div className="mt-12 text-center">
-          <p className="text-gray-400 text-sm">© 2025 Akhbarna • News Portal</p>
+          <p className="text-gray-400 text-sm">
+            © 2025 The Maghreb Orbit • News Portal
+          </p>
         </div>
       </div>
 

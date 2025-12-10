@@ -5,7 +5,7 @@ import Link from "next/link";
 import { User, Settings, Key, Shield, Edit, Mail } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Account - Akhbarna",
+  title: "Account - The Maghreb Orbit",
   description: "Manage your account settings and preferences",
 };
 

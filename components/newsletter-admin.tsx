@@ -396,7 +396,7 @@ export default function NewsletterAdmin() {
                     <body>
                       <div class="email-container">
                         <div class="email-header">
-                          <h1 class="logo">Akhbarna</h1>
+                          <h1 class="logo">The Maghreb Orbit</h1>
                           <p class="tagline">Your Trusted News Source</p>
                         </div>
                         <div class="email-body">
@@ -412,12 +412,12 @@ export default function NewsletterAdmin() {
                           </div>
                           <div class="divider"></div>
                           <p style="text-align: center;">
-                            <a href="#" class="cta-button">Visit Akhbarna</a>
+                            <a href="#" class="cta-button">Visit The Maghreb Orbit</a>
                           </p>
                         </div>
                         <div class="email-footer">
                           <p class="footer-text">
-                            <strong>Akhbarna</strong> - Delivering quality journalism you can trust
+                            <strong>The Maghreb Orbit</strong> - Delivering quality journalism you can trust
                           </p>
                           <div class="footer-links">
                             <a href="#">About Us</a> |
@@ -425,7 +425,7 @@ export default function NewsletterAdmin() {
                             <a href="#">Privacy Policy</a>
                           </div>
                           <p class="footer-text">
-                            © ${new Date().getFullYear()} Akhbarna. All rights reserved.
+                            © ${new Date().getFullYear()} The Maghreb Orbit. All rights reserved.
                           </p>
                         </div>
                       </div>

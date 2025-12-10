@@ -2,7 +2,7 @@ import sgMail from "@sendgrid/mail";
 
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
 const FROM_EMAIL = process.env.FROM_EMAIL || "azizjrad9@gmail.com"; // Use custom domain email for better deliverability
-const FROM_NAME = process.env.FROM_NAME || "Akhbarna";
+const FROM_NAME = process.env.FROM_NAME || "The Maghreb Orbit";
 const BASE_URL = process.env.APP_BASE_URL || "http://localhost:3000";
 
 if (SENDGRID_API_KEY) {
@@ -44,7 +44,7 @@ export async function sendPasswordResetEmail({
     const msg = {
       to: email,
       from: FROM_EMAIL,
-      subject: "Reset Your Password - Akhbarna",
+      subject: "Reset Your Password - The Maghreb Orbit",
       html: `
         <!DOCTYPE html>
         <html lang="en">
@@ -189,7 +189,7 @@ export async function sendPasswordResetEmail({
         <body>
           <div class="email-container">
             <div class="email-header">
-              <h1 class="logo">Akhbarna</h1>
+              <h1 class="logo">The Maghreb Orbit</h1>
             </div>
             
             <div class="email-body">
@@ -204,7 +204,7 @@ export async function sendPasswordResetEmail({
               </p>
               
               <p class="email-content">
-                We received a request to reset the password for your Akhbarna account. 
+                We received a request to reset the password for your The Maghreb Orbit account. 
                 Click the button below to create a new password:
               </p>
               
@@ -238,10 +238,10 @@ export async function sendPasswordResetEmail({
             
             <div class="email-footer">
               <p class="footer-text">
-                <strong>Akhbarna</strong> - Your Trusted News Source
+                <strong>The Maghreb Orbit</strong> - Your Trusted News Source
               </p>
               <p class="footer-text">
-                © ${new Date().getFullYear()} Akhbarna. All rights reserved.
+                © ${new Date().getFullYear()} The Maghreb Orbit. All rights reserved.
               </p>
             </div>
           </div>
@@ -272,7 +272,7 @@ export async function sendVerificationEmail({
     const msg = {
       to: email,
       from: FROM_EMAIL,
-      subject: "Verify Your Email - Welcome to Akhbarna!",
+      subject: "Verify Your Email - Welcome to The Maghreb Orbit!",
       html: `
         <!DOCTYPE html>
         <html lang="en">
@@ -452,7 +452,7 @@ export async function sendVerificationEmail({
         <body>
           <div class="email-container">
             <div class="email-header">
-              <h1 class="logo">Akhbarna</h1>
+              <h1 class="logo">The Maghreb Orbit</h1>
               <p class="tagline">Your Trusted News Source</p>
             </div>
             
@@ -461,14 +461,14 @@ export async function sendVerificationEmail({
                 <div class="welcome-icon">✉️</div>
               </div>
               
-              <h2 class="email-title">Welcome to Akhbarna!</h2>
+              <h2 class="email-title">Welcome to The Maghreb Orbit!</h2>
               
               <p class="email-content">
                 Hello <strong>${userName || "there"}</strong>,
               </p>
               
               <p class="email-content">
-                Thank you for joining Akhbarna! We're excited to have you as part of our community. 
+                Thank you for joining The Maghreb Orbit! We're excited to have you as part of our community. 
                 To get started, please verify your email address by clicking the button below:
               </p>
               
@@ -503,7 +503,7 @@ export async function sendVerificationEmail({
               </div>
               
               <p class="email-content" style="margin-top: 30px; color: #6b7280; font-size: 14px;">
-                If you didn't create an account with Akhbarna, you can safely ignore this email.
+                If you didn't create an account with The Maghreb Orbit, you can safely ignore this email.
               </p>
             </div>
             
@@ -514,10 +514,10 @@ export async function sendVerificationEmail({
                 <a href="${BASE_URL}/privacy">Privacy Policy</a>
               </div>
               <p class="footer-text">
-                <strong>Akhbarna</strong> - Your Trusted News Source
+                <strong>The Maghreb Orbit</strong> - Your Trusted News Source
               </p>
               <p class="footer-text">
-                © ${new Date().getFullYear()} Akhbarna. All rights reserved.
+                © ${new Date().getFullYear()} The Maghreb Orbit. All rights reserved.
               </p>
             </div>
           </div>
@@ -562,7 +562,8 @@ export async function sendSubscriptionConfirmationEmail({
     const msg = {
       to: email,
       from: FROM_EMAIL,
-      subject: "Welcome to Akhbarna Newsletter - Subscription Confirmed! 🎉",
+      subject:
+        "Welcome to The Maghreb Orbit Newsletter - Subscription Confirmed! 🎉",
       html: `
         <!DOCTYPE html>
         <html>
@@ -588,7 +589,7 @@ export async function sendSubscriptionConfirmationEmail({
         <body>
           <div class="container">
             <div class="header">
-              <h1 style="margin: 0; font-size: 36px;">Akhbarna</h1>
+              <h1 style="margin: 0; font-size: 36px;">The Maghreb Orbit</h1>
             </div>
             <div class="content">
               <div class="success-icon">
@@ -596,7 +597,7 @@ export async function sendSubscriptionConfirmationEmail({
               </div>
               <h2 style="text-align: center; color: #1f2937;">Subscription Confirmed!</h2>
               <p style="text-align: center; font-size: 18px; color: #6b7280;">
-                Welcome to Akhbarna Premium, ${userName || ""}! 🎉
+                Welcome to The Maghreb Orbit Premium, ${userName || ""}! 🎉
               </p>
               
               <div class="plan-box">
@@ -648,11 +649,11 @@ export async function sendSubscriptionConfirmationEmail({
               </div>
 
               <p style="color: #6b7280; margin-top: 30px;">
-                Thank you for supporting Akhbarna! If you have any questions, feel free to reply to this email.
+                Thank you for supporting The Maghreb Orbit! If you have any questions, feel free to reply to this email.
               </p>
             </div>
             <div class="footer">
-              <p>© ${new Date().getFullYear()} Akhbarna. All rights reserved.</p>
+              <p>© ${new Date().getFullYear()} The Maghreb Orbit. All rights reserved.</p>
               <p>
                 <a href="${BASE_URL}/settings?tab=subscription" style="color: #dc2626;">Manage Subscription</a> | 
                 <a href="${BASE_URL}/contact" style="color: #dc2626;">Contact Support</a>
@@ -703,8 +704,8 @@ export async function sendSubscriptionCancellationEmail({
       to: email,
       from: FROM_EMAIL,
       subject: cancelAtPeriodEnd
-        ? "Subscription Cancellation Scheduled - Akhbarna"
-        : "Subscription Canceled - Akhbarna",
+        ? "Subscription Cancellation Scheduled - The Maghreb Orbit"
+        : "Subscription Canceled - The Maghreb Orbit",
       html: `
         <!DOCTYPE html>
         <html>
@@ -727,7 +728,7 @@ export async function sendSubscriptionCancellationEmail({
         <body>
           <div class="container">
             <div class="header">
-              <h1 style="margin: 0; font-size: 36px;">Akhbarna</h1>
+              <h1 style="margin: 0; font-size: 36px;">The Maghreb Orbit</h1>
             </div>
             <div class="content">
               <div class="warning-icon">
@@ -824,7 +825,7 @@ export async function sendSubscriptionCancellationEmail({
               </p>
             </div>
             <div class="footer">
-              <p>© ${new Date().getFullYear()} Akhbarna. All rights reserved.</p>
+              <p>© ${new Date().getFullYear()} The Maghreb Orbit. All rights reserved.</p>
               <p>
                 <a href="${BASE_URL}/settings?tab=subscription" style="color: #dc2626;">Manage Subscription</a> | 
                 <a href="${BASE_URL}/contact" style="color: #dc2626;">Contact Support</a>
@@ -896,8 +897,8 @@ export async function sendWriterApprovalEmail({
       to: email,
       from: FROM_EMAIL,
       subject: approved
-        ? "Writer Application Approved - Akhbarna"
-        : "Writer Application Update - Akhbarna",
+        ? "Writer Application Approved - The Maghreb Orbit"
+        : "Writer Application Update - The Maghreb Orbit",
       html: `
         <!DOCTYPE html>
         <html>
@@ -931,7 +932,7 @@ export async function sendWriterApprovalEmail({
         <body>
           <div class="container">
             <div class="header">
-              <h1 style="margin: 0; font-size: 36px;">Akhbarna</h1>
+              <h1 style="margin: 0; font-size: 36px;">The Maghreb Orbit</h1>
             </div>
             <div class="content">
               <div class="${approved ? "success-icon" : "warning-icon"}">
@@ -940,7 +941,7 @@ export async function sendWriterApprovalEmail({
               <h2 style="text-align: center; color: #1f2937;">
                 ${
                   approved
-                    ? "Welcome to the Akhbarna Writing Team!"
+                    ? "Welcome to the The Maghreb Orbit Writing Team!"
                     : "Writer Application Update"
                 }
               </h2>
@@ -954,7 +955,7 @@ export async function sendWriterApprovalEmail({
               <div class="info-box">
                 <h3>Congratulations! Your writer application has been approved</h3>
                 <p>
-                  You now have writer privileges on Akhbarna. You can start creating and publishing articles right away.
+                  You now have writer privileges on The Maghreb Orbit. You can start creating and publishing articles right away.
                 </p>
               </div>
 
@@ -980,7 +981,7 @@ export async function sendWriterApprovalEmail({
               <div class="info-box">
                 <h3>Writer Application Status Update</h3>
                 <p>
-                  Thank you for your interest in becoming a writer for Akhbarna. After reviewing your application, 
+                  Thank you for your interest in becoming a writer for The Maghreb Orbit. After reviewing your application, 
                   we are unable to approve it at this time.
                 </p>
                 ${
@@ -1010,7 +1011,7 @@ export async function sendWriterApprovalEmail({
 
             </div>
             <div class="footer">
-              <p>© ${new Date().getFullYear()} Akhbarna. All rights reserved.</p>
+              <p>© ${new Date().getFullYear()} The Maghreb Orbit. All rights reserved.</p>
               <p>
                 <a href="${BASE_URL}/contact" style="color: #dc2626;">Contact Support</a>
               </p>
@@ -1228,7 +1229,7 @@ export async function sendContactReplyEmail({
         <body>
           <div class="container">
             <div class="header">
-              <h1>Akhbarna</h1>
+              <h1>The Maghreb Orbit</h1>
               <p class="tagline">Your Trusted News Source</p>
             </div>
             
@@ -1238,7 +1239,7 @@ export async function sendContactReplyEmail({
               </p>
               
               <p style="color: #4b5563; font-size: 16px; line-height: 1.8;">
-                Thank you for reaching out to Akhbarna. We've received your message and wanted to respond to your inquiry.
+                Thank you for reaching out to The Maghreb Orbit. We've received your message and wanted to respond to your inquiry.
               </p>
 
               <div class="reply-box">
@@ -1272,10 +1273,10 @@ export async function sendContactReplyEmail({
                 <a href="${BASE_URL}/privacy">Privacy Policy</a>
               </div>
               <p class="footer-text">
-                <strong>Akhbarna</strong> - Your Trusted News Source
+                <strong>The Maghreb Orbit</strong> - Your Trusted News Source
               </p>
               <p class="footer-text">
-                © ${new Date().getFullYear()} Akhbarna. All rights reserved.
+                © ${new Date().getFullYear()} The Maghreb Orbit. All rights reserved.
               </p>
             </div>
           </div>
@@ -1564,7 +1565,7 @@ export async function sendContactFormNotificationToAdmin({
         <body>
           <div class="container">
             <div class="header">
-              <h1>Akhbarna Admin</h1>
+              <h1>The Maghreb Orbit Admin</h1>
               <div class="badge">📬 New Contact Message</div>
             </div>
             
@@ -1647,8 +1648,8 @@ export async function sendContactFormNotificationToAdmin({
             </div>
             
             <div class="footer">
-              <p style="font-weight: bold; color: #1f2937; margin-bottom: 5px;">Akhbarna Contact System</p>
-              <p>© ${new Date().getFullYear()} Akhbarna. All rights reserved.</p>
+              <p style="font-weight: bold; color: #1f2937; margin-bottom: 5px;">The Maghreb Orbit Contact System</p>
+              <p>© ${new Date().getFullYear()} The Maghreb Orbit. All rights reserved.</p>
               <p style="margin-top: 15px;">
                 This is an automated notification. You can reply directly to ${senderEmail}
               </p>
@@ -1684,7 +1685,7 @@ export async function sendWriterApplicationNotificationToAdmin({
     const msg = {
       to: adminEmail,
       from: FROM_EMAIL,
-      subject: "🆕 New Writer Application - Akhbarna",
+      subject: "🆕 New Writer Application - The Maghreb Orbit",
       html: `
         <!DOCTYPE html>
         <html>
@@ -1869,7 +1870,7 @@ export async function sendWriterApplicationNotificationToAdmin({
         <body>
           <div class="container">
             <div class="header">
-              <h1>Akhbarna Admin</h1>
+              <h1>The Maghreb Orbit Admin</h1>
               <div class="badge">🔔 New Writer Application</div>
             </div>
             
@@ -1879,7 +1880,7 @@ export async function sendWriterApplicationNotificationToAdmin({
               <h2 class="title">New Writer Application Received!</h2>
               
               <p style="text-align: center; color: #6b7280; font-size: 16px;">
-                A new user has applied to become a writer for Akhbarna
+                A new user has applied to become a writer for The Maghreb Orbit
               </p>
 
               <div class="timestamp">
@@ -1954,8 +1955,8 @@ export async function sendWriterApplicationNotificationToAdmin({
             </div>
             
             <div class="footer">
-              <p style="font-weight: bold; color: #1f2937; margin-bottom: 5px;">Akhbarna Admin Panel</p>
-              <p>© ${new Date().getFullYear()} Akhbarna. All rights reserved.</p>
+              <p style="font-weight: bold; color: #1f2937; margin-bottom: 5px;">The Maghreb Orbit Admin Panel</p>
+              <p>© ${new Date().getFullYear()} The Maghreb Orbit. All rights reserved.</p>
               <p style="margin-top: 15px;">
                 This is an automated notification. Do not reply to this email.
               </p>
@@ -2004,7 +2005,7 @@ export async function sendSubscriptionRenewalEmail({
     const msg = {
       to: email,
       from: FROM_EMAIL,
-      subject: "Subscription Renewed - Akhbarna Newsletter 🎉",
+      subject: "Subscription Renewed - The Maghreb Orbit Newsletter 🎉",
       html: `
         <!DOCTYPE html>
         <html>
@@ -2029,7 +2030,7 @@ export async function sendSubscriptionRenewalEmail({
         <body>
           <div class="container">
             <div class="header">
-              <h1 style="margin: 0; font-size: 36px;">Akhbarna</h1>
+              <h1 style="margin: 0; font-size: 36px;">The Maghreb Orbit</h1>
             </div>
             <div class="content">
               <div class="success-icon">
@@ -2086,7 +2087,7 @@ export async function sendSubscriptionRenewalEmail({
               </div>
             </div>
             <div class="footer">
-              <p>© ${new Date().getFullYear()} Akhbarna. All rights reserved.</p>
+              <p>© ${new Date().getFullYear()} The Maghreb Orbit. All rights reserved.</p>
               <p>
                 <a href="${BASE_URL}/settings?tab=subscription" style="color: #dc2626;">Manage Subscription</a> | 
                 <a href="${BASE_URL}/contact" style="color: #dc2626;">Contact Support</a>
@@ -2128,7 +2129,7 @@ export async function sendAccountDeletionEmail({
         email: FROM_EMAIL,
         name: FROM_NAME,
       },
-      subject: "Your Account Has Been Deleted - Akhbarna",
+      subject: "Your Account Has Been Deleted - The Maghreb Orbit",
       html: `
         <!DOCTYPE html>
         <html>
@@ -2158,7 +2159,7 @@ export async function sendAccountDeletionEmail({
               </p>
 
               <p style="font-size: 16px; color: #374151; margin-bottom: 20px;">
-                We're writing to inform you that your Akhbarna account has been deleted by an administrator.
+                We're writing to inform you that your The Maghreb Orbit account has been deleted by an administrator.
               </p>
 
               ${
@@ -2197,19 +2198,19 @@ export async function sendAccountDeletionEmail({
 
               <div style="background-color: #fffbeb; border: 1px solid #fcd34d; padding: 15px; border-radius: 8px; margin: 25px 0;">
                 <p style="margin: 0; color: #92400e; font-size: 14px; line-height: 1.5;">
-                  <strong>⚠️ Note:</strong> If you wish to use Akhbarna in the future, you'll need to create a new account.
+                  <strong>⚠️ Note:</strong> If you wish to use The Maghreb Orbit in the future, you'll need to create a new account.
                 </p>
               </div>
 
               <p style="font-size: 14px; color: #6b7280; margin-top: 30px;">
-                Thank you for being part of the Akhbarna community.
+                Thank you for being part of the The Maghreb Orbit community.
               </p>
             </div>
 
             <!-- Footer -->
             <div style="background-color: #f9fafb; padding: 25px 30px; border-top: 1px solid #e5e7eb;">
               <p style="font-size: 12px; color: #6b7280; margin: 0 0 10px 0; text-align: center;">
-                © ${new Date().getFullYear()} Akhbarna. All rights reserved.
+                © ${new Date().getFullYear()} The Maghreb Orbit. All rights reserved.
               </p>
               <p style="font-size: 12px; color: #9ca3af; margin: 0; text-align: center;">
                 <a href="${BASE_URL}/contact" style="color: #dc2626;">Contact Support</a>

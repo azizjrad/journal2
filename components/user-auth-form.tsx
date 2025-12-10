@@ -233,7 +233,7 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
               </div>
               <div>
                 <h1 className="text-4xl font-black text-white tracking-tight">
-                  Akhbarna
+                  The Maghreb Orbit
                 </h1>
                 <p className="text-red-300 text-sm font-medium">Login Portal</p>
               </div>
@@ -611,7 +611,9 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
         </Card>
 
         <div className="text-center mt-6">
-          <p className="text-sm text-gray-400">© 2025 Akhbarna • News Portal</p>
+          <p className="text-sm text-gray-400">
+            © 2025 The Maghreb Orbit • News Portal
+          </p>
         </div>
       </div>
     </div>

@@ -72,11 +72,11 @@ export function NewsletterPageContent({
 
   return (
     <>
-      {/* White navbar with centered Akhbarna logo */}
+      {/* White navbar with centered The Maghreb Orbit logo */}
       <nav className="w-full bg-white border-b border-gray-200 py-2 flex items-center justify-center">
         <a href="/" className="block">
           <div className="text-4xl font-black text-red-700 tracking-tight hover:text-red-800 transition-colors duration-300 text-center">
-            Akhbarna
+            The Maghreb Orbit
           </div>
         </a>
       </nav>

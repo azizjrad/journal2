@@ -120,7 +120,7 @@ const nextConfig = {
 
 export default withSentryConfig(nextConfig, {
   // Sentry webpack plugin options
-  org: "akhbarna",
+  org: "maghreb-orbit",
   project: "javascript-nextjs",
 
   // Only print logs in CI or when errors occur

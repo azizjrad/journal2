@@ -68,7 +68,7 @@ export default function VerifyEmailPage() {
               </div>
               <div>
                 <h1 className="text-4xl font-black text-white tracking-tight">
-                  Akhbarna
+                  The Maghreb Orbit
                 </h1>
                 <p className="text-red-300 text-sm font-medium">
                   Email Verification
@@ -133,8 +133,10 @@ export default function VerifyEmailPage() {
             </div>
           </div>
         </Card>
-        <div className="text-center mt-6">
-          <p className="text-sm text-gray-400">© 2025 Akhbarna • News Portal</p>
+        <div class="text-center mt-6">
+          <p class="text-sm text-gray-400">
+            © 2025 The Maghreb Orbit • News Portal
+          </p>
         </div>
       </div>
     </div>

@@ -231,7 +231,7 @@ export function AdminDashboard({
                 </div>
                 <div>
                   <h1 className="text-2xl sm:text-3xl font-black text-white tracking-tight">
-                    Akhbarna Dashboard
+                    The Maghreb Orbit Dashboard
                   </h1>
                   <p className="text-red-300 mt-1 font-medium text-sm sm:text-base">
                     Content Management System

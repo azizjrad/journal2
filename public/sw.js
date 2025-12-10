@@ -1,6 +1,6 @@
-const CACHE_NAME = "akhbarna-v1";
-const STATIC_CACHE = "akhbarna-static-v1";
-const DYNAMIC_CACHE = "akhbarna-dynamic-v1";
+const CACHE_NAME = "maghreb-orbit-v1";
+const STATIC_CACHE = "maghreb-orbit-static-v1";
+const DYNAMIC_CACHE = "maghreb-orbit-dynamic-v1";
 
 // Cache static assets
 const STATIC_ASSETS = [
@@ -171,7 +171,7 @@ self.addEventListener("push", (event) => {
       body: data.body,
       icon: "/favicon.svg",
       badge: "/favicon.svg",
-      tag: "akhbarna-news",
+      tag: "maghreb-orbit-news",
       requireInteraction: false,
       actions: [
         {

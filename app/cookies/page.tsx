@@ -3,8 +3,8 @@ import Header from "@/components/header";
 import { Breadcrumb } from "@/components/breadcrumb";
 
 export const metadata: Metadata = {
-  title: "Cookie Policy - Akhbarna",
-  description: "Cookie policy for Akhbarna website",
+  title: "Cookie Policy - The Maghreb Orbit",
+  description: "Cookie policy for The Maghreb Orbit website",
 };
 
 export default function CookiesPage() {
@@ -42,10 +42,11 @@ export default function CookiesPage() {
                   How We Use Cookies
                 </h2>
                 <p className="text-gray-600 leading-relaxed">
-                  Akhbarna uses cookies to enhance your browsing experience,
-                  analyze site traffic, personalize content, and remember your
-                  preferences. We also use cookies to gather anonymous
-                  statistical information about how visitors use our site.
+                  The Maghreb Orbit uses cookies to enhance your browsing
+                  experience, analyze site traffic, personalize content, and
+                  remember your preferences. We also use cookies to gather
+                  anonymous statistical information about how visitors use our
+                  site.
                 </p>
               </div>
 
@@ -142,10 +143,10 @@ export default function CookiesPage() {
                   If you have any questions about our use of cookies, please
                   contact us at{" "}
                   <a
-                    href="mailto:contact@akhbarna.com"
+                    href="mailto:contact@maghriborbit.com"
                     className="text-red-600 hover:text-red-700"
                   >
-                    contact@akhbarna.com
+                    contact@maghriborbit.com
                   </a>
                   .
                 </p>

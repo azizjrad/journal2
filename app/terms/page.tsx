@@ -3,8 +3,8 @@ import Header from "@/components/header";
 import { Breadcrumb } from "@/components/breadcrumb";
 
 export const metadata: Metadata = {
-  title: "Terms of Service - Akhbarna",
-  description: "Terms of service for Akhbarna website",
+  title: "Terms of Service - The Maghreb Orbit",
+  description: "Terms of service for The Maghreb Orbit website",
 };
 
 export default function TermsPage() {
@@ -30,9 +30,9 @@ export default function TermsPage() {
                   Acceptance of Terms
                 </h2>
                 <p className="text-gray-600 leading-relaxed">
-                  By accessing and using Akhbarna, you accept and agree to be
-                  bound by the terms and provision of this agreement. If you do
-                  not agree to abide by the above, please do not use this
+                  By accessing and using The Maghreb Orbit, you accept and agree
+                  to be bound by the terms and provision of this agreement. If
+                  you do not agree to abide by the above, please do not use this
                   service.
                 </p>
               </div>
@@ -43,9 +43,9 @@ export default function TermsPage() {
                 </h2>
                 <p className="text-gray-600 leading-relaxed">
                   Permission is granted to temporarily download one copy of the
-                  materials on Akhbarna for personal, non-commercial transitory
-                  viewing only. This is the grant of a license, not a transfer
-                  of title.
+                  materials on The Maghreb Orbit for personal, non-commercial
+                  transitory viewing only. This is the grant of a license, not a
+                  transfer of title.
                 </p>
               </div>
 
@@ -54,13 +54,13 @@ export default function TermsPage() {
                   Disclaimer
                 </h2>
                 <p className="text-gray-600 leading-relaxed">
-                  The materials on Akhbarna are provided on an 'as is' basis.
-                  Akhbarna makes no warranties, expressed or implied, and hereby
-                  disclaims and negates all other warranties including, without
-                  limitation, implied warranties or conditions of
-                  merchantability, fitness for a particular purpose, or
-                  non-infringement of intellectual property or other violation
-                  of rights.
+                  The materials on The Maghreb Orbit are provided on an 'as is'
+                  basis. The Maghreb Orbit makes no warranties, expressed or
+                  implied, and hereby disclaims and negates all other warranties
+                  including, without limitation, implied warranties or
+                  conditions of merchantability, fitness for a particular
+                  purpose, or non-infringement of intellectual property or other
+                  violation of rights.
                 </p>
               </div>
 
@@ -69,12 +69,13 @@ export default function TermsPage() {
                   Limitations
                 </h2>
                 <p className="text-gray-600 leading-relaxed">
-                  In no event shall Akhbarna or its suppliers be liable for any
-                  damages (including, without limitation, damages for loss of
-                  data or profit, or due to business interruption) arising out
-                  of the use or inability to use the materials on Akhbarna, even
-                  if Akhbarna or an authorized representative has been notified
-                  orally or in writing of the possibility of such damage.
+                  In no event shall The Maghreb Orbit or its suppliers be liable
+                  for any damages (including, without limitation, damages for
+                  loss of data or profit, or due to business interruption)
+                  arising out of the use or inability to use the materials on
+                  The Maghreb Orbit, even if The Maghreb Orbit or an authorized
+                  representative has been notified orally or in writing of the
+                  possibility of such damage.
                 </p>
               </div>
 
@@ -83,10 +84,10 @@ export default function TermsPage() {
                   Accuracy of Materials
                 </h2>
                 <p className="text-gray-600 leading-relaxed">
-                  The materials appearing on Akhbarna could include technical,
-                  typographical, or photographic errors. Akhbarna does not
-                  warrant that any of the materials on its website are accurate,
-                  complete, or current.
+                  The materials appearing on The Maghreb Orbit could include
+                  technical, typographical, or photographic errors. The Maghreb
+                  Orbit does not warrant that any of the materials on its
+                  website are accurate, complete, or current.
                 </p>
               </div>
 
@@ -145,10 +146,10 @@ export default function TermsPage() {
                   If you have any questions about these Terms of Service, please
                   contact us at{" "}
                   <a
-                    href="mailto:contact@akhbarna.com"
-                    className="text-red-600 hover:text-red-700"
+                    href="mailto:contact@maghriborbit.com"
+                    className="text-blue-600 hover:underline"
                   >
-                    contact@akhbarna.com
+                    contact@maghriborbit.com
                   </a>
                   .
                 </p>

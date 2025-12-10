@@ -15,9 +15,9 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Akhbarna - أخبارنا",
+  title: "The Maghreb Orbit - المدار المغاربي | News as is... without bias",
   description:
-    "Your trusted source for global news - مصدرك الموثوق للأخبار العالمية",
+    "The Maghreb Orbit - News as is... without bias | المدار المغاربي - الخبر كما هو ...بلا انحياز. Your trusted source for unbiased news from the Maghreb region and beyond.",
   keywords: [
     "news",
     "journal",
@@ -27,12 +27,15 @@ export const metadata: Metadata = {
     "أخبار",
     "جريدة",
     "عالمية",
-    "akhbarna",
-    "أخبارنا",
+    "The Maghreb Orbit",
+    "المدار المغاربي",
+    "maghreb news",
+    "unbiased news",
+    "الخبر كما هو",
   ],
-  authors: [{ name: "Akhbarna" }],
-  creator: "Akhbarna",
-  publisher: "Akhbarna",
+  authors: [{ name: "The Maghreb Orbit" }],
+  creator: "The Maghreb Orbit",
+  publisher: "The Maghreb Orbit",
   formatDetection: {
     email: false,
     address: false,
@@ -40,27 +43,34 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: [
-      { url: "/favicon.svg", type: "image/svg+xml" },
-      { url: "/favicon-32x32.svg", sizes: "32x32", type: "image/svg+xml" },
-      { url: "/favicon-16x16.svg", sizes: "16x16", type: "image/svg+xml" },
+      { url: "/favicon.png", type: "image/png" },
+      { url: "/favicon.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon.png", sizes: "16x16", type: "image/png" },
     ],
-    apple: [
-      { url: "/apple-touch-icon.svg", sizes: "180x180", type: "image/svg+xml" },
-    ],
+    apple: [{ url: "/favicon.png", sizes: "180x180", type: "image/png" }],
   },
   manifest: "/manifest.json",
   openGraph: {
     type: "website",
-    title: "Akhbarna - أخبارنا",
+    title: "The Maghreb Orbit - المدار المغاربي | News as is... without bias",
     description:
-      "Your trusted source for global news - مصدرك الموثوق للأخبار العالمية",
-    siteName: "Akhbarna",
+      "The Maghreb Orbit - News as is... without bias | المدار المغاربي - الخبر كما هو ...بلا انحياز",
+    siteName: "The Maghreb Orbit",
+    images: [
+      {
+        url: "/logonews.png",
+        width: 1200,
+        height: 630,
+        alt: "The Maghreb Orbit",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Akhbarna - أخبارنا",
+    title: "The Maghreb Orbit - المدار المغاربي | News as is... without bias",
     description:
-      "Your trusted source for global news - مصدرك الموثوق للأخبار العالمية",
+      "The Maghreb Orbit - News as is... without bias | المدار المغاربي - الخبر كما هو ...بلا انحياز",
+    images: ["/logonews.png"],
   },
 };
 

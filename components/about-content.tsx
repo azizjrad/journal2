@@ -106,7 +106,7 @@ export function AboutContent() {
             <p>
               {t(
                 "about_platform_desc",
-                "Akhbarna is a digital news platform providing comprehensive coverage of current events, politics, business, and culture.",
+                "The Maghreb Orbit is a digital news platform providing comprehensive coverage of current events, politics, business, and culture.",
                 "أخبارنا هي منصة إخبارية رقمية تقدم تغطية شاملة للأحداث الجارية والسياسة والأعمال والثقافة."
               )}
             </p>
@@ -169,7 +169,7 @@ export function AboutContent() {
             <p>
               {t(
                 "about_independent",
-                "Akhbarna is published by an independent editorial team. We strive to meet the highest standards of editorial quality and are fully independent, with no links to any political or religious organisations.",
+                "The Maghreb Orbit is published by an independent editorial team. We strive to meet the highest standards of editorial quality and are fully independent, with no links to any political or religious organisations.",
                 "يتم نشر أخبارنا بواسطة فريق تحريري مستقل. نسعى لتحقيق أعلى معايير الجودة التحريرية ونتمتع باستقلالية تامة دون أي صلات سياسية أو دينية."
               )}
             </p>
@@ -260,19 +260,19 @@ export function AboutContent() {
                     <>
                       Email us at{" "}
                       <a
-                        href="mailto:contact@akhbarna.com"
+                        href="mailto:contact@maghriborbit.com"
                         className="underline hover:no-underline"
                       >
-                        contact@akhbarna.com
+                        contact@maghriborbit.com
                       </a>
                     </>,
                     <>
                       راسلنا عبر البريد الإلكتروني{" "}
                       <a
-                        href="mailto:contact@akhbarna.com"
+                        href="mailto:contact@maghriborbit.com"
                         className="underline hover:no-underline"
                       >
-                        contact@akhbarna.com
+                        contact@maghriborbit.com
                       </a>
                     </>
                   )}

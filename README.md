@@ -1,8 +1,8 @@
-# 🌍 Akhbarna - Enterprise-Grade Bilingual News Platform
+# 🌍 The Maghreb Orbit - Enterprise-Grade Bilingual News Platform
 
 <div align="center">
 
-![Akhbarna Logo](public/favicon.svg)
+![The Maghreb Orbit Logo](public/favicon.svg)
 
 **A production-ready, scalable bilingual news platform built with modern web technologies and enterprise-grade security**
 
@@ -13,7 +13,7 @@
 [![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
-[🌐 Live Demo](https://akhbarna.vercel.app/) | [📖 Documentation](#documentation) | [🚀 Quick Start](#quick-start) | [🔧 API Reference](#api-reference)
+[🌐 Live Demo](https://maghriborbit.vercel.app/) | [📖 Documentation](#documentation) | [🚀 Quick Start](#quick-start) | [🔧 API Reference](#api-reference)
 
 [![Production Ready](https://img.shields.io/badge/Production-Ready-brightgreen?style=for-the-badge)](#production-readiness)
 [![Security](https://img.shields.io/badge/Security-A+%20Grade-green?style=for-the-badge)](#security)
@@ -105,7 +105,7 @@
 
 ### 🎯 **Dashboard Overview**
 
-The Akhbarna admin dashboard is a powerful, feature-rich control center designed for efficient news platform management. Built with modern web technologies and enterprise-grade security, it provides administrators and writers with all the tools needed to manage content, users, subscriptions, and analytics.
+The Maghreb Orbit admin dashboard is a powerful, feature-rich control center designed for efficient news platform management. Built with modern web technologies and enterprise-grade security, it provides administrators and writers with all the tools needed to manage content, users, subscriptions, and analytics.
 
 **Access:** `/admin` (requires admin authentication)
 
@@ -485,7 +485,7 @@ graph TB
 ### **Project Structure**
 
 ```
-📁 akhbarna-news/
+📁 maghreb-orbit/
 ├── 🌐 app/                           # Next.js 15 App Router
 │   ├── 🔌 api/                      # Serverless API endpoints
 │   │   ├── admin/                   # Admin-only endpoints
@@ -581,7 +581,7 @@ Create a `.env.local` file with the following variables:
 # ============================================
 # MongoDB connection string (required)
 # Get this from MongoDB Atlas: https://cloud.mongodb.com
-MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/akhbarna_news?retryWrites=true&w=majority
+MONGODB_URI=mongodb+srv://username:password@cluster.mongodb.net/maghreb_orbit?retryWrites=true&w=majority
 
 # ============================================
 # AUTHENTICATION & SECURITY
@@ -620,7 +620,7 @@ SENDGRID_API_KEY=SG.your-sendgrid-api-key
 SENDGRID_FROM_EMAIL=noreply@yourdomain.com
 
 # Email sender name (optional)
-SENDGRID_FROM_NAME="Akhbarna News"
+SENDGRID_FROM_NAME="The Maghreb Orbit"
 
 # ============================================
 # CLOUDINARY CONFIGURATION (Image Storage)
@@ -691,33 +691,33 @@ NODE_ENV=development
 
 #### 📋 **Environment Variables Reference**
 
-| Variable                             | Required       | Default       | Description                      |
-| ------------------------------------ | -------------- | ------------- | -------------------------------- |
-| `MONGODB_URI`                        | ✅ Yes         | -             | MongoDB Atlas connection string  |
-| `JWT_SECRET`                         | ✅ Yes         | -             | Secret key for JWT token signing |
-| `JWT_EXPIRES_IN`                     | ❌ No          | `7d`          | JWT token expiration time        |
-| `CSRF_SECRET`                        | ✅ Yes         | -             | CSRF protection secret key       |
-| `NEXT_PUBLIC_APP_URL`                | ✅ Yes         | -             | Application base URL             |
-| `NEXTAUTH_URL`                       | ✅ Yes         | -             | NextAuth authentication URL      |
-| `NEXT_PUBLIC_SITE_URL`               | ✅ Yes         | -             | Public site URL                  |
-| `SENDGRID_API_KEY`                   | ⚠️ Recommended | -             | SendGrid API key for emails      |
-| `SENDGRID_FROM_EMAIL`                | ⚠️ Recommended | -             | Email sender address             |
-| `SENDGRID_FROM_NAME`                 | ❌ No          | `Akhbarna`    | Email sender name                |
-| `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`  | ✅ Yes         | -             | Cloudinary cloud name            |
-| `CLOUDINARY_API_KEY`                 | ✅ Yes         | -             | Cloudinary API key               |
-| `CLOUDINARY_API_SECRET`              | ✅ Yes         | -             | Cloudinary API secret            |
-| `STRIPE_SECRET_KEY`                  | ⚠️ Recommended | -             | Stripe secret key                |
-| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | ⚠️ Recommended | -             | Stripe publishable key           |
-| `STRIPE_WEBHOOK_SECRET`              | ⚠️ Recommended | -             | Stripe webhook secret            |
-| `STRIPE_PRICE_ID`                    | ⚠️ Recommended | -             | Newsletter subscription price ID |
-| `REDIS_URL`                          | ✅ Yes         | -             | Redis connection URL             |
-| `REDIS_PASSWORD`                     | ⚠️ Recommended | -             | Redis password                   |
-| `REDIS_DB`                           | ❌ No          | `0`           | Redis database number            |
-| `MONGODB_MAX_POOL_SIZE`              | ❌ No          | `10`          | MongoDB connection pool size     |
-| `CACHE_TTL_ARTICLES`                 | ❌ No          | `600000`      | Article cache TTL (ms)           |
-| `RATE_LIMIT_WINDOW`                  | ❌ No          | `900000`      | Rate limit window (ms)           |
-| `RATE_LIMIT_MAX_REQUESTS`            | ❌ No          | `100`         | Max requests per window          |
-| `NODE_ENV`                           | ❌ No          | `development` | Node environment                 |
+| Variable                             | Required       | Default             | Description                      |
+| ------------------------------------ | -------------- | ------------------- | -------------------------------- |
+| `MONGODB_URI`                        | ✅ Yes         | -                   | MongoDB Atlas connection string  |
+| `JWT_SECRET`                         | ✅ Yes         | -                   | Secret key for JWT token signing |
+| `JWT_EXPIRES_IN`                     | ❌ No          | `7d`                | JWT token expiration time        |
+| `CSRF_SECRET`                        | ✅ Yes         | -                   | CSRF protection secret key       |
+| `NEXT_PUBLIC_APP_URL`                | ✅ Yes         | -                   | Application base URL             |
+| `NEXTAUTH_URL`                       | ✅ Yes         | -                   | NextAuth authentication URL      |
+| `NEXT_PUBLIC_SITE_URL`               | ✅ Yes         | -                   | Public site URL                  |
+| `SENDGRID_API_KEY`                   | ⚠️ Recommended | -                   | SendGrid API key for emails      |
+| `SENDGRID_FROM_EMAIL`                | ⚠️ Recommended | -                   | Email sender address             |
+| `SENDGRID_FROM_NAME`                 | ❌ No          | `The Maghreb Orbit` | Email sender name                |
+| `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`  | ✅ Yes         | -                   | Cloudinary cloud name            |
+| `CLOUDINARY_API_KEY`                 | ✅ Yes         | -                   | Cloudinary API key               |
+| `CLOUDINARY_API_SECRET`              | ✅ Yes         | -                   | Cloudinary API secret            |
+| `STRIPE_SECRET_KEY`                  | ⚠️ Recommended | -                   | Stripe secret key                |
+| `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` | ⚠️ Recommended | -                   | Stripe publishable key           |
+| `STRIPE_WEBHOOK_SECRET`              | ⚠️ Recommended | -                   | Stripe webhook secret            |
+| `STRIPE_PRICE_ID`                    | ⚠️ Recommended | -                   | Newsletter subscription price ID |
+| `REDIS_URL`                          | ✅ Yes         | -                   | Redis connection URL             |
+| `REDIS_PASSWORD`                     | ⚠️ Recommended | -                   | Redis password                   |
+| `REDIS_DB`                           | ❌ No          | `0`                 | Redis database number            |
+| `MONGODB_MAX_POOL_SIZE`              | ❌ No          | `10`                | MongoDB connection pool size     |
+| `CACHE_TTL_ARTICLES`                 | ❌ No          | `600000`            | Article cache TTL (ms)           |
+| `RATE_LIMIT_WINDOW`                  | ❌ No          | `900000`            | Rate limit window (ms)           |
+| `RATE_LIMIT_MAX_REQUESTS`            | ❌ No          | `100`               | Max requests per window          |
+| `NODE_ENV`                           | ❌ No          | `development`       | Node environment                 |
 
 ### 🗄️ **Database Setup**
 
@@ -905,10 +905,10 @@ vercel --prod
 
 ```bash
 # Build Docker image
-docker build -t akhbarna-news .
+docker build -t maghreb-orbit .
 
 # Run container
-docker run -p 3000:3000 akhbarna-news
+docker run -p 3000:3000 maghreb-orbit
 ```
 
 ### **Environment Variables for Production**
@@ -997,8 +997,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 **Built with by Jradz (https://github.com/yourusername)**
 
-[![GitHub stars](https://img.shields.io/github/stars/yourusername/akhbarna-news?style=social)](https://github.com/azizjrad/journal2)
-[![GitHub forks](https://img.shields.io/github/forks/yourusername/akhbarna-news?style=social)](https://github.com/azizjrad/journal2)
+[![GitHub stars](https://img.shields.io/github/stars/yourusername/maghreb-orbit?style=social)](https://github.com/azizjrad/journal2)
+[![GitHub forks](https://img.shields.io/github/forks/yourusername/maghreb-orbit?style=social)](https://github.com/azizjrad/journal2)
 [![Twitter Follow](https://img.shields.io/twitter/follow/yourusername?style=social)](https://x.com/AzJrad)
 
 </div>

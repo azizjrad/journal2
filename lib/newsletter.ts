@@ -194,7 +194,7 @@ function createNewsletterHTML(
       <div class="email-container">
         <!-- Header -->
         <div class="email-header">
-          <h1 class="logo">Akhbarna</h1>
+          <h1 class="logo">The Maghreb Orbit</h1>
           <p class="tagline">Your Trusted News Source</p>
         </div>
         
@@ -211,7 +211,7 @@ function createNewsletterHTML(
             <a href="${
               process.env.APP_BASE_URL || "http://localhost:3000"
             }" class="cta-button">
-              Visit Akhbarna
+              Visit The Maghreb Orbit
             </a>
           </p>
         </div>
@@ -219,7 +219,7 @@ function createNewsletterHTML(
         <!-- Footer -->
         <div class="email-footer">
           <p class="footer-text">
-            <strong>Akhbarna</strong> - Delivering quality journalism you can trust
+            <strong>The Maghreb Orbit</strong> - Delivering quality journalism you can trust
           </p>
           <div class="footer-links">
             <a href="${
@@ -236,10 +236,10 @@ function createNewsletterHTML(
             <!-- Add your social media icons here -->
           </div>
           <p class="footer-text">
-            © ${new Date().getFullYear()} Akhbarna. All rights reserved.
+            © ${new Date().getFullYear()} The Maghreb Orbit. All rights reserved.
           </p>
           <p class="unsubscribe">
-            You're receiving this email because you subscribed to Akhbarna Newsletter.<br>
+            You're receiving this email because you subscribed to The Maghreb Orbit Newsletter.<br>
             <a href="${
               process.env.APP_BASE_URL || "http://localhost:3000"
             }/settings?tab=subscription">Manage your subscription</a>

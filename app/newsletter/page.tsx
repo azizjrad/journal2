@@ -3,7 +3,7 @@ import { NewsletterPageContent } from "../../components/newsletter-page-content"
 import { getCategoriesCached } from "@/lib/db";
 
 export const metadata: Metadata = {
-  title: "Newsletter Subscription - Akhbarna",
+  title: "Newsletter Subscription - The Maghreb Orbit",
   description:
     "Subscribe to our premium newsletter service with exclusive content and breaking news alerts",
 };

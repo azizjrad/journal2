@@ -58,7 +58,7 @@ export async function uploadToCloudinary(
         Buffer.isBuffer(file) ? file.toString("base64") : file
       }`,
       {
-        folder: `akhbarna/${folder}`,
+        folder: `maghreb-orbit/${folder}`,
         resource_type: "auto",
         transformation: [
           {

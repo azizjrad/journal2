@@ -41,13 +41,13 @@ export function Footer({ categories }: FooterProps) {
               href="/"
               className="text-4xl font-black text-red-500 tracking-tight hover:text-red-400 transition-all duration-300 inline-block transform hover:scale-105"
             >
-              {t("site_title", "Akhbarna", "أخبارنا")}
+              {t("site_title", "The Maghreb Orbit", "المدار المغاربي")}
             </Link>
             <p className="text-gray-300 text-sm leading-relaxed">
               {t(
                 "footer_description_long",
-                "Akhbarna is where tomorrow is realized. It is the essential source of information and ideas that make sense of a world in constant transformation. The Akhbarna conversation illuminates how technology is changing every aspect of our lives—from culture to business, science to design. The breakthroughs and innovations that we uncover lead to new ways of thinking, new connections, and new industries.",
-                "أخبارنا هي المكان الذي يتحقق فيه الغد. إنها المصدر الأساسي للمعلومات والأفكار التي تفسر عالماً في تحول مستمر. تسلط محادثة أخبارنا الضوء على كيفية تغيير التكنولوجيا لكل جانب من جوانب حياتنا — من الثقافة إلى الأعمال، ومن العلوم إلى التصميم. الاكتشافات والابتكارات التي نكشف عنها تقود إلى طرق تفكير جديدة، وصلات جديدة، وصناعات جديدة."
+                "The Maghreb Orbit - News as is... without bias. Your essential source of unbiased information and ideas from the Maghreb region and beyond. We illuminate how events shape our world, from politics to culture, business to society. The breakthroughs and stories we uncover lead to new ways of thinking, new connections, and deeper understanding.",
+                "المدار المغاربي - الخبر كما هو ...بلا انحياز. مصدرك الأساسي للمعلومات والأفكار المحايدة من المغرب العربي وما وراءه. نسلّط الضوء على كيفية تشكيل الأحداث لعالمنا — من السياسة إلى الثقافة، ومن الأعمال إلى المجتمع."
               )}
             </p>
 
@@ -59,7 +59,7 @@ export function Footer({ categories }: FooterProps) {
               </div>
               <div className="flex items-center gap-3 text-gray-300 text-sm">
                 <Mail className="w-4 h-4 text-red-500" />
-                <span>contact@akhbarna.com</span>
+                <span>contact@maghriborbit.com</span>
               </div>
             </div>
 
@@ -244,7 +244,7 @@ export function Footer({ categories }: FooterProps) {
             {" "}
             <div className="text-gray-400 text-sm text-center md:text-left">
               &copy; {new Date().getFullYear()}{" "}
-              {t("site_title", "Akhbarna", "أخبارنا")}.{" "}
+              {t("site_title", "The Maghreb Orbit", "المدار المغاربي")}.{" "}
               {t("rights", "All rights reserved.", "جميع الحقوق محفوظة.")}
             </div>
             <div className="flex gap-6 text-xs text-gray-400">
@@ -252,7 +252,11 @@ export function Footer({ categories }: FooterProps) {
                 href="/advertise"
                 className="hover:text-red-400 transition-colors duration-200 hover:underline"
               >
-                {t("advertise", "Advertise with Akhbarna", "أعلن مع أخبارنا")}
+                {t(
+                  "advertise",
+                  "Advertise with The Maghreb Orbit",
+                  "أعلن مع المدار المغاربي"
+                )}
               </a>
               <a
                 href="/privacy"

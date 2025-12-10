@@ -3,8 +3,8 @@ import Header from "@/components/header";
 import { Breadcrumb } from "@/components/breadcrumb";
 
 export const metadata: Metadata = {
-  title: "User Agreement - Akhbarna",
-  description: "User agreement for Akhbarna website",
+  title: "User Agreement - The Maghreb Orbit",
+  description: "User agreement for The Maghreb Orbit website",
 };
 
 export default function UserAgreementPage() {
@@ -30,10 +30,10 @@ export default function UserAgreementPage() {
                   Acceptance of Terms
                 </h2>
                 <p className="text-gray-600 leading-relaxed">
-                  By accessing or using Akhbarna, you agree to be bound by this
-                  User Agreement and all applicable laws and regulations. If you
-                  do not agree with any of these terms, you are prohibited from
-                  using or accessing this site.
+                  By accessing or using The Maghreb Orbit, you agree to be bound
+                  by this User Agreement and all applicable laws and
+                  regulations. If you do not agree with any of these terms, you
+                  are prohibited from using or accessing this site.
                 </p>
               </div>
 
@@ -42,9 +42,9 @@ export default function UserAgreementPage() {
                   Use of Service
                 </h2>
                 <p className="text-gray-600 leading-relaxed">
-                  You agree to use Akhbarna only for lawful purposes and in a
-                  way that does not infringe the rights of, restrict, or inhibit
-                  anyone else's use and enjoyment of the site.
+                  You agree to use The Maghreb Orbit only for lawful purposes
+                  and in a way that does not infringe the rights of, restrict,
+                  or inhibit anyone else's use and enjoyment of the site.
                 </p>
               </div>
 
@@ -65,9 +65,10 @@ export default function UserAgreementPage() {
                   Intellectual Property
                 </h2>
                 <p className="text-gray-600 leading-relaxed">
-                  All content on Akhbarna, including text, graphics, logos, and
-                  images, is the property of Akhbarna or its licensors and is
-                  protected by copyright and other intellectual property laws.
+                  All content on The Maghreb Orbit, including text, graphics,
+                  logos, and images, is the property of The Maghreb Orbit or its
+                  licensors and is protected by copyright and other intellectual
+                  property laws.
                 </p>
               </div>
 
@@ -77,9 +78,9 @@ export default function UserAgreementPage() {
                 </h2>
                 <p className="text-gray-600 leading-relaxed">
                   We reserve the right to suspend or terminate your access to
-                  Akhbarna at any time, without notice, for conduct that we
-                  believe violates this User Agreement or is harmful to other
-                  users of the site.
+                  The Maghreb Orbit at any time, without notice, for conduct
+                  that we believe violates this User Agreement or is harmful to
+                  other users of the site.
                 </p>
               </div>
 
@@ -88,9 +89,9 @@ export default function UserAgreementPage() {
                   Changes to Agreement
                 </h2>
                 <p className="text-gray-600 leading-relaxed">
-                  Akhbarna may revise this User Agreement at any time without
-                  notice. By using this site, you agree to be bound by the
-                  then-current version of the agreement.
+                  The Maghreb Orbit may revise this User Agreement at any time
+                  without notice. By using this site, you agree to be bound by
+                  the then-current version of the agreement.
                 </p>
               </div>
 
@@ -102,10 +103,10 @@ export default function UserAgreementPage() {
                   If you have any questions about this User Agreement, please
                   contact us at{" "}
                   <a
-                    href="mailto:contact@akhbarna.com"
+                    href="mailto:contact@maghriborbit.com"
                     className="text-red-600 hover:text-red-700"
                   >
-                    contact@akhbarna.com
+                    contact@maghriborbit.com
                   </a>
                   .
                 </p>

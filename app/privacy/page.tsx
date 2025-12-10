@@ -3,8 +3,8 @@ import Header from "@/components/header";
 import { Breadcrumb } from "@/components/breadcrumb";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy - Akhbarna",
-  description: "Privacy policy for Akhbarna website",
+  title: "Privacy Policy - The Maghreb Orbit",
+  description: "Privacy policy for The Maghreb Orbit website",
 };
 
 export default function PrivacyPage() {
@@ -102,10 +102,10 @@ export default function PrivacyPage() {
                   If you have any questions about this Privacy Policy, please
                   contact us at{" "}
                   <a
-                    href="mailto:contact@akhbarna.com"
+                    href="mailto:contact@maghriborbit.com"
                     className="text-red-600 hover:text-red-700"
                   >
-                    contact@akhbarna.com
+                    contact@maghriborbit.com
                   </a>
                   .
                 </p>
