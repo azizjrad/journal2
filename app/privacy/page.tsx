@@ -102,10 +102,10 @@ export default function PrivacyPage() {
                   If you have any questions about this Privacy Policy, please
                   contact us at{" "}
                   <a
-                    href="mailto:contact@maghriborbit.com"
+                    href="mailto:contact@maghreborbit.com"
                     className="text-red-600 hover:text-red-700"
                   >
-                    contact@maghriborbit.com
+                    contact@maghreborbit.com
                   </a>
                   .
                 </p>

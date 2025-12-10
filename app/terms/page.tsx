@@ -146,10 +146,10 @@ export default function TermsPage() {
                   If you have any questions about these Terms of Service, please
                   contact us at{" "}
                   <a
-                    href="mailto:contact@maghriborbit.com"
+                    href="mailto:contact@maghreborbit.com"
                     className="text-blue-600 hover:underline"
                   >
-                    contact@maghriborbit.com
+                    contact@maghreborbit.com
                   </a>
                   .
                 </p>

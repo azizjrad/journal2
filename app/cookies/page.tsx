@@ -143,10 +143,10 @@ export default function CookiesPage() {
                   If you have any questions about our use of cookies, please
                   contact us at{" "}
                   <a
-                    href="mailto:contact@maghriborbit.com"
+                    href="mailto:contact@maghreborbit.com"
                     className="text-red-600 hover:text-red-700"
                   >
-                    contact@maghriborbit.com
+                    contact@maghreborbit.com
                   </a>
                   .
                 </p>

@@ -255,24 +255,24 @@ export function AboutContent() {
               </h3>
               <div className="space-y-3">
                 <p className="text-red-700">
-                  {t(
-                    "contact_email",
-                    <>
-                      Email us at{" "}
-                      <a
-                        href="mailto:contact@maghriborbit.com"
-                        className="underline hover:no-underline"
-                      >
-                        contact@maghriborbit.com
-                      </a>
-                    </>,
+                  {language === "ar" ? (
                     <>
                       راسلنا عبر البريد الإلكتروني{" "}
                       <a
-                        href="mailto:contact@maghriborbit.com"
+                        href="mailto:contact@maghreborbit.com"
                         className="underline hover:no-underline"
                       >
-                        contact@maghriborbit.com
+                        contact@maghreborbit.com
+                      </a>
+                    </>
+                  ) : (
+                    <>
+                      Email us at{" "}
+                      <a
+                        href="mailto:contact@maghreborbit.com"
+                        className="underline hover:no-underline"
+                      >
+                        contact@maghreborbit.com
                       </a>
                     </>
                   )}

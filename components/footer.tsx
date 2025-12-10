@@ -59,7 +59,7 @@ export function Footer({ categories }: FooterProps) {
               </div>
               <div className="flex items-center gap-3 text-gray-300 text-sm">
                 <Mail className="w-4 h-4 text-red-500" />
-                <span>contact@maghriborbit.com</span>
+                <span>contact@maghreborbit.com</span>
               </div>
             </div>
 

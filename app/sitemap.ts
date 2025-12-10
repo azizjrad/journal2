@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 import { dbConnect, getArticles, getCategories } from "@/lib/db";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env.APP_BASE_URL || "https://maghriborbit.com";
+  const baseUrl = process.env.APP_BASE_URL || "https://maghreborbit.com";
 
   try {
     await dbConnect();

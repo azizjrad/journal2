@@ -69,10 +69,10 @@ export default function AdvertisePage() {
                   Advertising opportunities are available on a weekly, monthly,
                   or longer-term basis. For more information, please email us on{" "}
                   <a
-                    href="mailto:contact@maghriborbit.com"
+                    href="mailto:contact@maghreborbit.com"
                     className="text-red-600 hover:text-red-700 underline"
                   >
-                    contact@maghriborbit.com
+                    contact@maghreborbit.com
                   </a>
                 </p>
               </div>
@@ -87,7 +87,7 @@ export default function AdvertisePage() {
                   more about our competitive rates and packages.
                 </p>
                 <a
-                  href="mailto:contact@maghriborbit.com"
+                  href="mailto:contact@maghreborbit.com"
                   className="inline-flex items-center px-6 py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors duration-200"
                 >
                   Contact Us

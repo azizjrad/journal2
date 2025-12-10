@@ -22,8 +22,4 @@ Sentry.init({
     }
     return event;
   },
-
-  // Organization and project for source maps
-  org: "maghreb-orbit",
-  project: "journal-main",
 });

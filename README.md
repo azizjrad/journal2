@@ -13,7 +13,7 @@
 [![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://vercel.com/)
 [![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 
-[🌐 Live Demo](https://maghriborbit.vercel.app/) | [📖 Documentation](#documentation) | [🚀 Quick Start](#quick-start) | [🔧 API Reference](#api-reference)
+[🌐 Live Demo](https://maghreborbit.vercel.app/) | [📖 Documentation](#documentation) | [🚀 Quick Start](#quick-start) | [🔧 API Reference](#api-reference)
 
 [![Production Ready](https://img.shields.io/badge/Production-Ready-brightgreen?style=for-the-badge)](#production-readiness)
 [![Security](https://img.shields.io/badge/Security-A+%20Grade-green?style=for-the-badge)](#security)
