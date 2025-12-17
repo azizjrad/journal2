@@ -212,15 +212,15 @@ export function AdminDashboard({
   const [activeTabValue, setActiveTabValue] = useState("articles");
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 w-full overflow-x-hidden">
+    <div className="min-h-full w-full">
       {/* Background Pattern - matching website hero */}
-      <div className="absolute inset-0 opacity-5">
+      <div className="fixed inset-0 opacity-5 pointer-events-none">
         <div className="absolute top-0 left-0 w-96 h-96 bg-red-500 rounded-full mix-blend-multiply filter blur-xl transform -translate-x-1/2 -translate-y-1/2"></div>
         <div className="absolute top-1/3 right-0 w-96 h-96 bg-red-600 rounded-full mix-blend-multiply filter blur-xl transform translate-x-1/2 -translate-y-1/2"></div>
         <div className="absolute bottom-0 left-1/3 w-96 h-96 bg-red-700 rounded-full mix-blend-multiply filter blur-xl"></div>
       </div>
 
-      <div className="w-full px-2 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8 relative z-10 overflow-x-hidden">
+      <div className="w-full px-2 sm:px-4 md:px-6 py-4 sm:py-6 md:py-8 relative z-10">
         {/* Enhanced Header with Brand Identity */}
         <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl mb-4 sm:mb-8">
           <div className="px-3 py-3 sm:px-6 sm:py-4 md:px-8 md:py-6 border-b border-white/10">
@@ -353,20 +353,22 @@ export function AdminDashboard({
             </span>
           </div>
           {/* Sidebar overlay */}
-          {sidebarOpen && (
-            <div
-              className="fixed inset-0 z-40 bg-black/40 sm:hidden"
-              onClick={() => setSidebarOpen(false)}
-            ></div>
-          )}
+          <div
+            className={`fixed inset-0 z-40 bg-black/40 sm:hidden transition-opacity duration-500 ${
+              sidebarOpen ? "opacity-100" : "opacity-0 pointer-events-none"
+            }`}
+            onClick={() => setSidebarOpen(false)}
+          ></div>
           {/* Sidebar drawer */}
           <div
-            className={`fixed top-0 left-0 h-full w-64 bg-white/10 backdrop-blur-xl border border-white/20 z-50 shadow-2xl transform transition-transform duration-200 ease-in-out sm:hidden ${
-              sidebarOpen ? "translate-x-0" : "-translate-x-full"
+            className={`fixed top-0 left-0 h-full w-64 bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl z-50 shadow-2xl sm:hidden transition-all duration-500 ease-in-out m-2 ${
+              sidebarOpen
+                ? "translate-x-0 opacity-100"
+                : "-translate-x-full opacity-0"
             }`}
-            style={{ willChange: "transform" }}
+            style={{ willChange: "transform, opacity" }}
           >
-            <div className="flex items-center justify-between px-4 py-4 border-b border-white/10">
+            <div className="flex items-center justify-between px-4 py-4 border-b border-white/10 rounded-t-2xl">
               <span className="font-bold text-white text-lg">Menu</span>
               <button
                 className="text-white focus:outline-none"
@@ -377,14 +379,21 @@ export function AdminDashboard({
               </button>
             </div>
             <nav className="flex flex-col gap-1 p-4">
-              {tabList.map((tab) => (
+              {tabList.map((tab, index) => (
                 <button
                   key={tab.value}
-                  className={`flex items-center gap-3 px-3 py-2 rounded-lg text-left text-white font-medium transition-colors duration-150 ${
+                  className={`flex items-center gap-3 px-3 py-2 rounded-lg text-left text-white font-medium transition-all duration-300 ${
                     activeTabValue === tab.value
                       ? "bg-red-700/80"
                       : "hover:bg-white/10"
+                  } ${
+                    sidebarOpen
+                      ? "translate-x-0 opacity-100"
+                      : "-translate-x-4 opacity-0"
                   }`}
+                  style={{
+                    transitionDelay: sidebarOpen ? `${index * 70}ms` : "0ms",
+                  }}
                   onClick={() => {
                     setActiveTabValue(tab.value);
                     setSidebarOpen(false);

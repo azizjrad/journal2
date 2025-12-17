@@ -133,5 +133,9 @@ export function AdminSessionGuard({ children }: AdminSessionGuardProps) {
     return <AccessDenied role={user.role} requiredRole="admin" />;
   }
 
-  return <>{children}</>;
+  return (
+    <div className="fixed inset-0 min-h-screen w-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 overflow-auto">
+      {children}
+    </div>
+  );
 }
