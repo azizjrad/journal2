@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { cleanupDismissedReports } from "@/lib/db";
-import { ensureAdmin } from "@/lib/ensure-admin";
+import { ensureAdmin } from "@/lib/auth/ensure-admin";
 
 // POST /api/admin/reports/cleanup - Clean up dismissed reports older than 2 days
 export async function POST(request: NextRequest) {

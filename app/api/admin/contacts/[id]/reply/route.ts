@@ -4,7 +4,7 @@ import {
   getUserById,
   getContactMessageById,
 } from "@/lib/db";
-import { sendContactReplyEmail } from "@/lib/email-sendgrid";
+import { sendContactReplyEmail } from "@/lib/email/email-sendgrid";
 import jwt from "jsonwebtoken";
 
 export async function POST(

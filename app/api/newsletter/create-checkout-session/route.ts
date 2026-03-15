@@ -1,14 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { stripe, STRIPE_PRICES, PLAN_DETAILS } from "@/lib/stripe";
+import { stripe, STRIPE_PRICES, PLAN_DETAILS } from "@/lib/payments/stripe";
 import { verifyToken } from "@/lib/auth";
 import { getUserById } from "@/lib/db";
-import { createRateLimit } from "@/lib/rate-limit";
+import { createRateLimit } from "@/lib/api/rate-limit";
 import {
   validateEmail,
   validatePaymentMethod,
   validateBillingPeriod,
-} from "@/lib/input-validation";
-import { validateCsrf } from "@/lib/csrf";
+} from "@/lib/api/input-validation";
+import { validateCsrf } from "@/lib/auth/csrf";
 
 // Rate limiter: 5 checkout attempts per 15 minutes per user
 const checkoutRateLimit = createRateLimit({

@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { uploadToCloudinary } from "@/lib/cloudinary";
+import { uploadToCloudinary } from "@/lib/media/cloudinary";
 
 export async function POST(request: NextRequest) {
   try {
     // Require admin or writer authentication
-    const { ensureAdminOrWriter } = await import("@/lib/ensure-admin");
+    const { ensureAdminOrWriter } = await import("@/lib/auth/ensure-admin");
     const authCheck = await ensureAdminOrWriter(request);
     if (!authCheck.isAdmin && !authCheck.isWriter) {
       return NextResponse.json(

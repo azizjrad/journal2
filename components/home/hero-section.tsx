@@ -1,7 +1,7 @@
 "use client";
 
-import { useLanguage } from "@/lib/language-context";
-import { HeroCarousel } from "@/components/hero-carousel";
+import { useLanguage } from "@/lib/context/language-context";
+import { HeroCarousel } from "@/components/articles/hero-carousel";
 import { TrendingUp, Clock } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";

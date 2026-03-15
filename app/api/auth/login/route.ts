@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { authenticateUser } from "@/lib/auth";
-import { rateLimiters, createRateLimitResponse } from "@/lib/rate-limit";
+import { rateLimiters, createRateLimitResponse } from "@/lib/api/rate-limit";
 
 export async function POST(request: NextRequest) {
   try {

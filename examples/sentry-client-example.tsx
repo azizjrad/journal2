@@ -8,7 +8,7 @@
 
 import { useState } from "react";
 import * as Sentry from "@sentry/nextjs";
-import { addBreadcrumb, trackEvent } from "@/lib/sentry";
+import { addBreadcrumb, trackEvent } from "@/lib/utils/sentry";
 
 export function ExampleComponent() {
   const [loading, setLoading] = useState(false);

@@ -14,7 +14,6 @@ export default function robots(): MetadataRoute.Robots {
           "/settings/",
           "/account/",
           "/writer/dashboard/",
-          "/login-timeout-page",
           "/_next/",
           "/private/",
         ],

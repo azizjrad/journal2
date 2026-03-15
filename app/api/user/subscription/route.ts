@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken } from "@/lib/auth";
 import { getNewsletterSubscriptionByUserId } from "@/lib/db";
-import { stripe } from "@/lib/stripe";
+import { stripe } from "@/lib/payments/stripe";
 
 export async function GET(request: NextRequest) {
   try {

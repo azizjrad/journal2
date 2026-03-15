@@ -2,9 +2,9 @@
 // ...existing code...
 import { NextRequest, NextResponse } from "next/server";
 import { getArticleByIdAdmin, updateArticle, deleteArticle } from "@/lib/db";
-import { ensureAdminOrWriter, ensureAdmin } from "@/lib/ensure-admin";
+import { ensureAdminOrWriter, ensureAdmin } from "@/lib/auth/ensure-admin";
 import { verifyToken } from "@/lib/auth";
-import { validateCsrf } from "@/lib/csrf";
+import { validateCsrf } from "@/lib/auth/csrf";
 
 export async function GET(
   request: NextRequest,

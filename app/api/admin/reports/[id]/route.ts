@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getReportById, updateReportStatus, deleteReport } from "@/lib/db";
-import { ensureAdmin } from "@/lib/ensure-admin";
+import { ensureAdmin } from "@/lib/auth/ensure-admin";
 
 // GET /api/admin/reports/[id] - Get specific report
 export async function GET(

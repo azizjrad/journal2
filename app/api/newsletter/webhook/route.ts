@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { stripe } from "@/lib/stripe";
+import { stripe } from "@/lib/payments/stripe";
 import {
   createNewsletterSubscription,
   updateNewsletterSubscription,
@@ -10,14 +10,14 @@ import {
   sendSubscriptionConfirmationEmail,
   sendSubscriptionCancellationEmail,
   sendSubscriptionRenewalEmail,
-} from "@/lib/email-sendgrid";
+} from "@/lib/email/email-sendgrid";
 import type Stripe from "stripe";
 import { User } from "@/lib/models/User";
 import {
   trackWebhookError,
   trackPaymentError,
   addBreadcrumb,
-} from "@/lib/sentry";
+} from "@/lib/utils/sentry";
 
 // Route segment config for Next.js 16+
 export const runtime = "nodejs";

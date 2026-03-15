@@ -17,9 +17,9 @@ import {
 import {
   sendVerificationEmail,
   sendWriterApplicationNotificationToAdmin,
-} from "@/lib/email-sendgrid";
-import { validateCsrf } from "@/lib/csrf";
-import { rateLimiters, createRateLimitResponse } from "@/lib/rate-limit";
+} from "@/lib/email/email-sendgrid";
+import { validateCsrf } from "@/lib/auth/csrf";
+import { rateLimiters, createRateLimitResponse } from "@/lib/api/rate-limit";
 
 export async function POST(request: NextRequest) {
   // CSRF protection

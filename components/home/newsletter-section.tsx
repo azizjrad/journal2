@@ -1,6 +1,6 @@
 "use client";
 
-import { useLanguage } from "@/lib/language-context";
+import { useLanguage } from "@/lib/context/language-context";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Mail, Bell, Star, Gift } from "lucide-react";

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createArticle, getAllArticlesAdmin } from "@/lib/db";
-import { ensureAdminOrWriter } from "@/lib/ensure-admin";
-import { validateCsrf } from "@/lib/csrf";
+import { ensureAdminOrWriter } from "@/lib/auth/ensure-admin";
+import { validateCsrf } from "@/lib/auth/csrf";
 
 export function GET() {
   return (async () => {

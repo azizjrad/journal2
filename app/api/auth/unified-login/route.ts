@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { generateCsrfToken, setCsrfCookie, validateCsrf } from "@/lib/csrf";
+import { generateCsrfToken, setCsrfCookie, validateCsrf } from "@/lib/auth/csrf";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import mongoose from "mongoose";

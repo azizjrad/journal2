@@ -4,7 +4,7 @@ import { getAnalyticsData } from "@/lib/db";
 export async function GET(request: NextRequest) {
   try {
     // Require admin authentication
-    const { ensureAdmin } = await import("@/lib/ensure-admin");
+    const { ensureAdmin } = await import("@/lib/auth/ensure-admin");
     const adminCheck = await ensureAdmin(request);
     if (!adminCheck.isAdmin) {
       return NextResponse.json(

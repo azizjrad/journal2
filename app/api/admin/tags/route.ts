@@ -4,7 +4,7 @@ import { getTags } from "@/lib/db";
 export async function GET() {
   try {
     // Require admin authentication
-    const { ensureAdmin } = await import("@/lib/ensure-admin");
+    const { ensureAdmin } = await import("@/lib/auth/ensure-admin");
     // Fake request for GET (Next.js API routes don't pass request to GET by default)
     // So, we can't check cookies/headers. Instead, recommend switching to POST or using middleware for real protection.
     // For now, just return 401 to block public access.

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getReports, getReportStats, createReport } from "@/lib/db";
-import { ensureAdmin } from "@/lib/ensure-admin";
+import { ensureAdmin } from "@/lib/auth/ensure-admin";
 
 // GET /api/admin/reports - Get all reports with optional filtering
 export async function GET(request: NextRequest) {

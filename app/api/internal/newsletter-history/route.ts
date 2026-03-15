@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { SentNewsletter } from "@/lib/models/SentNewsletter";
-import { ensureAdmin } from "@/lib/ensure-admin";
+import { ensureAdmin } from "@/lib/auth/ensure-admin";
 
 export async function GET(request: NextRequest) {
   const adminCheck = await ensureAdmin(request);

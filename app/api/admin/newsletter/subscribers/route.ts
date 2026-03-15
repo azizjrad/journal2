@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getNewsletterSubscribers, getNewsletterStats } from "@/lib/db";
-import { ensureAdmin } from "@/lib/ensure-admin";
+import { ensureAdmin } from "@/lib/auth/ensure-admin";
 import { revalidateTag } from "next/cache";
 
 // GET /api/admin/newsletter/subscribers - Get newsletter subscribers

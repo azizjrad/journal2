@@ -5,8 +5,8 @@ import {
   logUserActivity,
 } from "@/lib/db";
 import { generateSecureToken, getPasswordResetExpiry } from "@/lib/auth";
-import { sendPasswordResetEmail } from "@/lib/email-sendgrid";
-import { rateLimiters, createRateLimitResponse } from "@/lib/rate-limit";
+import { sendPasswordResetEmail } from "@/lib/email/email-sendgrid";
+import { rateLimiters, createRateLimitResponse } from "@/lib/api/rate-limit";
 
 export async function POST(request: NextRequest) {
   try {

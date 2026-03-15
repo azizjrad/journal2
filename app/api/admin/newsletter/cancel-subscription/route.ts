@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
-import { ensureAdmin } from "@/lib/ensure-admin";
+import { ensureAdmin } from "@/lib/auth/ensure-admin";
 import {
   getNewsletterSubscriptionById,
   updateNewsletterSubscription,
 } from "@/lib/db";
-import { sendSubscriptionCancellationEmail } from "@/lib/email-sendgrid";
+import { sendSubscriptionCancellationEmail } from "@/lib/email/email-sendgrid";
 import { getUserById } from "@/lib/db";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {

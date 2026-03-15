@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { ensureAdmin } from "@/lib/ensure-admin";
+import { ensureAdmin } from "@/lib/auth/ensure-admin";
 import { getUserById, updateUserWriterStatus } from "@/lib/db";
-import { sendWriterApprovalEmail } from "@/lib/email-sendgrid";
+import { sendWriterApprovalEmail } from "@/lib/email/email-sendgrid";
 
 export async function PATCH(
   request: NextRequest,

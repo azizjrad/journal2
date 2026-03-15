@@ -11,7 +11,7 @@ import {
   trackAPIError,
   setUserContext,
   addBreadcrumb,
-} from "@/lib/sentry";
+} from "@/lib/utils/sentry";
 import { getUserByEmail, dbConnect } from "@/lib/db";
 
 export async function POST(request: NextRequest) {

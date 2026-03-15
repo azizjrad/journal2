@@ -1,7 +1,7 @@
 "use client";
 
-import { useLanguage } from "@/lib/language-context";
-import { ArticleCard } from "@/components/article-card";
+import { useLanguage } from "@/lib/context/language-context";
+import { ArticleCard } from "@/components/articles/article-card";
 import { ArrowRight, Zap } from "lucide-react";
 import Link from "next/link";
 

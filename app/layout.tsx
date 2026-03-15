@@ -3,12 +3,12 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import "../styles/professional-news.css";
-import { LanguageProvider } from "@/lib/language-context";
-import { AuthProvider } from "@/lib/user-auth";
+import { LanguageProvider } from "@/lib/context/language-context";
+import { AuthProvider } from "@/lib/context/user-auth";
 import { Toaster } from "@/components/ui/toaster";
 
-import ServiceWorkerRegistration from "@/components/service-worker-registration";
-import OfflineIndicator from "@/components/offline-indicator";
+import ServiceWorkerRegistration from "@/components/shared/service-worker-registration";
+import OfflineIndicator from "@/components/shared/offline-indicator";
 import { Analytics } from "@vercel/analytics/next";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 

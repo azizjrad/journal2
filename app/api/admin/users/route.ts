@@ -7,7 +7,7 @@ import {
   logUserActivity,
   createUser,
 } from "@/lib/db";
-import { ensureAdmin } from "@/lib/ensure-admin";
+import { ensureAdmin } from "@/lib/auth/ensure-admin";
 import bcrypt from "bcryptjs";
 
 // GET all users (admin only)

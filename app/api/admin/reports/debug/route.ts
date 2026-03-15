@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { dbConnect } from "@/lib/db";
 import { Report } from "@/lib/models/Article";
-import { ensureAdmin } from "@/lib/ensure-admin";
+import { ensureAdmin } from "@/lib/auth/ensure-admin";
 
 // GET /api/admin/reports/debug - Debug dismissed reports
 export async function GET(request: NextRequest) {

@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createContactMessage } from "@/lib/db";
-import { rateLimiters, createRateLimitResponse } from "@/lib/rate-limit";
-import { sendContactFormNotificationToAdmin } from "@/lib/email-sendgrid";
+import { rateLimiters, createRateLimitResponse } from "@/lib/api/rate-limit";
+import { sendContactFormNotificationToAdmin } from "@/lib/email/email-sendgrid";
 
 export async function POST(request: NextRequest) {
   // Apply rate limiting: 3 requests per hour per IP

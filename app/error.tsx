@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useLanguage } from "@/lib/language-context";
+import { useLanguage } from "@/lib/context/language-context";
 import { Button } from "@/components/ui/button";
 import {
   Home,
@@ -13,7 +13,7 @@ import {
   Clock,
 } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { LanguageSwitcher } from "@/components/language-switcher";
+import { LanguageSwitcher } from "@/components/shared/language-switcher";
 import { useEffect } from "react";
 
 interface ErrorProps {
