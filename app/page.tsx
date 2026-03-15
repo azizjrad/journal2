@@ -6,7 +6,6 @@ import {
   ArticleInterface,
   CategoryInterface,
 } from "@/lib/db";
-import { getRedis } from "@/lib/redis";
 import { FixedHeaderWrapper } from "@/components/fixed-header-wrapper";
 import { HomeBreadcrumb } from "@/components/home-breadcrumb";
 import { HomeContent, Article, Category } from "@/components/home-content";
@@ -100,23 +99,7 @@ export default async function HomePage() {
     };
   }
 
-  // Try to get featured articles from Redis cache
-  let featuredArticlesRaw: ArticleInterface[];
-  try {
-    const redis = await getRedis();
-    const cached = await redis.get("featuredArticles");
-    if (cached) {
-      featuredArticlesRaw = JSON.parse(cached);
-    } else {
-      featuredArticlesRaw = await getFeaturedArticlesCached(5);
-      await redis.set("featuredArticles", JSON.stringify(featuredArticlesRaw), {
-        EX: 60,
-      }); // cache for 60s
-    }
-  } catch (e) {
-    // Fallback to DB if Redis fails
-    featuredArticlesRaw = await getFeaturedArticlesCached(5);
-  }
+  const featuredArticlesRaw = await getFeaturedArticlesCached(5);
 
   // Other data loads as before
   const [otherArticlesRaw, categoriesRaw, recentArticlesRaw] =

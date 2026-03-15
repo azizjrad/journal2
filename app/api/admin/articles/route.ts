@@ -12,7 +12,7 @@ export function GET() {
       console.error("Error fetching articles:", error);
       return NextResponse.json(
         { error: "Failed to fetch articles" },
-        { status: 500 }
+        { status: 500 },
       );
     }
   })();
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
   if (!validateCsrf(request)) {
     return NextResponse.json(
       { error: "Invalid security token" },
-      { status: 403 }
+      { status: 403 },
     );
   }
 
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
         authCheck.isAdmin
           ? "👑 Admin user creating article:"
           : "✍️ Writer creating article:",
-        currentUser.id
+        currentUser.id,
       );
     }
 
@@ -47,7 +47,7 @@ export async function POST(request: NextRequest) {
       console.log("❌ No authenticated user found");
       return NextResponse.json(
         { error: "Authentication required" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
     if (!title_en || !title_ar || !content_en || !content_ar) {
       return NextResponse.json(
         { error: "Title and content are required in both languages" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -81,7 +81,7 @@ export async function POST(request: NextRequest) {
     if (!category_id || category_id.trim() === "") {
       return NextResponse.json(
         { error: "Please select a category" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -132,23 +132,13 @@ export async function POST(request: NextRequest) {
       scheduled_for,
     });
 
-    // Invalidate Redis cache for featured articles
-    try {
-      const { getRedis } = await import("@/lib/redis");
-      const redis = await getRedis();
-      await redis.del("featuredArticles");
-      console.log("🧹 Redis cache invalidated: featuredArticles");
-    } catch (err) {
-      console.error("Redis cache invalidation failed:", err);
-    }
-
     console.log("🎉 Article created successfully:", newArticle.id);
     return NextResponse.json(newArticle);
   } catch (error: any) {
     console.error("❌ Error creating article:", error);
     return NextResponse.json(
       { error: "Failed to create article", details: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

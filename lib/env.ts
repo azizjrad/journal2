@@ -30,9 +30,6 @@ interface EnvConfig {
   CLOUDINARY_API_KEY: string;
   CLOUDINARY_API_SECRET: string;
 
-  // Redis (optional)
-  REDIS_URL?: string;
-
   // App Config
   APP_BASE_URL: string;
   NODE_ENV: "development" | "production" | "test";
@@ -54,9 +51,7 @@ export function validateEnv(): EnvConfig {
     "STRIPE_WEBHOOK_SECRET",
     "STRIPE_MONTHLY_PRICE_ID",
     "STRIPE_ANNUAL_PRICE_ID",
-    "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY",
     "SENDGRID_API_KEY",
-    "FROM_EMAIL",
     "NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME",
     "CLOUDINARY_API_KEY",
     "CLOUDINARY_API_SECRET",
@@ -74,7 +69,16 @@ export function validateEnv(): EnvConfig {
     throw new Error(
       `Missing required environment variables:\n${missing
         .map((v) => `  - ${v}`)
-        .join("\n")}\n\nPlease check your .env.local file.`
+        .join("\n")}\n\nPlease check your .env.local file.`,
+    );
+  }
+
+  if (
+    !process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY &&
+    !process.env.STRIPE_PUBLISHABLE_KEY
+  ) {
+    throw new Error(
+      "Missing Stripe publishable key. Set NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY (preferred) or STRIPE_PUBLISHABLE_KEY.",
     );
   }
 
@@ -87,9 +91,10 @@ export function validateEnv(): EnvConfig {
     STRIPE_MONTHLY_PRICE_ID: process.env.STRIPE_MONTHLY_PRICE_ID!,
     STRIPE_ANNUAL_PRICE_ID: process.env.STRIPE_ANNUAL_PRICE_ID!,
     NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY:
-      process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!,
+      process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY ||
+      process.env.STRIPE_PUBLISHABLE_KEY!,
     SENDGRID_API_KEY: process.env.SENDGRID_API_KEY!,
-    FROM_EMAIL: process.env.FROM_EMAIL!,
+    FROM_EMAIL: process.env.FROM_EMAIL || "azizjrad9@gmail.com",
     FROM_NAME: process.env.FROM_NAME || "Akhbarna",
     ADMIN_EMAIL: process.env.ADMIN_EMAIL,
     REPLY_TO_EMAIL: process.env.REPLY_TO_EMAIL,
@@ -97,7 +102,6 @@ export function validateEnv(): EnvConfig {
       process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME!,
     CLOUDINARY_API_KEY: process.env.CLOUDINARY_API_KEY!,
     CLOUDINARY_API_SECRET: process.env.CLOUDINARY_API_SECRET!,
-    REDIS_URL: process.env.REDIS_URL,
     APP_BASE_URL:
       process.env.APP_BASE_URL ||
       process.env.NEXT_PUBLIC_APP_BASE_URL ||

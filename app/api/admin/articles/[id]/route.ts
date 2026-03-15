@@ -8,14 +8,14 @@ import { validateCsrf } from "@/lib/csrf";
 
 export async function GET(
   request: NextRequest,
-  context: { params: { id: string } }
+  context: { params: { id: string } },
 ) {
   try {
     const { id } = context.params;
     if (!id) {
       return NextResponse.json(
         { error: "Missing article id" },
-        { status: 400 }
+        { status: 400 },
       );
     }
     const article = await getArticleByIdAdmin(id);
@@ -27,7 +27,7 @@ export async function GET(
     console.error("Error fetching article:", error);
     return NextResponse.json(
       { error: "Failed to fetch article" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -36,13 +36,13 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  context: { params: { id: string } }
+  context: { params: { id: string } },
 ) {
   // CSRF protection
   if (!validateCsrf(request)) {
     return NextResponse.json(
       { error: "Invalid security token" },
-      { status: 403 }
+      { status: 403 },
     );
   }
 
@@ -69,11 +69,11 @@ export async function PUT(
           "❌ Admin authentication failed:",
           typeof error === "object" && error !== null && "message" in error
             ? (error as { message?: string }).message
-            : error
+            : error,
         );
         return NextResponse.json(
           { error: "Authentication required" },
-          { status: 401 }
+          { status: 401 },
         );
       }
     }
@@ -101,13 +101,13 @@ export async function PUT(
     if (!title_en || !title_ar || !content_en || !content_ar) {
       return NextResponse.json(
         { error: "Title and content are required in both languages" },
-        { status: 400 }
+        { status: 400 },
       );
     }
     if (category_id && category_id.trim() === "") {
       return NextResponse.json(
         { error: "Please select a valid category" },
-        { status: 400 }
+        { status: 400 },
       );
     }
     const updatedArticle = await updateArticle(id, {
@@ -130,36 +130,26 @@ export async function PUT(
       tags,
     });
 
-    // Invalidate Redis cache for featured articles
-    try {
-      const { getRedis } = await import("@/lib/redis");
-      const redis = await getRedis();
-      await redis.del("featuredArticles");
-      console.log("🧹 Redis cache invalidated: featuredArticles");
-    } catch (err) {
-      console.error("Redis cache invalidation failed:", err);
-    }
-
     console.log("\u2705 Article updated successfully:", id);
     return NextResponse.json(updatedArticle);
   } catch (error) {
     console.error("❌ Error updating article:", error);
     return NextResponse.json(
       { error: "Failed to update article" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
 
 export async function DELETE(
   request: NextRequest,
-  context: { params: { id: string } }
+  context: { params: { id: string } },
 ) {
   // CSRF protection
   if (!validateCsrf(request)) {
     return NextResponse.json(
       { error: "Invalid security token" },
-      { status: 403 }
+      { status: 403 },
     );
   }
 
@@ -169,14 +159,14 @@ export async function DELETE(
     if (!authCheck.isAdmin && !authCheck.isWriter) {
       return NextResponse.json(
         { error: "Authentication required" },
-        { status: 401 }
+        { status: 401 },
       );
     }
     const { id } = context.params;
     if (!id) {
       return NextResponse.json(
         { error: "Invalid article ID" },
-        { status: 400 }
+        { status: 400 },
       );
     }
     const article = await getArticleByIdAdmin(id);
@@ -190,20 +180,10 @@ export async function DELETE(
     ) {
       return NextResponse.json(
         { error: "You can only delete your own articles" },
-        { status: 403 }
+        { status: 403 },
       );
     }
     await deleteArticle(id);
-
-    // Invalidate Redis cache for featured articles
-    try {
-      const { getRedis } = await import("@/lib/redis");
-      const redis = await getRedis();
-      await redis.del("featuredArticles");
-      console.log("🧹 Redis cache invalidated: featuredArticles");
-    } catch (err) {
-      console.error("Redis cache invalidation failed:", err);
-    }
 
     console.log("✅ Article deleted successfully:", id);
     return NextResponse.json({
@@ -214,7 +194,7 @@ export async function DELETE(
     console.error("❌ Error deleting article:", error);
     return NextResponse.json(
       { error: "Failed to delete article" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
