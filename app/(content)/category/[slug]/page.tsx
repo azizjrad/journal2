@@ -1,13 +1,8 @@
+import { getCategoryBySlug, getCategoriesCached } from "@/lib/db";
 import {
-  getArticles,
-  getArticlesByCategory,
-  getCategoryBySlug,
-  getCategories,
-  getCategoriesCached,
   getArticlesByCategoryCached,
-  getRecentArticlesCached,
   getFeaturedArticlesCached,
-} from "@/lib/db";
+} from "@/lib/content/article-service";
 import Header from "@/components/layout/header";
 import { BreakingNewsTicker } from "@/components/shared/breaking-news-ticker";
 import { Footer } from "@/components/layout/footer";

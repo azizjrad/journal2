@@ -5,7 +5,7 @@ import { useState, useEffect, useMemo, memo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { X } from "lucide-react";
-import { ArticleInterface } from "@/lib/db";
+import type { ArticleInterface } from "@/lib/content/types";
 
 interface BreakingNewsTickerProps {
   articles?: ArticleInterface[];
@@ -43,7 +43,7 @@ export const BreakingNewsTicker = memo(function BreakingNewsTicker({
         } else {
           // Swipe right: prev
           setCurrentIndex(
-            (prev) => (prev - 1 + newsItems.length) % newsItems.length
+            (prev) => (prev - 1 + newsItems.length) % newsItems.length,
           );
         }
       }
@@ -58,7 +58,7 @@ export const BreakingNewsTicker = memo(function BreakingNewsTicker({
       .sort(
         (a, b) =>
           new Date(b.published_at).getTime() -
-          new Date(a.published_at).getTime()
+          new Date(a.published_at).getTime(),
       )
       .slice(0, 4); // Show max 4 featured articles
   }, [articles]);
@@ -115,7 +115,7 @@ export const BreakingNewsTicker = memo(function BreakingNewsTicker({
         updated_at: new Date().toISOString(),
       },
     ],
-    []
+    [],
   );
 
   const newsItems = useMemo(() => {
@@ -214,7 +214,7 @@ export const BreakingNewsTicker = memo(function BreakingNewsTicker({
               aria-label={t(
                 "close_featured_articles",
                 "Close featured articles",
-                "إغلاق المقالات المميزة"
+                "إغلاق المقالات المميزة",
               )}
             >
               <X className="w-3 h-3 sm:w-4 sm:h-4 text-white" />

@@ -4,12 +4,12 @@ import { ensureAdmin } from "@/lib/auth/ensure-admin";
 import {
   getNewsletterSubscriptionById,
   updateNewsletterSubscription,
-} from "@/lib/db";
+} from "@/lib/services/newsletter-service";
 import { sendSubscriptionCancellationEmail } from "@/lib/email/email-sendgrid";
 import { getUserById } from "@/lib/db";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-09-30.clover",
+  apiVersion: "2025-10-29.clover",
 });
 
 /**
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     if (!adminResult.isAdmin) {
       return NextResponse.json(
         { success: false, error: "Unauthorized. Admin access required." },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -34,7 +34,7 @@ export async function POST(request: NextRequest) {
     if (!subscriptionId || typeof subscriptionId !== "string") {
       return NextResponse.json(
         { success: false, error: "subscription_id is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -43,7 +43,7 @@ export async function POST(request: NextRequest) {
     if (!subscription) {
       return NextResponse.json(
         { success: false, error: "Subscription not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
     if (subscription.status === "canceled") {
       return NextResponse.json(
         { success: false, error: "Subscription is already canceled" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -63,13 +63,13 @@ export async function POST(request: NextRequest) {
         : await getUserById(
             typeof subscription.user_id === "string"
               ? subscription.user_id
-              : subscription.user_id?.toString() || ""
+              : subscription.user_id?.toString() || "",
           );
 
     if (!user || !user.email) {
       return NextResponse.json(
         { success: false, error: "User not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -87,7 +87,7 @@ export async function POST(request: NextRequest) {
             success: false,
             error: `Failed to cancel in Stripe: ${stripeError.message}`,
           },
-          { status: 500 }
+          { status: 500 },
         );
       }
     }
@@ -123,7 +123,7 @@ export async function POST(request: NextRequest) {
         adminResult.user?.id || "unknown"
       } canceled subscription ${subscriptionId} for user ${
         user.email
-      }. Reason: ${reason || "None provided"}`
+      }. Reason: ${reason || "None provided"}`,
     );
 
     return NextResponse.json({
@@ -142,7 +142,7 @@ export async function POST(request: NextRequest) {
         success: false,
         error: "Failed to cancel subscription",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

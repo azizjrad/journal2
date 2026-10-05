@@ -4,8 +4,8 @@ import {
   createNewsletterSubscription,
   updateNewsletterSubscription,
   getNewsletterSubscriptionByStripeId,
-  getUserById,
-} from "@/lib/db";
+} from "@/lib/services/newsletter-service";
+import { getUserById } from "@/lib/db";
 import {
   sendSubscriptionConfirmationEmail,
   sendSubscriptionCancellationEmail,
@@ -30,11 +30,11 @@ export async function POST(request: NextRequest) {
     trackWebhookError(
       new Error("STRIPE_WEBHOOK_SECRET not configured"),
       "stripe_webhook",
-      undefined
+      undefined,
     );
     return NextResponse.json(
       { error: "Webhook secret not configured" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
     if (!signature) {
       return NextResponse.json(
         { error: "No signature found" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -63,7 +63,7 @@ export async function POST(request: NextRequest) {
     trackWebhookError(
       err instanceof Error ? err : new Error("Signature verification failed"),
       "stripe_webhook",
-      undefined
+      undefined,
     );
     return NextResponse.json(
       {
@@ -71,7 +71,7 @@ export async function POST(request: NextRequest) {
           err instanceof Error ? err.message : "Unknown error"
         }`,
       },
-      { status: 400 }
+      { status: 400 },
     );
   }
 
@@ -90,7 +90,7 @@ export async function POST(request: NextRequest) {
         // Get subscription details
         if (session.subscription && session.customer) {
           const subscription = await stripe.subscriptions.retrieve(
-            session.subscription as string
+            session.subscription as string,
           );
 
           console.log("🔍 Retrieved subscription:", {
@@ -118,7 +118,7 @@ export async function POST(request: NextRequest) {
           let paymentMethod: any = undefined;
           if (subscription.default_payment_method) {
             const pm = await stripe.paymentMethods.retrieve(
-              subscription.default_payment_method as string
+              subscription.default_payment_method as string,
             );
 
             // Match the schema structure - payment_method has nested fields
@@ -144,14 +144,14 @@ export async function POST(request: NextRequest) {
           const currentPeriodStart = subscriptionAny.current_period_start
             ? new Date(subscriptionAny.current_period_start * 1000)
             : subscriptionAny.trial_start
-            ? new Date(subscriptionAny.trial_start * 1000)
-            : new Date();
+              ? new Date(subscriptionAny.trial_start * 1000)
+              : new Date();
 
           const currentPeriodEnd = subscriptionAny.current_period_end
             ? new Date(subscriptionAny.current_period_end * 1000)
             : subscriptionAny.trial_end
-            ? new Date(subscriptionAny.trial_end * 1000)
-            : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days from now as fallback
+              ? new Date(subscriptionAny.trial_end * 1000)
+              : new Date(Date.now() + 30 * 24 * 60 * 60 * 1000); // 30 days from now as fallback
 
           console.log("🔍 About to create subscription in DB with:", {
             userId,
@@ -192,7 +192,7 @@ export async function POST(request: NextRequest) {
               });
 
               console.log(
-                `✅ Marked user ${userId} as having used their free trial`
+                `✅ Marked user ${userId} as having used their free trial`,
               );
             }
           } catch (dbError) {
@@ -231,7 +231,7 @@ export async function POST(request: NextRequest) {
 
         // Check if subscription was just set to cancel at period end
         const dbSubscription = await getNewsletterSubscriptionByStripeId(
-          subscription.id
+          subscription.id,
         );
         const wasCancelScheduled = dbSubscription?.cancel_at_period_end;
         const isCancelScheduled = subscription.cancel_at_period_end;
@@ -241,12 +241,12 @@ export async function POST(request: NextRequest) {
             subscription.status === "active"
               ? "active"
               : subscription.status === "past_due"
-              ? "past_due"
-              : subscription.status === "canceled"
-              ? "canceled"
-              : "incomplete",
+                ? "past_due"
+                : subscription.status === "canceled"
+                  ? "canceled"
+                  : "incomplete",
           currentPeriodStart: new Date(
-            subscription.current_period_start * 1000
+            subscription.current_period_start * 1000,
           ),
           currentPeriodEnd: new Date(subscription.current_period_end * 1000),
           cancelAtPeriodEnd: subscription.cancel_at_period_end,
@@ -268,7 +268,7 @@ export async function POST(request: NextRequest) {
               });
 
               console.log(
-                `✅ Sent cancellation scheduled email to ${user.email}`
+                `✅ Sent cancellation scheduled email to ${user.email}`,
               );
             }
           } catch (emailError) {
@@ -283,7 +283,7 @@ export async function POST(request: NextRequest) {
         const subscription = event.data.object as Stripe.Subscription;
 
         const dbSubscription = await getNewsletterSubscriptionByStripeId(
-          subscription.id
+          subscription.id,
         );
 
         await updateNewsletterSubscription(subscription.id, {
@@ -320,19 +320,19 @@ export async function POST(request: NextRequest) {
 
         if (invoice.subscription && typeof invoice.subscription === "string") {
           const subscription = (await stripe.subscriptions.retrieve(
-            invoice.subscription
+            invoice.subscription,
           )) as any;
 
           await updateNewsletterSubscription(subscription.id, {
             status: "active",
             currentPeriodStart: new Date(
-              subscription.current_period_start * 1000
+              subscription.current_period_start * 1000,
             ),
             currentPeriodEnd: new Date(subscription.current_period_end * 1000),
           });
 
           console.log(
-            `✅ Payment succeeded for subscription ${subscription.id}`
+            `✅ Payment succeeded for subscription ${subscription.id}`,
           );
 
           // Send renewal email (but not for the first payment)
@@ -346,7 +346,7 @@ export async function POST(request: NextRequest) {
                 await getNewsletterSubscriptionByStripeId(subscription.id);
               if (subscriptionRecord && subscriptionRecord.user_id) {
                 const user = await getUserById(
-                  subscriptionRecord.user_id.toString()
+                  subscriptionRecord.user_id.toString(),
                 );
                 if (user && user.email) {
                   const amount = (invoice.amount_paid || 0) / 100;
@@ -362,12 +362,12 @@ export async function POST(request: NextRequest) {
                     plan: plan,
                     amount: amount,
                     nextBillingDate: new Date(
-                      subscription.current_period_end * 1000
+                      subscription.current_period_end * 1000,
                     ),
                   });
 
                   console.log(
-                    `✅ Sent renewal email to ${user.email} for subscription ${subscription.id}`
+                    `✅ Sent renewal email to ${user.email} for subscription ${subscription.id}`,
                   );
                 }
               }
@@ -389,7 +389,7 @@ export async function POST(request: NextRequest) {
           });
 
           console.log(
-            `⚠️ Payment failed for subscription ${invoice.subscription}`
+            `⚠️ Payment failed for subscription ${invoice.subscription}`,
           );
         }
         break;
@@ -405,11 +405,11 @@ export async function POST(request: NextRequest) {
     trackWebhookError(
       error instanceof Error ? error : new Error("Unknown webhook error"),
       "stripe_webhook",
-      event?.id
+      event?.id,
     );
     return NextResponse.json(
       { error: "Webhook handler failed" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

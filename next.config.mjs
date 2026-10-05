@@ -1,4 +1,4 @@
-import { withSentryConfig } from "@sentry/nextjs";
+import { withSentryConfig } from "@sentry/nextjs/config";
 import path from "path";
 import { fileURLToPath } from "url";
 
@@ -135,11 +135,12 @@ export default withSentryConfig(nextConfig, {
   // Route Sentry requests through Next.js to bypass ad-blockers
   tunnelRoute: "/monitoring",
 
-  // Remove Sentry logger statements in production
-  disableLogger: true,
-
-  // Enable Vercel Cron Monitors
-  automaticVercelMonitors: true,
+  webpack: {
+    treeshake: {
+      removeDebugLogging: true,
+    },
+    automaticVercelMonitors: true,
+  },
 
   // Disable copying traced files (fixes Windows build warnings)
   disableServerWebpackPlugin: process.platform === "win32",

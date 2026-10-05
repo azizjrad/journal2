@@ -15,6 +15,9 @@ import { SpeedInsights } from "@vercel/speed-insights/next";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(
+    process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+  ),
   title: "The Maghreb Orbit - المدار المغاربي | News as is... without bias",
   description:
     "The Maghreb Orbit - News as is... without bias | المدار المغاربي - الخبر كما هو ...بلا انحياز. Your trusted source for unbiased news from the Maghreb region and beyond.",

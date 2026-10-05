@@ -1,5 +1,8 @@
 import { unstable_cache } from "next/cache";
-import mongoose from "mongoose";
+import { Types } from "mongoose";
+import { dbConnect } from "./connection";
+import { convertDoc, convertDocArray } from "./serialization";
+import { getArticlesByCategory as getArticlesByCategoryRepository } from "./article-repository";
 import {
   User,
   UserProfile,
@@ -21,69 +24,15 @@ import {
   Report,
 } from "../models/Article";
 import Contact, { ContactInterface } from "../models/Contact";
-import { Types } from "mongoose";
+import type { ArticleInterface, SearchFilters } from "@/lib/content/types";
 
-// Direct database connection function
-export async function dbConnect() {
-  const MONGODB_URI = process.env.MONGODB_URI!;
+export { dbConnect } from "./connection";
 
-  if (!MONGODB_URI) {
-    throw new Error("Please define the MONGODB_URI environment variable");
-  }
-
-  // Use global variable to avoid multiple connections
-  if ((global as any).mongoose?.conn) {
-    // Check if connection is still alive
-    if (mongoose.connection.readyState === 1) {
-      return (global as any).mongoose.conn;
-    }
-    // If connection is dead, reset it
-    (global as any).mongoose = { conn: null, promise: null };
-  }
-
-  if (!(global as any).mongoose) {
-    (global as any).mongoose = { conn: null, promise: null };
-  }
-
-  if (!(global as any).mongoose.promise) {
-    const options = {
-      bufferCommands: false,
-      // Serverless-optimized settings
-      maxPoolSize: process.env.NODE_ENV === "production" ? 5 : 5, // Smaller pool for serverless
-      minPoolSize: 1, // Keep at least 1 connection
-      serverSelectionTimeoutMS: 10000, // 10 seconds - more time for cold starts
-      socketTimeoutMS: 60000, // 60 seconds - longer for slow queries
-      maxIdleTimeMS: 10000, // Close idle connections after 10s (serverless optimization)
-      retryWrites: true,
-      w: "majority" as const,
-      connectTimeoutMS: 10000, // 10 seconds connection timeout
-      // Add compression for better performance
-      compressors: ["zlib" as const],
-      // Auto index for better performance
-      autoIndex: process.env.NODE_ENV !== "production",
-    };
-
-    (global as any).mongoose.promise = mongoose
-      .connect(MONGODB_URI, options)
-      .catch((err) => {
-        console.error("❌ MongoDB connection error:", err);
-        // Reset promise on error so next request can retry
-        (global as any).mongoose.promise = null;
-        throw err;
-      });
-  }
-
-  try {
-    (global as any).mongoose.conn = await (global as any).mongoose.promise;
-    console.log("✅ Connected to MongoDB Atlas successfully");
-    return (global as any).mongoose.conn;
-  } catch (error) {
-    console.error("❌ MongoDB connection failed:", error);
-    // Reset for retry on next request
-    (global as any).mongoose = { conn: null, promise: null };
-    throw error;
-  }
-}
+export type {
+  ArticleInterface,
+  ArticleWithAuthor,
+  SearchFilters,
+} from "@/lib/content/types";
 
 /**
  * Validate input against common injection patterns
@@ -119,40 +68,6 @@ function sanitizeInput(input: string): string {
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#x27;")
     .replace(/\//g, "&#x2F;");
-}
-
-// Type definitions
-export interface ArticleInterface {
-  _id?: string;
-  id?: string;
-  title_en: string;
-  title_ar: string;
-  content_en: string;
-  content_ar: string;
-  excerpt_en: string;
-  excerpt_ar: string;
-  image_url: string;
-  category_id: string;
-  author_id?: string;
-  tags?: string[];
-  is_featured: boolean;
-  is_published: boolean;
-  published_at: string;
-  created_at: string;
-  updated_at: string;
-  category_name_en?: string;
-  category_name_ar?: string;
-  category_slug?: string;
-  view_count?: number;
-  engagement_count?: number;
-  scheduled_for?: string;
-  meta_description_en?: string;
-  meta_description_ar?: string;
-  meta_keywords_en?: string;
-  meta_keywords_ar?: string;
-  reading_time_minutes?: number;
-  word_count?: number;
-  slug?: string;
 }
 
 export interface CategoryInterface {
@@ -210,16 +125,6 @@ export interface UserProfileInterface {
   updated_at: string;
 }
 
-export interface SearchFilters {
-  query?: string;
-  categoryId?: string;
-  dateFrom?: string;
-  dateTo?: string;
-  tags?: string[];
-  sortBy?: "date" | "relevance";
-  sortOrder?: "asc" | "desc";
-}
-
 export interface SearchSuggestion {
   text: string;
   type: "query" | "category" | "tag";
@@ -234,47 +139,6 @@ export interface AnalyticsData {
   viewsTimeline: { date: string; views: number }[];
   engagementTimeline: { date: string; engagements: number }[];
   recentActivity: any[];
-}
-
-// Type for MongoDB document
-interface MongoDoc {
-  _id?: any;
-  __v?: number;
-  toObject?: () => any;
-  [key: string]: any;
-}
-
-// Helper function to convert MongoDB doc to plain object with id
-function convertDoc<T = any>(doc: MongoDoc | MongoDoc[] | null): T | null {
-  if (!doc) return null;
-  if (Array.isArray(doc)) {
-    return doc.map((item) => convertDoc(item)) as T;
-  }
-
-  // Get plain object
-  const obj = doc.toObject ? doc.toObject() : doc;
-
-  // Convert to JSON and back to remove all MongoDB-specific properties
-  const serialized = JSON.parse(JSON.stringify(obj));
-
-  // Convert _id to id
-  if (serialized._id) {
-    serialized.id = serialized._id.toString();
-    delete serialized._id;
-  }
-
-  // Remove any remaining MongoDB-specific properties
-  delete serialized.__v;
-
-  return serialized as T;
-}
-
-// Safe array converter that never returns null
-function convertDocArray<T = any>(docs: MongoDoc[] | null): T[] {
-  if (!docs || !Array.isArray(docs)) return [];
-  return docs
-    .map((doc) => convertDoc<T>(doc))
-    .filter((item): item is T => item !== null);
 }
 
 // ===============================================
@@ -374,33 +238,7 @@ export async function getArticlesByCategory(
   categorySlug: string,
   limit?: number,
 ): Promise<ArticleInterface[]> {
-  await dbConnect();
-
-  const category = await Category.findOne({ slug: categorySlug });
-  if (!category) return [];
-
-  const query = Article.find({
-    category_id: category._id,
-    is_published: true,
-  })
-    .populate("category_id", "name_en name_ar slug")
-    .sort({ published_at: -1 });
-
-  if (limit) {
-    query.limit(limit);
-  }
-
-  const articles = await query.lean();
-
-  return articles.map((article) => {
-    const converted = convertDoc<ArticleInterface>(article);
-    return {
-      ...converted,
-      category_name_en: article.category_id?.name_en,
-      category_name_ar: article.category_id?.name_ar,
-      category_slug: article.category_id?.slug,
-    } as ArticleInterface;
-  });
+  return getArticlesByCategoryRepository(categorySlug, limit);
 }
 
 export async function searchArticles(
@@ -757,50 +595,6 @@ export async function getTags(): Promise<TagInterface[]> {
 
   return convertDocArray<TagInterface>(tags);
 }
-
-export const getRecentArticlesCached = unstable_cache(
-  async (limit: number = 10) => {
-    return getArticles(limit);
-  },
-  ["recent-articles"],
-  {
-    revalidate: 60, // Cache for 1 minute
-    tags: ["articles"],
-  },
-);
-
-export const getFeaturedArticlesCached = unstable_cache(
-  async (limit: number = 6) => {
-    return getArticles(limit, true);
-  },
-  ["featured-articles"],
-  {
-    revalidate: 180, // Cache for 3 minutes
-    tags: ["articles", "featured"],
-  },
-);
-
-export const getArticlesByCategoryCached = unstable_cache(
-  async (categorySlug: string, limit?: number) => {
-    return getArticlesByCategory(categorySlug, limit);
-  },
-  ["category-articles"],
-  {
-    revalidate: 120, // Cache for 2 minutes
-    tags: ["articles", "categories"],
-  },
-);
-
-export const getArticleByIdCached = unstable_cache(
-  async (id: string) => {
-    return getArticleById(id);
-  },
-  ["article-by-id"],
-  {
-    revalidate: 300, // Cache for 5 minutes
-    tags: ["articles"],
-  },
-);
 
 // ===============================================
 // ADMIN FUNCTIONS
@@ -2029,12 +1823,6 @@ export async function enrichArticlesWithAuthor(
   );
 
   return enrichedArticles;
-}
-
-// Update ArticleInterface to include author information
-export interface ArticleWithAuthor extends ArticleInterface {
-  author_name?: string;
-  author_role?: string;
 }
 
 // Report Interface

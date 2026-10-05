@@ -1,11 +1,8 @@
+import { getCategoriesCached, type Article, type Category } from "@/lib/db";
 import {
   getArticles,
-  getCategoriesCached,
-  getRecentArticlesCached,
   getFeaturedArticlesCached,
-  type Article,
-  type Category,
-} from "@/lib/db";
+} from "@/lib/content/article-service";
 import { FixedHeaderWrapper } from "@/components/layout/fixed-header-wrapper";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
 import { Footer } from "@/components/layout/footer";
@@ -70,7 +67,7 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
   const totalPages = Math.ceil(totalArticles / ARTICLES_PER_PAGE);
   const paginatedArticles = allArticles.slice(
     offset,
-    offset + ARTICLES_PER_PAGE
+    offset + ARTICLES_PER_PAGE,
   );
 
   const breadcrumbItems = [{ label: "Home", href: "/" }, { label: "All News" }];

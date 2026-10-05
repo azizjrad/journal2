@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { verifyToken } from "@/lib/auth";
-import { getNewsletterSubscriptionByUserId } from "@/lib/db";
+import { getNewsletterSubscriptionByUserId } from "@/lib/services/newsletter-service";
 import { stripe } from "@/lib/payments/stripe";
 
 export async function GET(request: NextRequest) {
@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     if (!authToken) {
       return NextResponse.json(
         { success: false, message: "Not authenticated" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -19,13 +19,13 @@ export async function GET(request: NextRequest) {
     if (!payload || !payload.userId) {
       return NextResponse.json(
         { success: false, message: "Invalid authentication" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
     // Get subscription from database
     const subscription = await getNewsletterSubscriptionByUserId(
-      payload.userId
+      payload.userId,
     );
 
     if (!subscription) {
@@ -41,13 +41,15 @@ export async function GET(request: NextRequest) {
     try {
       if (subscription.stripe_subscription_id) {
         stripeSubscription = await stripe.subscriptions.retrieve(
-          subscription.stripe_subscription_id
+          subscription.stripe_subscription_id,
         );
       }
     } catch (error) {
       console.error("Failed to fetch Stripe subscription:", error);
       // Continue with database data if Stripe fetch fails
     }
+
+    const stripeSubscriptionItem = stripeSubscription?.items.data[0];
 
     // Combine database and Stripe data
     const subscriptionData = {
@@ -56,11 +58,11 @@ export async function GET(request: NextRequest) {
       billing_period: subscription.billing_period,
       amount: subscription.amount,
       status: stripeSubscription?.status || subscription.status,
-      current_period_start: stripeSubscription
-        ? new Date(stripeSubscription.current_period_start * 1000)
+      current_period_start: stripeSubscriptionItem
+        ? new Date(stripeSubscriptionItem.current_period_start * 1000)
         : subscription.current_period_start,
-      current_period_end: stripeSubscription
-        ? new Date(stripeSubscription.current_period_end * 1000)
+      current_period_end: stripeSubscriptionItem
+        ? new Date(stripeSubscriptionItem.current_period_end * 1000)
         : subscription.current_period_end,
       cancel_at_period_end:
         stripeSubscription?.cancel_at_period_end ||
@@ -86,7 +88,7 @@ export async function GET(request: NextRequest) {
         success: false,
         message: "Failed to fetch subscription",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

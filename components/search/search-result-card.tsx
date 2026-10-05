@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Calendar, User } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { ArticleInterface } from "@/lib/db";
+import type { ArticleInterface } from "@/lib/content/types";
 import { getAuthorDisplayText } from "@/lib/utils/author-utils";
 
 interface SearchResultCardProps {
@@ -86,7 +86,7 @@ export function SearchResultCard({ article }: SearchResultCardProps) {
                   {article.author_role && article.author_name
                     ? getAuthorDisplayText(
                         article.author_role,
-                        article.author_name
+                        article.author_name,
                       )
                     : t("by_author", "BY AUTHOR", "بقلم الكاتب")}
                 </span>

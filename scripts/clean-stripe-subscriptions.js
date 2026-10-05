@@ -11,7 +11,7 @@ const readline = require("readline");
 require("dotenv").config({ path: ".env.local" });
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2025-09-30.clover",
+  apiVersion: "2025-10-29.clover",
 });
 
 const rl = readline.createInterface({
@@ -60,10 +60,10 @@ async function cleanStripeSubscriptions(email) {
         console.log(`    Plan: ${sub.items.data[0]?.price.id}`);
         console.log(
           `    Current Period: ${new Date(
-            sub.current_period_start * 1000
+            sub.current_period_start * 1000,
           ).toLocaleDateString()} - ${new Date(
-            sub.current_period_end * 1000
-          ).toLocaleDateString()}`
+            sub.current_period_end * 1000,
+          ).toLocaleDateString()}`,
         );
 
         if (sub.status === "active" || sub.status === "trialing") {
@@ -97,7 +97,7 @@ async function cleanStripeSubscriptions(email) {
       answer = "yes";
     } else {
       answer = await question(
-        "\n❓ Do you want to CANCEL these subscriptions in Stripe? (yes/no): "
+        "\n❓ Do you want to CANCEL these subscriptions in Stripe? (yes/no): ",
       );
     }
 
@@ -115,16 +115,16 @@ async function cleanStripeSubscriptions(email) {
       } catch (error) {
         console.error(
           `❌ Failed to cancel ${sub.subscriptionId}:`,
-          error.message
+          error.message,
         );
       }
     }
 
     console.log(
-      "\n✅ Done! You should now be able to create a new subscription."
+      "\n✅ Done! You should now be able to create a new subscription.",
     );
     console.log(
-      "\n💡 TIP: The user can now go to /payment and subscribe normally."
+      "\n💡 TIP: The user can now go to /payment and subscribe normally.",
     );
   } catch (error) {
     console.error("\n❌ Error:", error.message);
@@ -141,7 +141,7 @@ const autoConfirm = process.argv[3] === "--confirm";
 if (!email) {
   console.error("❌ Please provide an email address");
   console.log(
-    "Usage: node scripts/clean-stripe-subscriptions.js <email> [--confirm]"
+    "Usage: node scripts/clean-stripe-subscriptions.js <email> [--confirm]",
   );
   rl.close();
   process.exit(1);

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { SearchResultCard } from "@/components/search/search-result-card";
-import { ArticleInterface } from "@/lib/db";
+import type { ArticleInterface } from "@/lib/content/types";
 
 interface ArticlesListProps {
   articles: ArticleInterface[];

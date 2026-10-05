@@ -10,7 +10,7 @@ const Stripe = require("stripe");
 require("dotenv").config({ path: ".env.local" });
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY, {
-  apiVersion: "2025-09-30.clover",
+  apiVersion: "2025-10-29.clover",
 });
 
 // MongoDB Models
@@ -34,7 +34,7 @@ const NewsletterSubscriptionSchema = new mongoose.Schema(
     stripe_customer_id: String,
     preferences: Object,
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 const UserSchema = new mongoose.Schema({
@@ -67,7 +67,7 @@ async function checkSubscriptionSync(email) {
     }
 
     console.log(
-      `✅ User found: ${user.first_name} ${user.last_name} (ID: ${user._id})\n`
+      `✅ User found: ${user.first_name} ${user.last_name} (ID: ${user._id})\n`,
     );
 
     // Check database subscriptions
@@ -105,7 +105,7 @@ async function checkSubscriptionSync(email) {
       console.log(`  - Email: ${customer.email}`);
       console.log(`  - Name: ${customer.name || "N/A"}`);
       console.log(
-        `  - Created: ${new Date(customer.created * 1000).toISOString()}`
+        `  - Created: ${new Date(customer.created * 1000).toISOString()}`,
       );
 
       // Get subscriptions for this customer
@@ -122,32 +122,32 @@ async function checkSubscriptionSync(email) {
         console.log(`    - Status: ${sub.status}`);
         console.log(
           `    - Current Period: ${new Date(
-            sub.current_period_start * 1000
+            sub.current_period_start * 1000,
           ).toLocaleDateString()} - ${new Date(
-            sub.current_period_end * 1000
-          ).toLocaleDateString()}`
+            sub.current_period_end * 1000,
+          ).toLocaleDateString()}`,
         );
         if (sub.trial_start) {
           console.log(
             `    - Trial: ${new Date(
-              sub.trial_start * 1000
+              sub.trial_start * 1000,
             ).toLocaleDateString()} - ${new Date(
-              sub.trial_end * 1000
-            ).toLocaleDateString()}`
+              sub.trial_end * 1000,
+            ).toLocaleDateString()}`,
           );
         }
         if (sub.canceled_at) {
           console.log(
             `    - Canceled At: ${new Date(
-              sub.canceled_at * 1000
-            ).toISOString()}`
+              sub.canceled_at * 1000,
+            ).toISOString()}`,
           );
         }
         console.log(`    - Cancel At Period End: ${sub.cancel_at_period_end}`);
 
         // Check if this subscription exists in database
         const existsInDb = dbSubscriptions.some(
-          (dbSub) => dbSub.stripe_subscription_id === sub.id
+          (dbSub) => dbSub.stripe_subscription_id === sub.id,
         );
         console.log(`    - In Database: ${existsInDb ? "✅ Yes" : "❌ No"}`);
       });
@@ -160,13 +160,13 @@ async function checkSubscriptionSync(email) {
       return (
         count +
           customer.subscriptions?.data?.filter(
-            (s) => s.status === "active" || s.status === "trialing"
+            (s) => s.status === "active" || s.status === "trialing",
           ).length || 0
       );
     }, 0);
 
     const activeDbCount = dbSubscriptions.filter(
-      (s) => s.status === "active" || s.status === "trialing"
+      (s) => s.status === "active" || s.status === "trialing",
     ).length;
 
     console.log(`Stripe Active Subscriptions: ${activeStripeCount}`);
@@ -174,17 +174,17 @@ async function checkSubscriptionSync(email) {
 
     if (activeStripeCount > 0 && activeDbCount === 0) {
       console.log(
-        "\n⚠️  ISSUE FOUND: Active subscription in Stripe but not in database!"
+        "\n⚠️  ISSUE FOUND: Active subscription in Stripe but not in database!",
       );
       console.log("\n🔧 SOLUTIONS:");
       console.log("1. Cancel the subscription in Stripe dashboard");
       console.log(
-        "2. Run: node scripts/clean-stripe-subscriptions.js " + email
+        "2. Run: node scripts/clean-stripe-subscriptions.js " + email,
       );
       console.log("3. Or manually trigger webhook to sync data");
     } else if (activeStripeCount === 0 && activeDbCount > 0) {
       console.log(
-        "\n⚠️  ISSUE FOUND: Active subscription in database but not in Stripe!"
+        "\n⚠️  ISSUE FOUND: Active subscription in database but not in Stripe!",
       );
       console.log("\n🔧 SOLUTION: Update database status to canceled");
       console.log("Run: node scripts/clean-db-subscriptions.js " + email);

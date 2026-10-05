@@ -1,9 +1,8 @@
+import { getCategoriesCached } from "@/lib/db";
 import {
   getArticleByIdCached,
-  getCategoriesCached,
-  getRecentArticlesCached,
   getFeaturedArticlesCached,
-} from "@/lib/db";
+} from "@/lib/content/article-service";
 import Header from "@/components/layout/header";
 import { BreakingNewsTicker } from "@/components/shared/breaking-news-ticker";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
@@ -155,7 +154,7 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                     <span>
                       {getAuthorDisplayText(
                         (article as any).author_role,
-                        (article as any).author_name
+                        (article as any).author_name,
                       )}
                     </span>
                   </div>

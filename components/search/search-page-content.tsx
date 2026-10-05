@@ -4,7 +4,7 @@ import { useLanguage } from "@/lib/context/language-context";
 import { SearchBar } from "@/components/search/search-bar";
 import { SearchSortDropdown } from "@/components/search/search-sort-dropdown";
 import { ArticlesList } from "@/components/articles/articles-list";
-import { SearchFilters } from "@/lib/db";
+import type { SearchFilters } from "@/lib/content/types";
 import { useEffect, useRef } from "react";
 
 interface SearchPageContentProps {
@@ -99,7 +99,7 @@ export function SearchPageContent({
                 {t(
                   "try_adjusting_search",
                   "Try adjusting your search terms or browse our latest articles below.",
-                  "حاول تعديل مصطلحات البحث أو تصفح أحدث مقالاتنا أدناه."
+                  "حاول تعديل مصطلحات البحث أو تصفح أحدث مقالاتنا أدناه.",
                 )}
               </p>
 
@@ -110,7 +110,7 @@ export function SearchPageContent({
                   title={t(
                     "latest_articles",
                     "Latest Articles",
-                    "أحدث المقالات"
+                    "أحدث المقالات",
                   )}
                 />
               </div>

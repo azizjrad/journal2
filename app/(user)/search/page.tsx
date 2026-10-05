@@ -1,10 +1,10 @@
 import {
   advancedSearchArticles,
   getCategories,
-  SearchFilters,
   getPopularSearches,
-  getArticles,
 } from "@/lib/db";
+import type { SearchFilters } from "@/lib/content/types";
+import { getArticles } from "@/lib/content/article-service";
 import Header from "@/components/layout/header";
 import { BreakingNewsTicker } from "@/components/shared/breaking-news-ticker";
 import { Footer } from "@/components/layout/footer";
@@ -49,12 +49,13 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
     sortOrder: (resolvedSearchParams.sortOrder as "asc" | "desc") || "desc",
   };
 
-  const hasFilters =
+  const hasFilters = Boolean(
     filters.query ||
     filters.categoryId ||
     filters.dateFrom ||
     filters.dateTo ||
-    filters.tags?.length;
+    filters.tags?.length,
+  );
 
   const [searchResults, categories, popularSearches, latestArticles] =
     await Promise.all([
