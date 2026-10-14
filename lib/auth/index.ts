@@ -17,8 +17,16 @@ export {
   isValidPassword,
   validatePasswordStrength,
 } from "@/lib/services/auth-service";
+export {
+  createEmailVerificationToken,
+  createPasswordResetToken,
+  getEmailVerificationToken,
+  getPasswordResetToken,
+  markEmailVerificationTokenAsUsed,
+  markPasswordResetTokenAsUsed,
+} from "@/lib/services/auth-token-service";
 
-import type { UserInterface } from "@/lib/db";
+import type { UserInterface } from "@/lib/user";
 
 export type {
   AuthTokenPayload,

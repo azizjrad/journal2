@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { trackArticleEngagement } from "@/lib/db";
+import { trackArticleEngagement } from "@/lib/content/article-service";
 
 // Simple security functions
 function getClientIP(request: NextRequest): string {
@@ -37,11 +37,11 @@ export async function POST(request: NextRequest) {
       body = await request.json();
     } catch (error) {
       console.warn(
-        `Invalid JSON in engagement tracking request from ${clientIP}`
+        `Invalid JSON in engagement tracking request from ${clientIP}`,
       );
       return NextResponse.json(
         { error: "Invalid JSON format" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -55,11 +55,11 @@ export async function POST(request: NextRequest) {
       !objectIdPattern.test(articleId)
     ) {
       console.warn(
-        `Invalid article ID in engagement tracking from ${clientIP}: ${articleId}`
+        `Invalid article ID in engagement tracking from ${clientIP}: ${articleId}`,
       );
       return NextResponse.json(
         { error: "Valid article ID is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -78,11 +78,11 @@ export async function POST(request: NextRequest) {
       !validEngagementTypes.includes(engagementType)
     ) {
       console.warn(
-        `Invalid engagement type from ${clientIP}: ${engagementType}`
+        `Invalid engagement type from ${clientIP}: ${engagementType}`,
       );
       return NextResponse.json(
         { error: "Valid engagement type is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
         console.warn(`Invalid platform from ${clientIP}: ${platform}`);
         return NextResponse.json(
           { error: "Invalid platform" },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -101,7 +101,7 @@ export async function POST(request: NextRequest) {
         console.warn(`Suspicious platform input from ${clientIP}: ${platform}`);
         return NextResponse.json(
           { error: "Invalid platform format" },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
     console.log(
       `Engagement tracking from ${clientIP}: Article ${articleId}, Type: ${engagementType}, Platform: ${
         sanitizedPlatform || "N/A"
-      }`
+      }`,
     );
 
     await trackArticleEngagement(
@@ -121,7 +121,7 @@ export async function POST(request: NextRequest) {
       engagementType,
       clientIP,
       userAgent,
-      sanitizedPlatform
+      sanitizedPlatform,
     );
 
     return NextResponse.json({ success: true });
@@ -130,7 +130,7 @@ export async function POST(request: NextRequest) {
     console.error(`Track engagement error from ${clientIP}:`, error);
     return NextResponse.json(
       { error: "Failed to track engagement" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Header from "./header";
 import { BreakingNewsTicker } from "@/components/shared/breaking-news-ticker";
-import type { CategoryInterface } from "@/lib/db";
+import type { CategoryInterface } from "@/lib/services/category-service";
 import type { ArticleInterface } from "@/lib/content/types";
 
 interface FixedHeaderWrapperProps {

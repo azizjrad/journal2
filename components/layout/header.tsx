@@ -11,7 +11,7 @@ import { Menu, Search, X, Mail, User } from "lucide-react";
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { createPortal } from "react-dom";
-import { CategoryInterface } from "@/lib/db";
+import type { CategoryInterface } from "@/lib/services/category-service";
 
 interface HeaderProps {
   categories: CategoryInterface[];

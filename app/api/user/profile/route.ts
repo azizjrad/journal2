@@ -5,7 +5,7 @@ import {
   updateUser,
   updateUserProfile,
   logUserActivity,
-} from "@/lib/db";
+} from "@/lib/user";
 import { verifyToken } from "@/lib/auth";
 
 // GET user profile
@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     if (!token) {
       return NextResponse.json(
         { success: false, message: "Authentication required" },
-        { status: 401, headers: noStoreHeaders }
+        { status: 401, headers: noStoreHeaders },
       );
     }
 
@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
     if (!tokenPayload) {
       return NextResponse.json(
         { success: false, message: "Invalid token" },
-        { status: 401, headers: noStoreHeaders }
+        { status: 401, headers: noStoreHeaders },
       );
     }
 
@@ -43,7 +43,7 @@ export async function GET(request: NextRequest) {
     if (!user) {
       return NextResponse.json(
         { success: false, message: "User not found" },
-        { status: 404, headers: noStoreHeaders }
+        { status: 404, headers: noStoreHeaders },
       );
     }
 
@@ -56,13 +56,13 @@ export async function GET(request: NextRequest) {
         user: userResponse,
         profile,
       },
-      { headers: noStoreHeaders }
+      { headers: noStoreHeaders },
     );
   } catch (error) {
     console.error("Get profile error:", error);
     return NextResponse.json(
       { success: false, message: "Failed to get profile" },
-      { status: 500, headers: noStoreHeaders }
+      { status: 500, headers: noStoreHeaders },
     );
   }
 }
@@ -78,7 +78,7 @@ export async function PUT(request: NextRequest) {
     if (!token) {
       return NextResponse.json(
         { success: false, message: "Authentication required" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -86,7 +86,7 @@ export async function PUT(request: NextRequest) {
     if (!tokenPayload) {
       return NextResponse.json(
         { success: false, message: "Invalid token" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -140,7 +140,7 @@ export async function PUT(request: NextRequest) {
       "PROFILE_UPDATED",
       "User profile information updated",
       clientIP,
-      userAgent
+      userAgent,
     );
 
     // Get updated data
@@ -162,7 +162,7 @@ export async function PUT(request: NextRequest) {
     console.error("Update profile error:", error);
     return NextResponse.json(
       { success: false, message: "Failed to update profile" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getUserById, updateUser } from "@/lib/db";
+import { getUserById, updateUser } from "@/lib/user";
 import jwt from "jsonwebtoken";
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   return (async () => {
     try {
@@ -14,21 +14,21 @@ export async function PATCH(
       if (!adminToken) {
         return NextResponse.json(
           { error: "Authentication required" },
-          { status: 401 }
+          { status: 401 },
         );
       }
 
       try {
         const tokenPayload = jwt.verify(
           adminToken,
-          process.env.JWT_SECRET!
+          process.env.JWT_SECRET!,
         ) as any;
 
         const adminUser = await getUserById(tokenPayload.userId);
         if (!adminUser || adminUser.role !== "admin") {
           return NextResponse.json(
             { error: "Admin access required" },
-            { status: 403 }
+            { status: 403 },
           );
         }
       } catch (error) {
@@ -43,7 +43,7 @@ export async function PATCH(
       if (typeof is_active !== "boolean") {
         return NextResponse.json(
           { error: "is_active must be a boolean" },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -59,7 +59,7 @@ export async function PATCH(
       console.error("❌ Error updating user status:", error);
       return NextResponse.json(
         { error: "Failed to update user status" },
-        { status: 500 }
+        { status: 500 },
       );
     }
   })();

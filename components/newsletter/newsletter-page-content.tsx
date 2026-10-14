@@ -8,7 +8,7 @@ import { NewsletterSubscriptionOptions } from "@/components/newsletter/newslette
 import { NewsletterSubscriptionPopup } from "@/components/newsletter/newsletter-subscription-popup";
 import { NewsletterManagement } from "@/components/newsletter/newsletter-management";
 import { AnnualDigitalFeatures } from "@/components/newsletter/annual-digital-features";
-import { CategoryInterface } from "@/lib/db";
+import type { CategoryInterface } from "@/lib/services/category-service";
 import { Loader2 } from "lucide-react";
 import { Footer } from "@/components/layout/footer";
 import { NewsletterFAQ } from "@/components/newsletter/newsletter-faq";

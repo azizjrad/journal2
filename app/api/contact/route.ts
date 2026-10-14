@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createContactMessage } from "@/lib/db";
+import { createContactMessage } from "@/lib/services/contact-service";
 import { rateLimiters, createRateLimitResponse } from "@/lib/api/rate-limit";
 import { sendContactFormNotificationToAdmin } from "@/lib/email/email-sendgrid";
 
@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
   if (!rateLimitResult.success) {
     return createRateLimitResponse(
       rateLimitResult,
-      "Too many contact form submissions. Please try again later."
+      "Too many contact form submissions. Please try again later.",
     );
   }
 
@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
     if (!name || !email || !subject || !message) {
       return NextResponse.json(
         { error: "All fields are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
     if (!emailRegex.test(email)) {
       return NextResponse.json(
         { error: "Invalid email format" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -37,28 +37,28 @@ export async function POST(request: NextRequest) {
     if (name.length > 100) {
       return NextResponse.json(
         { error: "Name must be less than 100 characters" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (email.length > 254) {
       return NextResponse.json(
         { error: "Email must be less than 254 characters" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (subject.length > 200) {
       return NextResponse.json(
         { error: "Subject must be less than 200 characters" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (message.length > 2000) {
       return NextResponse.json(
         { error: "Message must be less than 2000 characters" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -83,7 +83,7 @@ export async function POST(request: NextRequest) {
       });
       console.log(
         "✅ Admin notification email sent for contact message:",
-        contactMessage._id
+        contactMessage._id,
       );
     } catch (emailError) {
       console.error("❌ Failed to send admin notification email:", emailError);
@@ -100,7 +100,7 @@ export async function POST(request: NextRequest) {
     console.error("❌ Error creating contact message:", error);
     return NextResponse.json(
       { error: "Failed to send message. Please try again." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ensureAdmin } from "@/lib/auth/ensure-admin";
-import { getUserById, updateUserWriterStatus } from "@/lib/db";
+import { getUserById, updateUserWriterStatus } from "@/lib/user";
 import { sendWriterApprovalEmail } from "@/lib/email/email-sendgrid";
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     // Check admin authentication
@@ -20,7 +20,7 @@ export async function PATCH(
     if (!action || !["approve", "reject"].includes(action)) {
       return NextResponse.json(
         { error: "Invalid action. Must be 'approve' or 'reject'" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -33,7 +33,7 @@ export async function PATCH(
     if (user.writer_status !== "pending") {
       return NextResponse.json(
         { error: "User does not have a pending writer application" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -76,7 +76,7 @@ export async function PATCH(
     console.error("Writer status update error:", error);
     return NextResponse.json(
       { error: "Failed to update writer status" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

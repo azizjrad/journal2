@@ -6,7 +6,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { CategoryInterface } from "@/lib/db";
+import type { CategoryInterface } from "@/lib/services/category-service";
 
 interface CategoryFilterProps {
   categories: CategoryInterface[];

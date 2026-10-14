@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createReport } from "@/lib/db";
+import { createReport } from "@/lib/services/report-service";
 
 // POST /api/reports - Create a new report from public users
 export async function POST(request: NextRequest) {
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
           error:
             "Missing required fields: article_id, article_title, report_type, reason",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -41,7 +41,7 @@ export async function POST(request: NextRequest) {
           error:
             "Invalid report_type. Must be one of: " + validTypes.join(", "),
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
           error:
             "Invalid priority. Must be one of: " + validPriorities.join(", "),
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
     if (!report) {
       return NextResponse.json(
         { error: "Failed to create report" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
     console.error("Error creating report:", error);
     return NextResponse.json(
       { error: "Failed to create report" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

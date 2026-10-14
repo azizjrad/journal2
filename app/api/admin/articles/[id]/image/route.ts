@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { dbConnect } from "@/lib/db";
+import { dbConnect } from "@/lib/db/connection";
 import { Article } from "@/lib/models/Article";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: { id: string } },
 ) {
   await dbConnect();
   const { id } = params;
@@ -26,7 +26,7 @@ export async function GET(
   } catch (error) {
     return NextResponse.json(
       { error: "Failed to fetch image" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

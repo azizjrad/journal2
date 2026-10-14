@@ -1,11 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getReportById, updateReportStatus, deleteReport } from "@/lib/db";
+import {
+  deleteReport,
+  getReportById,
+  updateReportStatus,
+} from "@/lib/services/report-service";
 import { ensureAdmin } from "@/lib/auth/ensure-admin";
 
 // GET /api/admin/reports/[id] - Get specific report
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -15,7 +19,7 @@ export async function GET(
     if (!adminCheck.isAdmin) {
       return NextResponse.json(
         { error: "Unauthorized. Admin access required." },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -33,7 +37,7 @@ export async function GET(
     console.error("Error fetching report:", error);
     return NextResponse.json(
       { error: "Failed to fetch report" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -41,7 +45,7 @@ export async function GET(
 // PATCH /api/admin/reports/[id] - Update report status
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -51,7 +55,7 @@ export async function PATCH(
     if (!adminCheck.isAdmin) {
       return NextResponse.json(
         { error: "Unauthorized. Admin access required." },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -71,7 +75,7 @@ export async function PATCH(
         {
           error: "Invalid status. Must be one of: " + validStatuses.join(", "),
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -90,7 +94,7 @@ export async function PATCH(
     if (!updatedReport) {
       return NextResponse.json(
         { error: "Report not found or failed to update" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -102,7 +106,7 @@ export async function PATCH(
     console.error("Error updating report:", error);
     return NextResponse.json(
       { error: "Failed to update report" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -110,7 +114,7 @@ export async function PATCH(
 // DELETE /api/admin/reports/[id] - Delete a report
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
     const { id } = await params;
@@ -120,7 +124,7 @@ export async function DELETE(
     if (!adminCheck.isAdmin) {
       return NextResponse.json(
         { error: "Unauthorized. Admin access required." },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -137,7 +141,7 @@ export async function DELETE(
     console.error("Error deleting report:", error);
     return NextResponse.json(
       { error: "Failed to delete report" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

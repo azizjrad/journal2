@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSitemapEntries } from "@/lib/db";
+import { getSitemapEntries } from "@/lib/content/article-service";
 
 // Self-contained security functions
 function getClientIP(request: NextRequest): string {
@@ -34,8 +34,8 @@ export async function GET(request: NextRequest) {
       return addSecurityHeaders(
         NextResponse.json(
           { error: "Sitemap temporarily unavailable" },
-          { status: 503 }
-        )
+          { status: 503 },
+        ),
       );
     }
 
@@ -48,10 +48,10 @@ ${entries
         entry.url
       }</loc>\n    <lastmod>${entry.last_modified.slice(
         0,
-        10
+        10,
       )}</lastmod>\n    <changefreq>${
         entry.change_frequency
-      }</changefreq>\n    <priority>${entry.priority}</priority>\n  </url>`
+      }</changefreq>\n    <priority>${entry.priority}</priority>\n  </url>`,
   )
   .join("\n")}
 </urlset>`;
@@ -72,8 +72,8 @@ ${entries
     return addSecurityHeaders(
       NextResponse.json(
         { error: "Sitemap temporarily unavailable" },
-        { status: 503 }
-      )
+        { status: 503 },
+      ),
     );
   }
 }

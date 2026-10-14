@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { stripe, STRIPE_PRICES, PLAN_DETAILS } from "@/lib/payments/stripe";
 import { verifyToken } from "@/lib/auth";
-import { getUserById } from "@/lib/db";
+import { getUserById } from "@/lib/user";
 import { createRateLimit } from "@/lib/api/rate-limit";
 import {
   validateEmail,
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
           "X-RateLimit-Remaining": rateLimitResult.remaining.toString(),
           "Retry-After": (rateLimitResult.retryAfter || 60).toString(),
         },
-      }
+      },
     );
   }
 
@@ -60,7 +60,7 @@ export async function POST(request: NextRequest) {
             "Security verification failed. Please refresh the page and try again.",
           code: "CSRF_ERROR",
         },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -69,7 +69,7 @@ export async function POST(request: NextRequest) {
     if (!authToken) {
       return NextResponse.json(
         { success: false, message: "Not authenticated" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -77,7 +77,7 @@ export async function POST(request: NextRequest) {
     if (!payload || !payload.userId) {
       return NextResponse.json(
         { success: false, message: "Invalid authentication" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
     if (!user) {
       return NextResponse.json(
         { success: false, message: "User not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -113,7 +113,7 @@ export async function POST(request: NextRequest) {
               "You already have an active subscription. Please manage your subscription from your account settings.",
             code: "ALREADY_SUBSCRIBED",
           },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -132,7 +132,7 @@ export async function POST(request: NextRequest) {
               "You already have an active trial subscription. Please manage your subscription from your account settings.",
             code: "ALREADY_SUBSCRIBED",
           },
-          { status: 400 }
+          { status: 400 },
         );
       }
     }
@@ -145,7 +145,7 @@ export async function POST(request: NextRequest) {
     if (!billingValidation.valid) {
       return NextResponse.json(
         { success: false, message: billingValidation.error },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -154,7 +154,7 @@ export async function POST(request: NextRequest) {
     if (!paymentValidation.valid) {
       return NextResponse.json(
         { success: false, message: paymentValidation.error },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -164,7 +164,7 @@ export async function POST(request: NextRequest) {
       if (!emailValidation.valid) {
         return NextResponse.json(
           { success: false, message: emailValidation.error },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -175,7 +175,7 @@ export async function POST(request: NextRequest) {
             success: false,
             message: "Email does not match authenticated user",
           },
-          { status: 403 }
+          { status: 403 },
         );
       }
     }
@@ -230,7 +230,7 @@ export async function POST(request: NextRequest) {
         // User already used their trial - no trial this time
         subscriptionData.metadata.will_use_trial = "false";
         console.log(
-          `User ${user.id} has already used their free trial. No trial applied.`
+          `User ${user.id} has already used their free trial. No trial applied.`,
         );
       }
     }
@@ -265,9 +265,8 @@ export async function POST(request: NextRequest) {
       subscription_data: subscriptionData,
     };
 
-    const checkoutSession = await stripe.checkout.sessions.create(
-      sessionConfig
-    );
+    const checkoutSession =
+      await stripe.checkout.sessions.create(sessionConfig);
 
     return NextResponse.json({
       success: true,
@@ -282,7 +281,7 @@ export async function POST(request: NextRequest) {
         message:
           error instanceof Error ? error.message : "Internal server error",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

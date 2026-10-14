@@ -1,4 +1,4 @@
-import { getCategoriesCached } from "@/lib/db";
+import { getCategoriesCached } from "@/lib/services/category-service";
 import { getFeaturedArticlesCached } from "@/lib/content/article-service";
 import Header from "@/components/layout/header";
 import { BreakingNewsTicker } from "@/components/shared/breaking-news-ticker";

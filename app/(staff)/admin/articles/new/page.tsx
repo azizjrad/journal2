@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { NewArticleForm } from "@/components/articles/new-article-form";
-import { CategoryInterface } from "@/lib/db";
+import type { CategoryInterface } from "@/lib/services/category-service";
 
 export default function NewArticlePage() {
   const [categories, setCategories] = useState<CategoryInterface[]>([]);

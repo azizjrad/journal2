@@ -1,4 +1,7 @@
-import { getCategoryBySlug, getCategoriesCached } from "@/lib/db";
+import {
+  getCategoriesCached,
+  getCategoryBySlug,
+} from "@/lib/services/category-service";
 import {
   getArticlesByCategoryCached,
   getFeaturedArticlesCached,

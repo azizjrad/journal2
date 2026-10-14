@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
+import { getUserByEmail, logUserActivity } from "@/lib/user";
 import {
-  getUserByEmail,
   createPasswordResetToken,
-  logUserActivity,
-} from "@/lib/db";
-import { generateSecureToken, getPasswordResetExpiry } from "@/lib/auth";
+  generateSecureToken,
+  getPasswordResetExpiry,
+} from "@/lib/auth";
 import { sendPasswordResetEmail } from "@/lib/email/email-sendgrid";
 import { rateLimiters, createRateLimitResponse } from "@/lib/api/rate-limit";
 
@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
     if (!rateLimitResult.success) {
       return createRateLimitResponse(
         rateLimitResult,
-        "Too many password reset attempts. Please try again later."
+        "Too many password reset attempts. Please try again later.",
       );
     }
 
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     if (!email) {
       return NextResponse.json(
         { success: false, message: "Email is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
           success: false,
           message: "Account is deactivated. Please contact support.",
         },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -72,7 +72,7 @@ export async function POST(request: NextRequest) {
       "PASSWORD_RESET_REQUESTED",
       `Password reset token generated. Email sent: ${emailSent}`,
       clientIP || "unknown",
-      userAgent
+      userAgent,
     );
 
     // In production, don't return the token
@@ -85,7 +85,7 @@ export async function POST(request: NextRequest) {
     console.error("Password reset error:", error);
     return NextResponse.json(
       { success: false, message: "Password reset failed. Please try again." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

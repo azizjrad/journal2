@@ -6,7 +6,7 @@ import {
   deleteUser,
   logUserActivity,
   createUser,
-} from "@/lib/db";
+} from "@/lib/user";
 import { ensureAdmin } from "@/lib/auth/ensure-admin";
 import bcrypt from "bcryptjs";
 
@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
     if (!adminCheck.isAdmin) {
       return NextResponse.json(
         { success: false, message: "Admin access required" },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
     console.error("Get users error:", error);
     return NextResponse.json(
       { success: false, message: "Failed to get users" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -49,7 +49,7 @@ export async function PUT(request: NextRequest) {
     if (!adminCheck.isAdmin) {
       return NextResponse.json(
         { success: false, message: "Admin access required" },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -59,7 +59,7 @@ export async function PUT(request: NextRequest) {
     if (!userId) {
       return NextResponse.json(
         { success: false, message: "User ID is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -75,7 +75,7 @@ export async function PUT(request: NextRequest) {
     console.error("Update user error:", error);
     return NextResponse.json(
       { success: false, message: "Failed to update user" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -89,7 +89,7 @@ export async function DELETE(request: NextRequest) {
     if (!adminCheck.isAdmin) {
       return NextResponse.json(
         { success: false, message: "Admin access required" },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -99,7 +99,7 @@ export async function DELETE(request: NextRequest) {
     if (!userId) {
       return NextResponse.json(
         { success: false, message: "User ID is required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -107,7 +107,7 @@ export async function DELETE(request: NextRequest) {
     if (adminCheck.user && userId === adminCheck.user.id) {
       return NextResponse.json(
         { success: false, message: "Cannot delete your own account" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -127,13 +127,13 @@ export async function DELETE(request: NextRequest) {
     ) {
       return NextResponse.json(
         { success: false, message: error.message },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     return NextResponse.json(
       { success: false, message: "Failed to delete user" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -172,7 +172,7 @@ export async function POST(request: NextRequest) {
       });
       return NextResponse.json(
         { error: "Missing required fields" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -187,7 +187,7 @@ export async function POST(request: NextRequest) {
       console.log("❌ Missing account type for writer");
       return NextResponse.json(
         { error: "Account type is required for writers" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -224,7 +224,7 @@ export async function POST(request: NextRequest) {
       await logUserActivity(
         admin.user.id,
         "create_user",
-        `Created user: ${username}`
+        `Created user: ${username}`,
       );
     } catch (error) {
       console.warn("⚠️ Failed to log admin activity:", error);
@@ -246,7 +246,7 @@ export async function POST(request: NextRequest) {
     console.error("❌ Create user error:", error);
     return NextResponse.json(
       { error: "Failed to create user" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

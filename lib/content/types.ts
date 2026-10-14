@@ -31,6 +31,22 @@ export interface ArticleInterface {
   slug?: string;
 }
 
+export interface SearchSuggestion {
+  text: string;
+  type: "query" | "category" | "tag";
+  count?: number;
+}
+
+export interface AnalyticsData {
+  totalViews: number;
+  totalEngagements: number;
+  popularArticles: ArticleInterface[];
+  popularCategories: { name: string; count: number; category_id: string }[];
+  viewsTimeline: { date: string; views: number }[];
+  engagementTimeline: { date: string; engagements: number }[];
+  recentActivity: any[];
+}
+
 export interface ArticleWithAuthor extends ArticleInterface {
   author_name?: string;
   author_role?: string;

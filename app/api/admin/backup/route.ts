@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { dbConnect } from "@/lib/db";
+import { dbConnect } from "@/lib/db/connection";
 import { verifyToken } from "@/lib/auth";
 import { cookies } from "next/headers";
 
@@ -105,7 +105,7 @@ export async function POST(request: NextRequest) {
     console.error("Backup error:", error);
     return NextResponse.json(
       { error: "Backup failed", message: error.message },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -138,7 +138,7 @@ export async function GET(request: NextRequest) {
   } catch (error: any) {
     return NextResponse.json(
       { error: "Failed to check backup status" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

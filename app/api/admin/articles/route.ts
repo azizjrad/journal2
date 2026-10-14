@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createArticle, getAllArticlesAdmin } from "@/lib/db";
+import {
+  createArticle,
+  getAllArticlesAdmin,
+} from "@/lib/content/article-service";
 import { ensureAdminOrWriter } from "@/lib/auth/ensure-admin";
 import { validateCsrf } from "@/lib/auth/csrf";
 

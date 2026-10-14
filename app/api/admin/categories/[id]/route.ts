@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { updateCategory, deleteCategory } from "@/lib/db";
+import {
+  deleteCategory,
+  updateCategory,
+} from "@/lib/services/category-service";
 
 export function PUT(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   return (async () => {
     try {
@@ -14,7 +17,7 @@ export function PUT(
       if (!name_en || !name_ar) {
         return NextResponse.json(
           { error: "Both English and Arabic names are required" },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -36,7 +39,7 @@ export function PUT(
       console.error("Error updating category:", error);
       return NextResponse.json(
         { error: "Failed to update category" },
-        { status: 500 }
+        { status: 500 },
       );
     }
   })();
@@ -44,7 +47,7 @@ export function PUT(
 
 export function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   return (async () => {
     try {
@@ -55,7 +58,7 @@ export function DELETE(
       console.error("Error deleting category:", error);
       return NextResponse.json(
         { error: "Failed to delete category" },
-        { status: 500 }
+        { status: 500 },
       );
     }
   })();

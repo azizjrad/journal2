@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getTags } from "@/lib/db";
+import { getTags } from "@/lib/services/category-service";
 
 export async function GET() {
   try {
@@ -10,7 +10,7 @@ export async function GET() {
     // For now, just return 401 to block public access.
     return NextResponse.json(
       { error: "Unauthorized. Admin access required." },
-      { status: 401 }
+      { status: 401 },
     );
     // If you want to allow GET with admin check, refactor to POST or use middleware.
     // const adminCheck = await ensureAdmin(request);
@@ -26,7 +26,7 @@ export async function GET() {
     console.error("Error fetching tags:", error);
     return NextResponse.json(
       { error: "Failed to fetch tags" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -3,13 +3,9 @@ import jwt from "jsonwebtoken";
 import crypto from "crypto";
 import { Types } from "mongoose";
 import { getEnv } from "@/lib/config/env";
-import {
-  UserInterface,
-  getUserByEmail,
-  getUserById,
-  updateLastLogin,
-  dbConnect,
-} from "@/lib/db";
+import type { UserInterface } from "@/lib/user";
+import { getUserByEmail, getUserById, updateLastLogin } from "@/lib/user";
+import { dbConnect } from "@/lib/db/connection";
 import { UserSession, UserActivityLog } from "@/lib/models/User";
 
 export interface AuthTokenPayload {

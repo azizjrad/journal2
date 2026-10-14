@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getNewsletterSubscribers } from "@/lib/db";
+import { getNewsletterSubscribers } from "@/lib/services/newsletter-service";
 import { ensureAdmin } from "@/lib/auth/ensure-admin";
 
 export async function GET(request: NextRequest) {

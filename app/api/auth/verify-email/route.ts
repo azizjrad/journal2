@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
+import { updateUser, getUserById, logUserActivity } from "@/lib/user";
 import {
   getEmailVerificationToken,
   markEmailVerificationTokenAsUsed,
-  updateUser,
-  getUserById,
-  logUserActivity,
-} from "@/lib/db";
+} from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
   try {
@@ -16,7 +14,7 @@ export async function POST(request: NextRequest) {
     if (!token) {
       return NextResponse.json(
         { success: false, message: "Invalid credentials or request" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -26,7 +24,7 @@ export async function POST(request: NextRequest) {
     if (!verificationToken) {
       return NextResponse.json(
         { success: false, message: "Invalid credentials or request" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -35,7 +33,7 @@ export async function POST(request: NextRequest) {
     if (!user || user.is_verified === undefined) {
       return NextResponse.json(
         { success: false, message: "Invalid credentials or request" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -50,7 +48,7 @@ export async function POST(request: NextRequest) {
     if (!user.id) {
       return NextResponse.json(
         { success: false, message: "Request failed. Please try again." },
-        { status: 500 }
+        { status: 500 },
       );
     }
     await updateUser(user.id, { is_verified: true });
@@ -66,7 +64,7 @@ export async function POST(request: NextRequest) {
       "EMAIL_VERIFIED",
       "Email address verified successfully",
       clientIP,
-      userAgent
+      userAgent,
     );
 
     return NextResponse.json({
@@ -80,7 +78,7 @@ export async function POST(request: NextRequest) {
         success: false,
         message: "Request failed. Please try again.",
       },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

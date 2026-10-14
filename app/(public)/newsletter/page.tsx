@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import { NewsletterPageContent } from "@/components/newsletter/newsletter-page-content";
-import { getCategoriesCached } from "@/lib/db";
+import { getCategoriesCached } from "@/lib/services/category-service";
 
 export const metadata: Metadata = {
   title: "Newsletter Subscription - The Maghreb Orbit",

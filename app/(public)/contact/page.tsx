@@ -2,7 +2,7 @@ import Header from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
 import { BreakingNewsTicker } from "@/components/shared/breaking-news-ticker";
 import { ContactContent } from "@/components/shared/contact-content";
-import { getCategories } from "@/lib/db";
+import { getCategories } from "@/lib/services/category-service";
 import { getFeaturedArticlesCached } from "@/lib/content/article-service";
 import { Metadata } from "next";
 

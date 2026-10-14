@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { trackArticleView } from "@/lib/db";
+import { trackArticleView } from "@/lib/content/article-service";
 
 export async function POST(request: NextRequest) {
   try {
@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     console.error("Error tracking view:", error);
     return NextResponse.json(
       { error: "Failed to track view" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

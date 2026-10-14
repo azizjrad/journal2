@@ -1,5 +1,5 @@
 import { NewArticleForm } from "@/components/articles/new-article-form";
-import { getCategories } from "@/lib/db";
+import { getCategories } from "@/lib/services/category-service";
 
 export default async function NewArticlePage() {
   const categories = await getCategories();

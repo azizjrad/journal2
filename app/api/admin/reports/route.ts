@@ -1,5 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getReports, getReportStats, createReport } from "@/lib/db";
+import {
+  createReport,
+  getReportStats,
+  getReports,
+} from "@/lib/services/report-service";
 import { ensureAdmin } from "@/lib/auth/ensure-admin";
 
 // GET /api/admin/reports - Get all reports with optional filtering
@@ -10,7 +14,7 @@ export async function GET(request: NextRequest) {
     if (!adminCheck.isAdmin) {
       return NextResponse.json(
         { error: "Unauthorized. Admin access required." },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -54,7 +58,7 @@ export async function GET(request: NextRequest) {
     console.error("Error fetching reports:", error);
     return NextResponse.json(
       { error: "Failed to fetch reports" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -67,7 +71,7 @@ export async function POST(request: NextRequest) {
     if (!adminCheck.isAdmin) {
       return NextResponse.json(
         { error: "Unauthorized. Admin access required." },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -90,7 +94,7 @@ export async function POST(request: NextRequest) {
           error:
             "Missing required fields: article_id, article_title, report_type, reason",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -108,7 +112,7 @@ export async function POST(request: NextRequest) {
           error:
             "Invalid report_type. Must be one of: " + validTypes.join(", "),
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -131,7 +135,7 @@ export async function POST(request: NextRequest) {
     if (!report) {
       return NextResponse.json(
         { error: "Failed to create report" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -143,7 +147,7 @@ export async function POST(request: NextRequest) {
     console.error("Error creating report:", error);
     return NextResponse.json(
       { error: "Failed to create report" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -1,5 +1,6 @@
 import { EditArticleForm } from "@/components/articles/edit-article-form";
-import { getArticleByIdAdmin, getCategories } from "@/lib/db";
+import { getArticleByIdAdmin } from "@/lib/content/article-service";
+import { getCategories } from "@/lib/services/category-service";
 import { notFound } from "next/navigation";
 
 interface EditArticlePageProps {

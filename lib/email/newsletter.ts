@@ -1,4 +1,4 @@
-import { getNewsletterSubscribers } from "@/lib/db";
+import { getNewsletterSubscribers } from "@/lib/services/newsletter-service";
 import { sendNewsletterEmail } from "@/lib/email/email-sendgrid";
 import { SentNewsletter } from "@/lib/models/SentNewsletter";
 
@@ -6,7 +6,7 @@ import { SentNewsletter } from "@/lib/models/SentNewsletter";
 function createNewsletterHTML(
   subject: string,
   content: string,
-  imageCount: number = 0
+  imageCount: number = 0,
 ): string {
   // Auto-generate image HTML at the bottom if there are attachments
   let autoImages = "";
@@ -255,7 +255,7 @@ export async function sendNewsletterToSubscribers(
   subject: string,
   content: string,
   subscriberIds: string[],
-  attachments?: File[]
+  attachments?: File[],
 ): Promise<{ success: boolean; error?: string }> {
   try {
     // Get all ACTIVE subscribers only (with emails)
@@ -264,7 +264,7 @@ export async function sendNewsletterToSubscribers(
       status: "active", // Only get active subscribers with valid payment
     });
     const selected = allSubscribers.filter((s: any) =>
-      subscriberIds.includes(s._id)
+      subscriberIds.includes(s._id),
     );
     if (selected.length === 0) {
       return { success: false, error: "No valid active subscribers selected" };
@@ -303,7 +303,7 @@ export async function sendNewsletterToSubscribers(
     const beautifulHTML = createNewsletterHTML(
       subject,
       content,
-      attachments?.length || 0
+      attachments?.length || 0,
     );
 
     // Send email to each selected subscriber

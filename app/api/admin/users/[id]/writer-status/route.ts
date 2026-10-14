@@ -1,23 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
-import { User } from "@/lib/models/User";
 import { ensureAdmin } from "@/lib/auth/ensure-admin";
-import { dbConnect } from "@/lib/db";
+import { getUserById, setUserWriterStatus } from "@/lib/user";
 import { sendWriterApprovalEmail } from "@/lib/email/email-sendgrid";
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   try {
-    await dbConnect();
-
     // Check admin authorization using ensureAdmin
     const adminCheck = await ensureAdmin(request);
 
     if (!adminCheck.isAdmin) {
       return NextResponse.json(
         { success: false, message: "Admin access required" },
-        { status: 403 }
+        { status: 403 },
       );
     }
 
@@ -30,44 +27,23 @@ export async function PATCH(
     if (!["pending", "approved", "rejected"].includes(writer_status)) {
       return NextResponse.json(
         { success: false, message: "Invalid writer status" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     // Get user before update to check previous status
-    const previousUser = await User.findById(id);
+    const previousUser = await getUserById(id);
     if (!previousUser) {
       return NextResponse.json(
         { success: false, message: "User not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
-    // Prepare update object
-    const updateData: any = {
-      writer_status,
-      updated_at: new Date(),
-    };
-
-    // If approving, also set role to writer and ensure they're verified
-    if (writer_status === "approved") {
-      updateData.role = "writer";
-      updateData.is_verified = true;
-      updateData.is_active = true;
-    }
-
-    // Update user writer status
-    const updatedUser = await User.findByIdAndUpdate(id, updateData, {
-      new: true,
-      select: "-password_hash",
+    const updatedUser = await setUserWriterStatus(id, writer_status, {
+      role: writer_status === "approved" ? "writer" : undefined,
+      verifyAndActivate: writer_status === "approved",
     });
-
-    if (!updatedUser) {
-      return NextResponse.json(
-        { success: false, message: "User not found" },
-        { status: 404 }
-      );
-    }
 
     console.log("✅ Writer status updated successfully:", updatedUser._id);
 
@@ -89,7 +65,7 @@ export async function PATCH(
       if (!emailSent) {
         console.error(
           "Failed to send writer approval email to:",
-          updatedUser.email
+          updatedUser.email,
         );
       }
     }
@@ -103,7 +79,7 @@ export async function PATCH(
     console.error("❌ Error updating writer status:", error);
     return NextResponse.json(
       { success: false, message: "Failed to update writer status" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

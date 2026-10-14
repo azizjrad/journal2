@@ -1,6 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getContactMessages, getContactMessageStats } from "@/lib/db";
-import { getUserById } from "@/lib/db";
+import {
+  getContactMessageStats,
+  getContactMessages,
+} from "@/lib/services/contact-service";
+import { getUserById } from "@/lib/user";
 import jwt from "jsonwebtoken";
 
 export async function GET(request: NextRequest) {
@@ -11,21 +14,21 @@ export async function GET(request: NextRequest) {
     if (!adminToken) {
       return NextResponse.json(
         { error: "Authentication required" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
     try {
       const tokenPayload = jwt.verify(
         adminToken,
-        process.env.JWT_SECRET!
+        process.env.JWT_SECRET!,
       ) as any;
       const adminUser = await getUserById(tokenPayload.userId);
 
       if (!adminUser || adminUser.role !== "admin") {
         return NextResponse.json(
           { error: "Admin access required" },
-          { status: 403 }
+          { status: 403 },
         );
       }
     } catch (error) {
@@ -83,7 +86,7 @@ export async function GET(request: NextRequest) {
     console.error("❌ Error fetching contact messages:", error);
     return NextResponse.json(
       { error: "Failed to fetch contact messages" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

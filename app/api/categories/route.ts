@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getCategories } from "@/lib/db";
+import { getCategories } from "@/lib/services/category-service";
 
 export async function GET() {
   try {
@@ -9,7 +9,7 @@ export async function GET() {
     console.error("[API] Error fetching categories:", error);
     return NextResponse.json(
       { error: "Failed to fetch categories" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -2,7 +2,7 @@
 // (imports already declared at the top of the file)
 
 export async function ensureAdminOrWriter(
-  request: NextRequest
+  request: NextRequest,
 ): Promise<{ isAdmin: boolean; isWriter: boolean; user?: any }> {
   try {
     await dbConnect();
@@ -15,15 +15,16 @@ export async function ensureAdminOrWriter(
     }
 
     // Parse cookies manually
-    const cookies = cookieHeader
-      .split(";")
-      .reduce((acc: Record<string, string>, cookie: string) => {
+    const cookies = cookieHeader.split(";").reduce(
+      (acc: Record<string, string>, cookie: string) => {
         const [key, value] = cookie.trim().split("=");
         if (key && value) {
           acc[key] = decodeURIComponent(value);
         }
         return acc;
-      }, {} as Record<string, string>);
+      },
+      {} as Record<string, string>,
+    );
     // Check for admin-token first
     const adminToken = cookies["admin-token"];
     if (adminToken) {
@@ -84,7 +85,7 @@ export async function ensureAdminOrWriter(
 }
 
 import { NextRequest } from "next/server";
-import { dbConnect } from "@/lib/db";
+import { dbConnect } from "@/lib/db/connection";
 import { User } from "@/lib/models/User";
 // Ensures at least one admin exists in the database. Creates a default admin if none found.
 
@@ -99,7 +100,7 @@ export async function ensureAdminExists() {
 
 // Function to check if the current request is from an authenticated admin
 export async function ensureAdmin(
-  request: NextRequest
+  request: NextRequest,
 ): Promise<{ isAdmin: boolean; user?: any }> {
   try {
     await dbConnect();
@@ -115,15 +116,16 @@ export async function ensureAdmin(
     }
 
     // Parse cookies manually
-    const cookies = cookieHeader
-      .split(";")
-      .reduce((acc: Record<string, string>, cookie: string) => {
+    const cookies = cookieHeader.split(";").reduce(
+      (acc: Record<string, string>, cookie: string) => {
         const [key, value] = cookie.trim().split("=");
         if (key && value) {
           acc[key] = decodeURIComponent(value);
         }
         return acc;
-      }, {} as Record<string, string>);
+      },
+      {} as Record<string, string>,
+    );
 
     // Only accept 'admin-token' for admin JWT authentication
     const jwtToken = cookies["admin-token"];
@@ -151,7 +153,7 @@ export async function ensureAdmin(
     }
 
     console.warn(
-      "[ensureAdmin] Admin check failed. No valid admin session or JWT."
+      "[ensureAdmin] Admin check failed. No valid admin session or JWT.",
     );
     return { isAdmin: false };
   } catch (error) {

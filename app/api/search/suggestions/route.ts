@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getSearchSuggestions } from "@/lib/db";
+import { getSearchSuggestions } from "@/lib/content/article-service";
 
 // Self-contained security functions
 function getClientIP(request: NextRequest): string {
@@ -43,11 +43,11 @@ export async function GET(request: NextRequest) {
     const trimmedQuery = query.trim();
     if (trimmedQuery.length > 100) {
       console.warn(
-        `Search query too long from ${clientIP}: ${trimmedQuery.length} chars`
+        `Search query too long from ${clientIP}: ${trimmedQuery.length} chars`,
       );
       return NextResponse.json(
         { error: "Search query too long" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -55,8 +55,8 @@ export async function GET(request: NextRequest) {
       console.warn(
         `Suspicious search query from ${clientIP}: ${trimmedQuery.substring(
           0,
-          50
-        )}`
+          50,
+        )}`,
       );
       return NextResponse.json([]);
     }
@@ -70,7 +70,7 @@ export async function GET(request: NextRequest) {
     console.error(`Error fetching search suggestions from ${clientIP}:`, error);
     return NextResponse.json(
       { error: "Failed to fetch suggestions" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

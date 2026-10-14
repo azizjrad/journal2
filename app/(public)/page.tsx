@@ -1,9 +1,11 @@
-import { getCategoriesCached, CategoryInterface } from "@/lib/db";
+import type { CategoryInterface } from "@/lib/services/category-service";
+import { getCategoriesCached } from "@/lib/services/category-service";
 import type { ArticleInterface } from "@/lib/content/types";
 import {
   getArticles,
   getArticlesByCategory,
   getFeaturedArticlesCached,
+  getAuthorInfo,
   getRecentArticlesCached,
 } from "@/lib/content/article-service";
 import { FixedHeaderWrapper } from "@/components/layout/fixed-header-wrapper";
@@ -15,7 +17,6 @@ import {
   FeaturedCategoryArticle,
 } from "@/components/articles/featured-category-section";
 import { BigStoryArticle } from "@/components/articles/big-story-section";
-import { getAuthorInfo } from "@/lib/db";
 import MainLayout from "@/components/layout/main-layout";
 
 // Enable static generation with revalidation every 60 seconds

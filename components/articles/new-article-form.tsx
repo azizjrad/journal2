@@ -45,7 +45,7 @@ import {
   DialogTrigger,
   DialogClose,
 } from "@/components/ui/dialog";
-import { CategoryInterface } from "@/lib/db";
+import type { CategoryInterface } from "@/lib/services/category-service";
 
 interface NewArticleFormProps {
   categories: CategoryInterface[];
@@ -200,7 +200,7 @@ export function NewArticleForm({
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
         throw new Error(
-          errorData.error || `Upload failed with status: ${response.status}`
+          errorData.error || `Upload failed with status: ${response.status}`,
         );
       }
       const data = await response.json();
@@ -282,8 +282,8 @@ export function NewArticleForm({
         published_at: formData.is_published
           ? new Date().toISOString()
           : formData.scheduled_for
-          ? new Date(formData.scheduled_for).toISOString()
-          : null,
+            ? new Date(formData.scheduled_for).toISOString()
+            : null,
       };
 
       console.log("Submitting article data:", articleData);

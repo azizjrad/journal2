@@ -1,5 +1,7 @@
 import { MetadataRoute } from "next";
-import { dbConnect, getArticles, getCategories } from "@/lib/db";
+import { dbConnect } from "@/lib/db/connection";
+import { getCategories } from "@/lib/services/category-service";
+import { getArticles } from "@/lib/content/article-service";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.APP_BASE_URL || "https://maghreborbit.com";
@@ -78,7 +80,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: article.updatedAt || article.createdAt,
         changeFrequency: "weekly" as const,
         priority: 0.8,
-      })
+      }),
     );
 
     // Category pages
@@ -88,7 +90,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
         lastModified: new Date(),
         changeFrequency: "daily" as const,
         priority: 0.7,
-      })
+      }),
     );
 
     return [...staticPages, ...articlePages, ...categoryPages];

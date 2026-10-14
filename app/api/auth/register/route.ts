@@ -4,10 +4,10 @@ import {
   getUserByEmail,
   getUserByUsername,
   createUserProfile,
-  createEmailVerificationToken,
   logUserActivity,
-} from "@/lib/db";
+} from "@/lib/user";
 import {
+  createEmailVerificationToken,
   hashPassword,
   isValidEmail,
   validatePasswordStrength,
@@ -29,7 +29,7 @@ export async function POST(request: NextRequest) {
         success: false,
         message: "Invalid security token. Please refresh and try again.",
       },
-      { status: 403 }
+      { status: 403 },
     );
   }
 
@@ -39,7 +39,7 @@ export async function POST(request: NextRequest) {
     if (!rateLimitResult.success) {
       return createRateLimitResponse(
         rateLimitResult,
-        "Too many registration attempts. Please try again later."
+        "Too many registration attempts. Please try again later.",
       );
     }
 
@@ -60,14 +60,14 @@ export async function POST(request: NextRequest) {
           success: false,
           message: "Invalid credentials or request",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (!isValidEmail(email)) {
       return NextResponse.json(
         { success: false, message: "Invalid credentials or request" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -80,7 +80,7 @@ export async function POST(request: NextRequest) {
             passwordValidation.errors.join(". ") ||
             "Password does not meet requirements.",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -96,13 +96,13 @@ export async function POST(request: NextRequest) {
           success: false,
           message: "An account with this email already exists.",
         },
-        { status: 409 }
+        { status: 409 },
       );
     }
     if (existingUserByUsername) {
       return NextResponse.json(
         { success: false, message: "This username is already taken." },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
@@ -136,7 +136,7 @@ export async function POST(request: NextRequest) {
           success: false,
           message: "Failed to send verification email. Account not created.",
         },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -146,7 +146,7 @@ export async function POST(request: NextRequest) {
           success: false,
           message: "Failed to send verification email. Account not created.",
         },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -181,7 +181,7 @@ export async function POST(request: NextRequest) {
         accountType === "writer" ? " with writer application pending" : ""
       }. Verification email sent: ${emailSent}`,
       clientIP,
-      userAgent
+      userAgent,
     );
 
     // Send admin notification if writer application
@@ -196,7 +196,7 @@ export async function POST(request: NextRequest) {
       } catch (err) {
         console.error(
           "Failed to send admin notification for writer application:",
-          err
+          err,
         );
         // Don't fail the registration if admin notification fails
       }
@@ -219,13 +219,13 @@ export async function POST(request: NextRequest) {
         user: userResponse,
         ...(process.env.NODE_ENV === "development" && { verificationToken }), // Only in development
       },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
     console.error("Registration error:", error);
     return NextResponse.json(
       { success: false, message: "Request failed. Please try again." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

@@ -1,4 +1,5 @@
-import { getCategoriesCached, type Article, type Category } from "@/lib/db";
+import { type Article, type Category } from "@/lib/db";
+import { getCategoriesCached } from "@/lib/services/category-service";
 import {
   getArticles,
   getFeaturedArticlesCached,

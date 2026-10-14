@@ -1,5 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getNewsletterSubscribers, getNewsletterStats } from "@/lib/db";
+import {
+  getNewsletterStats,
+  getNewsletterSubscribers,
+} from "@/lib/services/newsletter-service";
 import { ensureAdmin } from "@/lib/auth/ensure-admin";
 import { revalidateTag } from "next/cache";
 
@@ -11,7 +14,7 @@ export async function GET(request: NextRequest) {
     if (!adminCheck.isAdmin) {
       return NextResponse.json(
         { error: "Unauthorized. Admin access required." },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -36,14 +39,14 @@ export async function GET(request: NextRequest) {
     if (!validPlans.includes(plan)) {
       return NextResponse.json(
         { error: "Invalid plan filter" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
     if (!validStatuses.includes(status)) {
       return NextResponse.json(
         { error: "Invalid status filter" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -78,7 +81,7 @@ export async function GET(request: NextRequest) {
     console.error("Error fetching newsletter subscribers:", error);
     return NextResponse.json(
       { error: "Internal server error" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

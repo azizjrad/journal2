@@ -1,7 +1,11 @@
 // ...existing code...
 // ...existing code...
 import { NextRequest, NextResponse } from "next/server";
-import { getArticleByIdAdmin, updateArticle, deleteArticle } from "@/lib/db";
+import {
+  deleteArticle,
+  getArticleByIdAdmin,
+  updateArticle,
+} from "@/lib/content/article-service";
 import { ensureAdminOrWriter, ensureAdmin } from "@/lib/auth/ensure-admin";
 import { verifyToken } from "@/lib/auth";
 import { validateCsrf } from "@/lib/auth/csrf";

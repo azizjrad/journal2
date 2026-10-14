@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCategories, createCategory } from "@/lib/db";
+import { createCategory, getCategories } from "@/lib/services/category-service";
 
 export function GET() {
   return (async () => {
@@ -10,7 +10,7 @@ export function GET() {
       console.error("Error fetching categories:", error);
       return NextResponse.json(
         { error: "Failed to fetch categories" },
-        { status: 500 }
+        { status: 500 },
       );
     }
   })();
@@ -25,7 +25,7 @@ export function POST(request: NextRequest) {
       if (!name_en || !name_ar) {
         return NextResponse.json(
           { error: "Both English and Arabic names are required" },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -49,7 +49,7 @@ export function POST(request: NextRequest) {
       console.error("Error creating category:", error);
       return NextResponse.json(
         { error: "Failed to create category" },
-        { status: 500 }
+        { status: 500 },
       );
     }
   })();

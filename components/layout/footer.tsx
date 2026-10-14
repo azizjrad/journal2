@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useLanguage } from "@/lib/context/language-context";
 import { useState } from "react";
 import { Send, Mail, Phone } from "lucide-react";
-import { CategoryInterface } from "@/lib/db";
+import type { CategoryInterface } from "@/lib/services/category-service";
 
 interface FooterProps {
   categories: CategoryInterface[];
@@ -20,7 +20,7 @@ export function Footer({ categories }: FooterProps) {
     if (!email) return;
     // Redirect to payment page with annual plan and pre-filled email
     window.location.href = `/payment?plan=annual&email=${encodeURIComponent(
-      email
+      email,
     )}`;
   };
 
@@ -47,7 +47,7 @@ export function Footer({ categories }: FooterProps) {
               {t(
                 "footer_description_long",
                 "The Maghreb Orbit - News as is... without bias. Your essential source of unbiased information and ideas from the Maghreb region and beyond. We illuminate how events shape our world, from politics to culture, business to society. The breakthroughs and stories we uncover lead to new ways of thinking, new connections, and deeper understanding.",
-                "المدار المغاربي - الخبر كما هو ...بلا انحياز. مصدرك الأساسي للمعلومات والأفكار المحايدة من المغرب العربي وما وراءه. نسلّط الضوء على كيفية تشكيل الأحداث لعالمنا — من السياسة إلى الثقافة، ومن الأعمال إلى المجتمع."
+                "المدار المغاربي - الخبر كما هو ...بلا انحياز. مصدرك الأساسي للمعلومات والأفكار المحايدة من المغرب العربي وما وراءه. نسلّط الضوء على كيفية تشكيل الأحداث لعالمنا — من السياسة إلى الثقافة، ومن الأعمال إلى المجتمع.",
               )}
             </p>
 
@@ -202,7 +202,7 @@ export function Footer({ categories }: FooterProps) {
                 {t(
                   "newsletter_desc",
                   "Get the latest news delivered to your inbox. Never miss an important update.",
-                  "احصل على آخر الأخبار في صندوق بريدك. لا تفوت أي تحديث مهم."
+                  "احصل على آخر الأخبار في صندوق بريدك. لا تفوت أي تحديث مهم.",
                 )}
               </p>
               <form onSubmit={handleNewsletterSubmit} className="space-y-3">
@@ -214,7 +214,7 @@ export function Footer({ categories }: FooterProps) {
                     placeholder={t(
                       "email_placeholder",
                       "Enter your email",
-                      "أدخل بريدك الإلكتروني"
+                      "أدخل بريدك الإلكتروني",
                     )}
                     className="flex-1 px-4 py-3 bg-gray-800 border border-gray-700 rounded-xl text-white text-sm focus:outline-none focus:border-red-500 focus:ring-2 focus:ring-red-500/20 transition-colors duration-200"
                     required
@@ -255,7 +255,7 @@ export function Footer({ categories }: FooterProps) {
                 {t(
                   "advertise",
                   "Advertise with The Maghreb Orbit",
-                  "أعلن مع المدار المغاربي"
+                  "أعلن مع المدار المغاربي",
                 )}
               </a>
               <a

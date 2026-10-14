@@ -1,10 +1,10 @@
+import { getCategories } from "@/lib/services/category-service";
+import type { SearchFilters } from "@/lib/content/types";
 import {
   advancedSearchArticles,
-  getCategories,
+  getArticles,
   getPopularSearches,
-} from "@/lib/db";
-import type { SearchFilters } from "@/lib/content/types";
-import { getArticles } from "@/lib/content/article-service";
+} from "@/lib/content/article-service";
 import Header from "@/components/layout/header";
 import { BreakingNewsTicker } from "@/components/shared/breaking-news-ticker";
 import { Footer } from "@/components/layout/footer";

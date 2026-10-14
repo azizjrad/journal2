@@ -23,7 +23,7 @@ import {
   Target,
   RefreshCw,
 } from "lucide-react";
-import { AnalyticsData } from "@/lib/db";
+import type { AnalyticsData } from "@/lib/content/types";
 
 interface AnalyticsDashboardProps {
   initialData: AnalyticsData;
@@ -134,7 +134,7 @@ export function AnalyticsDashboard({ initialData }: AnalyticsDashboardProps) {
     setLoading(true);
     try {
       const response = await fetch(
-        `/api/admin/analytics?days=${selectedPeriod}`
+        `/api/admin/analytics?days=${selectedPeriod}`,
       );
       if (response.ok) {
         const newData = await response.json();

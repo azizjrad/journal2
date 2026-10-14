@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getUserById, updateUserPassword, logUserActivity } from "@/lib/db";
+import { getUserById, logUserActivity, updateUserPassword } from "@/lib/user";
 import {
   verifyToken,
   verifyPassword,
@@ -17,7 +17,7 @@ export async function PUT(request: NextRequest) {
     if (!token) {
       return NextResponse.json(
         { success: false, message: "Authentication required" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -25,7 +25,7 @@ export async function PUT(request: NextRequest) {
     if (!tokenPayload) {
       return NextResponse.json(
         { success: false, message: "Invalid token" },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -39,7 +39,7 @@ export async function PUT(request: NextRequest) {
           success: false,
           message: "Current password and new password are required",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -52,7 +52,7 @@ export async function PUT(request: NextRequest) {
           message: "Password requirements not met",
           errors: passwordValidation.errors,
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -61,7 +61,7 @@ export async function PUT(request: NextRequest) {
     if (!user) {
       return NextResponse.json(
         { success: false, message: "User not found" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -79,7 +79,7 @@ export async function PUT(request: NextRequest) {
       console.log("❌ No password hash found for user");
       return NextResponse.json(
         { success: false, message: "Unable to verify current password" },
-        { status: 500 }
+        { status: 500 },
       );
     }
 
@@ -87,7 +87,7 @@ export async function PUT(request: NextRequest) {
     console.log("🔍 Verifying current password...");
     const isCurrentPasswordValid = await verifyPassword(
       currentPassword,
-      userWithPassword.password_hash
+      userWithPassword.password_hash,
     );
     console.log("✅ Current password valid:", isCurrentPasswordValid);
 
@@ -95,7 +95,7 @@ export async function PUT(request: NextRequest) {
       console.log("❌ Current password verification failed");
       return NextResponse.json(
         { success: false, message: "Current password is incorrect" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -117,7 +117,7 @@ export async function PUT(request: NextRequest) {
       "PASSWORD_CHANGED",
       "User changed their password",
       clientIP,
-      userAgent
+      userAgent,
     );
 
     return NextResponse.json({
@@ -128,7 +128,7 @@ export async function PUT(request: NextRequest) {
     console.error("Change password error:", error);
     return NextResponse.json(
       { success: false, message: "Failed to change password" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

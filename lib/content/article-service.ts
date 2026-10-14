@@ -1,8 +1,43 @@
 import { unstable_cache } from "next/cache";
-import { getArticleById, getArticles } from "@/lib/db";
-import { getArticlesByCategory } from "@/lib/db/article-repository";
+import {
+  createArticle,
+  deleteArticle,
+  getArticleById,
+  getArticleByIdAdmin,
+  getAllArticlesAdmin,
+  getAnalyticsData,
+  getArticles,
+  getArticlesByCategory,
+  getAuthorInfo,
+  getPopularSearches,
+  getSearchSuggestions,
+  getSitemapEntries,
+  advancedSearchArticles,
+  searchArticles,
+  trackArticleEngagement,
+  trackArticleView,
+  updateArticle,
+} from "@/lib/db/article-repository";
 
-export { getArticles, getArticlesByCategory };
+export {
+  advancedSearchArticles,
+  createArticle,
+  deleteArticle,
+  getArticleById,
+  getArticleByIdAdmin,
+  getAllArticlesAdmin,
+  getAnalyticsData,
+  getArticles,
+  getArticlesByCategory,
+  getAuthorInfo,
+  getPopularSearches,
+  getSearchSuggestions,
+  getSitemapEntries,
+  searchArticles,
+  trackArticleEngagement,
+  trackArticleView,
+  updateArticle,
+};
 
 export const getRecentArticlesCached = unstable_cache(
   async (limit: number = 10) => getArticles(limit),

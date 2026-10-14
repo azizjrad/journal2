@@ -1,10 +1,9 @@
 import { AdminDashboard } from "@/components/admin/admin-dashboard";
+import { getCategoriesCached } from "@/lib/services/category-service";
 import {
   getAllArticlesAdmin,
-  getCategories,
-  getCategoriesCached,
   getAnalyticsData,
-} from "@/lib/db";
+} from "@/lib/content/article-service";
 
 export default async function AdminPage() {
   let analyticsData;

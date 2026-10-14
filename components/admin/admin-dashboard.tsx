@@ -37,7 +37,7 @@ import { NewsletterSubscribers } from "@/components/newsletter/newsletter-subscr
 import NewsletterAdmin from "@/components/newsletter/newsletter-admin";
 import { ContactMessages } from "@/components/admin/contact-messages";
 import { LogoutButton } from "@/components/auth/logout-button";
-import { AnalyticsData } from "@/lib/db";
+import type { AnalyticsData } from "@/lib/content/types";
 
 interface Article {
   id: string;
@@ -92,7 +92,7 @@ export function AdminDashboard({
       filtered = filtered.filter(
         (article) =>
           article.category_name_en === categoryFilter ||
-          article.category_name_ar === categoryFilter
+          article.category_name_ar === categoryFilter,
       );
     }
     if (articleSearchQuery.trim()) {
@@ -104,20 +104,20 @@ export function AdminDashboard({
           (article.category_name_en &&
             article.category_name_en.toLowerCase().includes(query)) ||
           (article.category_name_ar &&
-            article.category_name_ar.toLowerCase().includes(query))
+            article.category_name_ar.toLowerCase().includes(query)),
       );
     }
     return filtered;
   }, [currentArticles, articleSearchQuery, categoryFilter]);
 
   const totalArticlePages = Math.ceil(
-    filteredArticles.length / articlesPerPage
+    filteredArticles.length / articlesPerPage,
   );
   const startArticleIndex = (articlesCurrentPage - 1) * articlesPerPage;
   const endArticleIndex = startArticleIndex + articlesPerPage;
   const paginatedArticles = filteredArticles.slice(
     startArticleIndex,
-    endArticleIndex
+    endArticleIndex,
   );
   const handleArticleDelete = useCallback(
     async (deletedId: string) => {
@@ -130,7 +130,7 @@ export function AdminDashboard({
         return updated;
       });
     },
-    [paginatedArticles.length, articlesCurrentPage]
+    [paginatedArticles.length, articlesCurrentPage],
   );
 
   // Handle article search with useCallback optimization
@@ -175,8 +175,8 @@ export function AdminDashboard({
         prev.map((article) =>
           article.id === articleId
             ? { ...article, is_published: true, scheduled_for: undefined }
-            : article
-        )
+            : article,
+        ),
       );
 
       console.log("Article published successfully:", articleId);
@@ -564,7 +564,7 @@ export function AdminDashboard({
                                     <p className="text-sm text-gray-400">
                                       Created{" "}
                                       {new Date(
-                                        article.created_at
+                                        article.created_at,
                                       ).toLocaleDateString("en-US", {
                                         year: "numeric",
                                         month: "long",
@@ -635,12 +635,12 @@ export function AdminDashboard({
                       const scheduledArticles = currentArticles.filter(
                         (article) =>
                           article.scheduled_for &&
-                          new Date(article.scheduled_for) > new Date()
+                          new Date(article.scheduled_for) > new Date(),
                       );
 
                       // Pagination for scheduled articles
                       const totalScheduledPages = Math.ceil(
-                        scheduledArticles.length / scheduledPerPage
+                        scheduledArticles.length / scheduledPerPage,
                       );
                       const startScheduledIndex =
                         (scheduledCurrentPage - 1) * scheduledPerPage;
@@ -649,7 +649,7 @@ export function AdminDashboard({
                       const paginatedScheduledArticles =
                         scheduledArticles.slice(
                           startScheduledIndex,
-                          endScheduledIndex
+                          endScheduledIndex,
                         );
 
                       if (scheduledArticles.length === 0) {
@@ -708,7 +708,7 @@ export function AdminDashboard({
                                         Scheduled:{" "}
                                         {article.scheduled_for
                                           ? new Date(
-                                              article.scheduled_for
+                                              article.scheduled_for,
                                             ).toLocaleDateString()
                                           : "Not scheduled"}
                                       </span>

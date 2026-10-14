@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
-  replyToContactMessage,
-  getUserById,
   getContactMessageById,
-} from "@/lib/db";
+  replyToContactMessage,
+} from "@/lib/services/contact-service";
+import { getUserById } from "@/lib/user";
 import { sendContactReplyEmail } from "@/lib/email/email-sendgrid";
 import jwt from "jsonwebtoken";
 
 export async function POST(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   return (async () => {
     try {
@@ -19,7 +19,7 @@ export async function POST(
       if (!adminToken) {
         return NextResponse.json(
           { error: "Authentication required" },
-          { status: 401 }
+          { status: 401 },
         );
       }
 
@@ -27,7 +27,7 @@ export async function POST(
       try {
         const tokenPayload = jwt.verify(
           adminToken,
-          process.env.JWT_SECRET!
+          process.env.JWT_SECRET!,
         ) as any;
 
         console.log("🔍 Token payload:", { userId: tokenPayload.userId });
@@ -45,7 +45,7 @@ export async function POST(
           console.error("❌ User not found for ID:", tokenPayload.userId);
           return NextResponse.json(
             { error: "User not found" },
-            { status: 403 }
+            { status: 403 },
           );
         }
 
@@ -53,11 +53,11 @@ export async function POST(
           console.error(
             "❌ User is not admin:",
             adminUser.email,
-            adminUser.role
+            adminUser.role,
           );
           return NextResponse.json(
             { error: "Admin access required" },
-            { status: 403 }
+            { status: 403 },
           );
         }
 
@@ -67,7 +67,7 @@ export async function POST(
           console.error("❌ Admin user has no id:", adminUser);
           return NextResponse.json(
             { error: "Invalid user data" },
-            { status: 500 }
+            { status: 500 },
           );
         }
 
@@ -88,21 +88,21 @@ export async function POST(
       if (!reply || typeof reply !== "string") {
         return NextResponse.json(
           { error: "Reply content is required" },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
       if (reply.trim().length === 0) {
         return NextResponse.json(
           { error: "Reply cannot be empty" },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
       if (reply.length > 2000) {
         return NextResponse.json(
           { error: "Reply must be less than 2000 characters" },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -113,7 +113,7 @@ export async function POST(
       if (!contactMessage) {
         return NextResponse.json(
           { error: "Contact message not found" },
-          { status: 404 }
+          { status: 404 },
         );
       }
 
@@ -121,13 +121,13 @@ export async function POST(
       const success = await replyToContactMessage(
         id,
         reply.trim(),
-        adminUserId
+        adminUserId,
       );
 
       if (!success) {
         return NextResponse.json(
           { error: "Failed to send reply" },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -157,7 +157,7 @@ export async function POST(
       console.error("❌ Error sending reply:", error);
       return NextResponse.json(
         { error: "Failed to send reply" },
-        { status: 500 }
+        { status: 500 },
       );
     }
   })();

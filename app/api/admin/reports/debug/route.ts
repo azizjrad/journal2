@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { dbConnect } from "@/lib/db";
+import { dbConnect } from "@/lib/db/connection";
 import { Report } from "@/lib/models/Article";
 import { ensureAdmin } from "@/lib/auth/ensure-admin";
 
@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
     if (!adminCheck.isAdmin) {
       return NextResponse.json(
         { error: "Unauthorized. Admin access required." },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -65,7 +65,7 @@ export async function GET(request: NextRequest) {
     console.error("Error in debug endpoint:", error);
     return NextResponse.json(
       { error: "Failed to debug reports" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

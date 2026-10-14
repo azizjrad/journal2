@@ -1,7 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from "react";
-import { UserInterface } from "@/lib/db";
+import type { UserInterface } from "@/lib/user";
 
 interface AuthContextType {
   user: UserInterface | null;
@@ -9,7 +9,7 @@ interface AuthContextType {
   isLoading: boolean;
   login: (
     email: string,
-    password: string
+    password: string,
   ) => Promise<{ success: boolean; message?: string }>;
   logout: () => Promise<void>;
   refreshUser: () => Promise<void>;

@@ -5,7 +5,7 @@ import {
   updateNewsletterSubscription,
   getNewsletterSubscriptionByStripeId,
 } from "@/lib/services/newsletter-service";
-import { getUserById } from "@/lib/db";
+import { getUserById } from "@/lib/user";
 import {
   sendSubscriptionConfirmationEmail,
   sendSubscriptionCancellationEmail,

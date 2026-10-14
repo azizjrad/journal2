@@ -1,12 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
+import { updateUserPassword, getUserById, logUserActivity } from "@/lib/user";
 import {
   getPasswordResetToken,
+  hashPassword,
   markPasswordResetTokenAsUsed,
-  updateUserPassword,
-  getUserById,
-  logUserActivity,
-} from "@/lib/db";
-import { hashPassword, validatePasswordStrength } from "@/lib/auth";
+  validatePasswordStrength,
+} from "@/lib/auth";
 
 export async function POST(request: NextRequest) {
   try {
@@ -20,7 +19,7 @@ export async function POST(request: NextRequest) {
           success: false,
           message: "Invalid credentials or request",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -32,7 +31,7 @@ export async function POST(request: NextRequest) {
           success: false,
           message: "Invalid credentials or request",
         },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -42,7 +41,7 @@ export async function POST(request: NextRequest) {
     if (!resetToken) {
       return NextResponse.json(
         { success: false, message: "Invalid credentials or request" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -51,7 +50,7 @@ export async function POST(request: NextRequest) {
     if (!user || !user.id || !user.is_active) {
       return NextResponse.json(
         { success: false, message: "Invalid credentials or request" },
-        { status: 404 }
+        { status: 404 },
       );
     }
 
@@ -72,7 +71,7 @@ export async function POST(request: NextRequest) {
       "PASSWORD_RESET_COMPLETED",
       "Password was successfully reset",
       clientIP,
-      userAgent
+      userAgent,
     );
 
     return NextResponse.json({
@@ -84,7 +83,7 @@ export async function POST(request: NextRequest) {
     console.error("Password reset error:", error);
     return NextResponse.json(
       { success: false, message: "Request failed. Please try again." },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

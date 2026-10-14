@@ -9,7 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { CategoryFilter } from "@/components/writer/category-filter";
-import { getCategories } from "@/lib/db";
+import { getCategories } from "@/lib/services/category-service";
 import {
   Plus,
   Edit,
@@ -111,7 +111,7 @@ const ArticleCard = memo(function ArticleCard({
             <span className="flex items-center gap-1">
               <Calendar className="h-3 w-3" />
               {new Date(
-                article.published_at || article.created_at
+                article.published_at || article.created_at,
               ).toLocaleDateString()}
             </span>
             {!article.is_published &&
@@ -355,7 +355,7 @@ export function WriterDashboard({ articles, user }: WriterDashboardProps) {
 
                 const newDate = prompt(
                   "Enter new publication date and time:",
-                  currentDate
+                  currentDate,
                 );
 
                 if (newDate) {
@@ -378,7 +378,7 @@ export function WriterDashboard({ articles, user }: WriterDashboardProps) {
               onClick={() => {
                 if (
                   confirm(
-                    "Are you sure you want to cancel the schedule? The article will become a draft."
+                    "Are you sure you want to cancel the schedule? The article will become a draft.",
                   )
                 ) {
                   onCancelSchedule(article.id);
@@ -412,7 +412,7 @@ export function WriterDashboard({ articles, user }: WriterDashboardProps) {
             (a) =>
               !a.is_published &&
               a.scheduled_for &&
-              new Date(a.scheduled_for) > new Date()
+              new Date(a.scheduled_for) > new Date(),
           );
           break;
         case "all":
@@ -424,7 +424,7 @@ export function WriterDashboard({ articles, user }: WriterDashboardProps) {
       // Filter by category
       if (categoryFilter) {
         tabArticles = tabArticles.filter(
-          (a) => a.category_slug === categoryFilter
+          (a) => a.category_slug === categoryFilter,
         );
       }
 
@@ -439,10 +439,10 @@ export function WriterDashboard({ articles, user }: WriterDashboardProps) {
           article.title_en.toLowerCase().includes(query) ||
           article.title_ar.toLowerCase().includes(query) ||
           (article.category_name_en &&
-            article.category_name_en.toLowerCase().includes(query))
+            article.category_name_en.toLowerCase().includes(query)),
       );
     },
-    [userArticles, searchQuery, categoryFilter]
+    [userArticles, searchQuery, categoryFilter],
   );
 
   const filteredArticles = useMemo(() => {
@@ -456,7 +456,7 @@ export function WriterDashboard({ articles, user }: WriterDashboardProps) {
       (a) =>
         !a.is_published &&
         a.scheduled_for &&
-        new Date(a.scheduled_for) > new Date()
+        new Date(a.scheduled_for) > new Date(),
     );
     const featured = userArticles.filter((a) => a.is_featured);
 
@@ -471,7 +471,7 @@ export function WriterDashboard({ articles, user }: WriterDashboardProps) {
   // Handle article deletion
   const handleArticleDelete = useCallback((deletedId: string) => {
     setCurrentArticles((prev) =>
-      prev.filter((article) => article.id !== deletedId)
+      prev.filter((article) => article.id !== deletedId),
     );
   }, []);
 
@@ -495,12 +495,12 @@ export function WriterDashboard({ articles, user }: WriterDashboardProps) {
             prev.map((article) =>
               article.id === articleId
                 ? { ...article, scheduled_for: newDate }
-                : article
-            )
+                : article,
+            ),
           );
           toast.success("Article rescheduled successfully!", {
             description: `The article will now be published on ${new Date(
-              newDate
+              newDate,
             ).toLocaleString()}`,
           });
         } else {
@@ -513,7 +513,7 @@ export function WriterDashboard({ articles, user }: WriterDashboardProps) {
         });
       }
     },
-    []
+    [],
   );
 
   // Handle cancel schedule
@@ -536,8 +536,8 @@ export function WriterDashboard({ articles, user }: WriterDashboardProps) {
           prev.map((article) =>
             article.id === articleId
               ? { ...article, scheduled_for: undefined }
-              : article
-          )
+              : article,
+          ),
         );
         toast.success("Schedule cancelled successfully!", {
           description:
@@ -558,7 +558,7 @@ export function WriterDashboard({ articles, user }: WriterDashboardProps) {
   const handleSchedule = useCallback(async (articleId: string) => {
     const newDate = prompt(
       "Enter publication date and time (YYYY-MM-DDTHH:MM):",
-      new Date().toISOString().slice(0, 16)
+      new Date().toISOString().slice(0, 16),
     );
 
     if (newDate) {
@@ -582,8 +582,8 @@ export function WriterDashboard({ articles, user }: WriterDashboardProps) {
               prev.map((article) =>
                 article.id === articleId
                   ? { ...article, scheduled_for: dateObj.toISOString() }
-                  : article
-              )
+                  : article,
+              ),
             );
             toast.success("Article scheduled successfully!", {
               description: `The article will be published on ${dateObj.toLocaleString()}`,

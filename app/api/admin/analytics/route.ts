@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAnalyticsData } from "@/lib/db";
+import { getAnalyticsData } from "@/lib/content/article-service";
 
 export async function GET(request: NextRequest) {
   try {
@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     if (!adminCheck.isAdmin) {
       return NextResponse.json(
         { error: "Unauthorized. Admin access required." },
-        { status: 401 }
+        { status: 401 },
       );
     }
 
@@ -22,7 +22,7 @@ export async function GET(request: NextRequest) {
     console.error("Error fetching analytics data:", error);
     return NextResponse.json(
       { error: "Failed to fetch analytics data" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

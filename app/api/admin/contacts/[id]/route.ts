@@ -1,15 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
+  deleteContactMessage,
   getContactMessageById,
   markContactMessageAsRead,
-  deleteContactMessage,
-  getUserById,
-} from "@/lib/db";
+} from "@/lib/services/contact-service";
+import { getUserById } from "@/lib/user";
 import jwt from "jsonwebtoken";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   return (async () => {
     try {
@@ -19,21 +19,21 @@ export async function GET(
       if (!adminToken) {
         return NextResponse.json(
           { error: "Authentication required" },
-          { status: 401 }
+          { status: 401 },
         );
       }
 
       try {
         const tokenPayload = jwt.verify(
           adminToken,
-          process.env.JWT_SECRET!
+          process.env.JWT_SECRET!,
         ) as any;
         const adminUser = await getUserById(tokenPayload.userId);
 
         if (!adminUser || adminUser.role !== "admin") {
           return NextResponse.json(
             { error: "Admin access required" },
-            { status: 403 }
+            { status: 403 },
           );
         }
       } catch (error) {
@@ -47,7 +47,7 @@ export async function GET(
       if (!message) {
         return NextResponse.json(
           { error: "Contact message not found" },
-          { status: 404 }
+          { status: 404 },
         );
       }
 
@@ -56,7 +56,7 @@ export async function GET(
       console.error("❌ Error fetching contact message:", error);
       return NextResponse.json(
         { error: "Failed to fetch contact message" },
-        { status: 500 }
+        { status: 500 },
       );
     }
   })();
@@ -64,7 +64,7 @@ export async function GET(
 
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   return (async () => {
     try {
@@ -74,7 +74,7 @@ export async function PATCH(
       if (!adminToken) {
         return NextResponse.json(
           { error: "Authentication required" },
-          { status: 401 }
+          { status: 401 },
         );
       }
 
@@ -82,14 +82,14 @@ export async function PATCH(
       try {
         const tokenPayload = jwt.verify(
           adminToken,
-          process.env.JWT_SECRET!
+          process.env.JWT_SECRET!,
         ) as any;
         const adminUser = await getUserById(tokenPayload.userId);
 
         if (!adminUser || adminUser.role !== "admin") {
           return NextResponse.json(
             { error: "Admin access required" },
-            { status: 403 }
+            { status: 403 },
           );
         }
         adminUserId = adminUser._id;
@@ -109,11 +109,11 @@ export async function PATCH(
 
         if (!success) {
           console.error(
-            "❌ Failed to mark message as read - function returned false"
+            "❌ Failed to mark message as read - function returned false",
           );
           return NextResponse.json(
             { error: "Failed to mark message as read" },
-            { status: 400 }
+            { status: 400 },
           );
         }
 
@@ -128,7 +128,7 @@ export async function PATCH(
       console.error("❌ Error updating contact message:", error);
       return NextResponse.json(
         { error: "Failed to update contact message" },
-        { status: 500 }
+        { status: 500 },
       );
     }
   })();
@@ -136,7 +136,7 @@ export async function PATCH(
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   return (async () => {
     try {
@@ -146,21 +146,21 @@ export async function DELETE(
       if (!adminToken) {
         return NextResponse.json(
           { error: "Authentication required" },
-          { status: 401 }
+          { status: 401 },
         );
       }
 
       try {
         const tokenPayload = jwt.verify(
           adminToken,
-          process.env.JWT_SECRET!
+          process.env.JWT_SECRET!,
         ) as any;
         const adminUser = await getUserById(tokenPayload.userId);
 
         if (!adminUser || adminUser.role !== "admin") {
           return NextResponse.json(
             { error: "Admin access required" },
-            { status: 403 }
+            { status: 403 },
           );
         }
       } catch (error) {
@@ -174,7 +174,7 @@ export async function DELETE(
       if (!success) {
         return NextResponse.json(
           { error: "Failed to delete contact message" },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -186,7 +186,7 @@ export async function DELETE(
       console.error("❌ Error deleting contact message:", error);
       return NextResponse.json(
         { error: "Failed to delete contact message" },
-        { status: 500 }
+        { status: 500 },
       );
     }
   })();

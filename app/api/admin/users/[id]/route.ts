@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getUserById, deleteUser } from "@/lib/db";
+import { deleteUser, getUserById } from "@/lib/user";
 import jwt from "jsonwebtoken";
 
 export async function DELETE(
   request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
+  { params }: { params: Promise<{ id: string }> },
 ) {
   return (async () => {
     try {
@@ -14,7 +14,7 @@ export async function DELETE(
       if (!adminToken) {
         return NextResponse.json(
           { error: "Authentication required" },
-          { status: 401 }
+          { status: 401 },
         );
       }
 
@@ -26,7 +26,7 @@ export async function DELETE(
         if (!adminUser || adminUser.role !== "admin") {
           return NextResponse.json(
             { error: "Admin access required" },
-            { status: 403 }
+            { status: 403 },
           );
         }
       } catch (error) {
@@ -41,7 +41,7 @@ export async function DELETE(
       if (userId === tokenPayload.userId) {
         return NextResponse.json(
           { error: "Cannot delete your own account" },
-          { status: 400 }
+          { status: 400 },
         );
       }
 
@@ -64,7 +64,7 @@ export async function DELETE(
 
       return NextResponse.json(
         { error: "Failed to delete user" },
-        { status: 500 }
+        { status: 500 },
       );
     }
   })();
