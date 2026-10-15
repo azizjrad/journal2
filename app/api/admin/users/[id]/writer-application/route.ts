@@ -9,9 +9,12 @@ export async function PATCH(
 ) {
   try {
     // Check admin authentication
-    const authResponse = await ensureAdmin(request);
-    if (authResponse) {
-      return authResponse;
+    const adminCheck = await ensureAdmin(request);
+    if (!adminCheck.isAdmin) {
+      return NextResponse.json(
+        { error: "Admin access required" },
+        { status: 403 },
+      );
     }
 
     const { id } = await params;
@@ -57,6 +60,9 @@ export async function PATCH(
 
     // Get updated user data
     const updatedUser = await getUserById(id);
+    if (!updatedUser) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
 
     return NextResponse.json({
       success: true,

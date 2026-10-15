@@ -31,6 +31,7 @@ export interface UserInterface {
   created_at: string;
   updated_at: string;
   writer_status?: "pending" | "approved" | "rejected" | null;
+  has_used_trial?: boolean;
 }
 
 export interface UserProfileInterface {
@@ -80,6 +81,7 @@ export async function createUser(user: {
   try {
     const result = await User.create(sanitizedUser);
     const convertedResult = convertDoc<UserInterface>(result);
+    if (!convertedResult) throw new Error("Failed to create user");
     return convertedResult;
   } catch (error) {
     console.error("❌ User service: Error creating user:", error);

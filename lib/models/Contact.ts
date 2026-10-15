@@ -1,6 +1,6 @@
-import mongoose, { Schema, Document } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
-export interface ContactInterface extends Document {
+export interface ContactInterface {
   _id: string;
   name: string;
   email: string;
@@ -68,7 +68,7 @@ const ContactSchema = new Schema<ContactInterface>(
       createdAt: "created_at",
       updatedAt: "updated_at",
     },
-  }
+  },
 );
 
 // Index for efficient queries

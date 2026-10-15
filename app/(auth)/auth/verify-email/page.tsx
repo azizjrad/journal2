@@ -13,7 +13,7 @@ export default function VerifyEmailPage() {
   const token = searchParams?.get("token");
 
   const [status, setStatus] = useState<"pending" | "success" | "error">(
-    "pending"
+    "pending",
   );
   const [message, setMessage] = useState("");
 
@@ -21,7 +21,7 @@ export default function VerifyEmailPage() {
     if (!token) {
       setStatus("error");
       setMessage(
-        "Invalid verification link. Please request a new verification email."
+        "Invalid verification link. Please request a new verification email.",
       );
       return;
     }
@@ -37,7 +37,7 @@ export default function VerifyEmailPage() {
         if (data.success) {
           setStatus("success");
           setMessage(
-            data.message || "Your email has been verified. You can now log in."
+            data.message || "Your email has been verified. You can now log in.",
           );
         } else {
           setStatus("error");
@@ -133,8 +133,8 @@ export default function VerifyEmailPage() {
             </div>
           </div>
         </Card>
-        <div class="text-center mt-6">
-          <p class="text-sm text-gray-400">
+        <div className="text-center mt-6">
+          <p className="text-sm text-gray-400">
             © 2025 The Maghreb Orbit • News Portal
           </p>
         </div>

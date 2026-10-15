@@ -14,6 +14,7 @@ import type {
   ArticleInterface,
   ArticleWithAuthor,
   AnalyticsData,
+  ArticleViewData,
   SearchFilters,
   SearchSuggestion,
 } from "@/lib/content/types";
@@ -21,7 +22,7 @@ import type {
 export async function getArticles(
   limit?: number,
   featured?: boolean,
-): Promise<ArticleInterface[]> {
+): Promise<ArticleViewData[]> {
   await dbConnect();
 
   const query: Record<string, unknown> = { is_published: true };
@@ -31,6 +32,7 @@ export async function getArticles(
 
   const articlesQuery = Article.find(query)
     .populate("category_id", "name_en name_ar slug")
+    .populate("tags", "name_en name_ar slug")
     .sort({ published_at: -1 });
 
   if (limit) {
@@ -38,19 +40,27 @@ export async function getArticles(
   }
 
   const articles = await articlesQuery.lean();
-  const articlesWithCategories = articles.map((article: any) => ({
-    ...convertDoc(article),
-    category_name_en: article.category_id?.name_en,
-    category_name_ar: article.category_id?.name_ar,
-    category_slug: article.category_id?.slug,
-  }));
+  const articlesWithCategories = articles.map(
+    (article: any): ArticleViewData => {
+      const converted = convertDoc<ArticleViewData>(article)!;
+      const category = article.category_id;
+
+      return {
+        ...converted,
+        category_id: category?._id?.toString() ?? converted.category_id,
+        category_name_en: category?.name_en,
+        category_name_ar: category?.name_ar,
+        category_slug: category?.slug,
+      };
+    },
+  );
 
   return enrichArticlesWithAuthor(articlesWithCategories);
 }
 
 export async function getArticleById(
   id: string,
-): Promise<ArticleInterface | null> {
+): Promise<ArticleViewData | null> {
   await dbConnect();
 
   if (!Types.ObjectId.isValid(id)) {
@@ -62,15 +72,19 @@ export async function getArticleById(
     is_published: true,
   })
     .populate("category_id", "name_en name_ar slug")
+    .populate("tags", "name_en name_ar slug")
     .lean();
 
   if (!article) return null;
 
-  const articleWithCategory = {
-    ...(convertDoc(article) as any),
-    category_name_en: (article as any).category_id?.name_en,
-    category_name_ar: (article as any).category_id?.name_ar,
-    category_slug: (article as any).category_id?.slug,
+  const converted = convertDoc<ArticleViewData>(article)!;
+  const category = (article as any).category_id;
+  const articleWithCategory: ArticleViewData = {
+    ...converted,
+    category_id: category?._id?.toString() ?? converted.category_id,
+    category_name_en: category?.name_en,
+    category_name_ar: category?.name_ar,
+    category_slug: category?.slug,
   };
 
   const enrichedArticles = await enrichArticlesWithAuthor([
@@ -125,7 +139,7 @@ export async function getAllArticlesAdmin(): Promise<ArticleInterface[]> {
 export async function getArticlesByCategory(
   categorySlug: string,
   limit?: number,
-): Promise<ArticleInterface[]> {
+): Promise<ArticleViewData[]> {
   await dbConnect();
 
   const category = await Category.findOne({ slug: categorySlug });
@@ -136,6 +150,7 @@ export async function getArticlesByCategory(
     is_published: true,
   })
     .populate("category_id", "name_en name_ar slug")
+    .populate("tags", "name_en name_ar slug")
     .sort({ published_at: -1 });
 
   if (limit) {
@@ -145,19 +160,21 @@ export async function getArticlesByCategory(
   const articles = await query.lean();
 
   return articles.map((article) => {
-    const converted = convertDoc<ArticleInterface>(article);
+    const converted = convertDoc<ArticleViewData>(article)!;
+    const category = article.category_id as any;
     return {
       ...converted,
-      category_name_en: article.category_id?.name_en,
-      category_name_ar: article.category_id?.name_ar,
-      category_slug: article.category_id?.slug,
-    } as ArticleInterface;
+      category_id: category?._id?.toString() ?? converted.category_id,
+      category_name_en: category?.name_en,
+      category_name_ar: category?.name_ar,
+      category_slug: category?.slug,
+    };
   });
 }
 
 export async function searchArticles(
   searchQuery: string,
-): Promise<ArticleInterface[]> {
+): Promise<ArticleViewData[]> {
   await dbConnect();
 
   if (!searchQuery || searchQuery.trim().length < 2) {
@@ -169,23 +186,30 @@ export async function searchArticles(
     $text: { $search: searchQuery },
   })
     .populate("category_id", "name_en name_ar slug")
+    .populate("tags", "name_en name_ar slug")
     .sort({ score: { $meta: "textScore" } })
     .limit(50)
     .lean();
 
-  const articlesWithCategories = articles.map((article) => ({
-    ...convertDoc(article),
-    category_name_en: article.category_id?.name_en,
-    category_name_ar: article.category_id?.name_ar,
-    category_slug: article.category_id?.slug,
-  }));
+  const articlesWithCategories = articles.map((article): ArticleViewData => {
+    const converted = convertDoc<ArticleViewData>(article)!;
+    const category = article.category_id as any;
+
+    return {
+      ...converted,
+      category_id: category?._id?.toString() ?? converted.category_id,
+      category_name_en: category?.name_en,
+      category_name_ar: category?.name_ar,
+      category_slug: category?.slug,
+    };
+  });
 
   return enrichArticlesWithAuthor(articlesWithCategories);
 }
 
 export async function advancedSearchArticles(
   filters: SearchFilters,
-): Promise<ArticleInterface[]> {
+): Promise<ArticleViewData[]> {
   await dbConnect();
 
   try {
@@ -238,13 +262,15 @@ export async function advancedSearchArticles(
       .lean();
 
     return articles.map((article) => {
-      const converted = convertDoc<ArticleInterface>(article);
+      const converted = convertDoc<ArticleViewData>(article)!;
+      const category = article.category_id as any;
       return {
         ...converted,
-        category_name_en: article.category_id?.name_en,
-        category_name_ar: article.category_id?.name_ar,
-        category_slug: article.category_id?.slug,
-      } as ArticleInterface;
+        category_id: category?._id?.toString() ?? converted.category_id,
+        category_name_en: category?.name_en,
+        category_name_ar: category?.name_ar,
+        category_slug: category?.slug,
+      };
     });
   } catch (error) {
     console.error("Error in advancedSearchArticles:", error);
@@ -808,9 +834,11 @@ export async function getAuthorInfo(authorId: string): Promise<{
   }
 }
 
-export async function enrichArticlesWithAuthor(
-  articles: any[],
-): Promise<ArticleWithAuthor[]> {
+export async function enrichArticlesWithAuthor<
+  T extends { author_id?: string },
+>(
+  articles: T[],
+): Promise<Array<T & { author_name?: string; author_role?: string }>> {
   return Promise.all(
     articles.map(async (article) => {
       if (!article.author_id) {

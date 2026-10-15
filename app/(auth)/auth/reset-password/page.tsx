@@ -37,7 +37,7 @@ export default function ResetPasswordPage() {
       const data = await response.json();
       if (!data.success && data.message?.toLowerCase().includes("expired")) {
         setError(
-          "This password reset link has expired. Please request a new one."
+          "This password reset link has expired. Please request a new one.",
         );
       }
     })();
@@ -65,11 +65,11 @@ export default function ResetPasswordPage() {
       { regex: /[^A-Za-z0-9]/, message: "a special character" },
     ];
     const failedReqs = passwordRequirements.filter(
-      (req) => !req.regex.test(password)
+      (req) => !req.regex.test(password),
     );
     if (failedReqs.length > 0) {
       setError(
-        `Password must contain ${failedReqs.map((r) => r.message).join(", ")}.`
+        `Password must contain ${failedReqs.map((r) => r.message).join(", ")}.`,
       );
       return;
     }
@@ -271,8 +271,8 @@ export default function ResetPasswordPage() {
           </CardContent>
         </Card>
 
-        <div class="text-center mt-6">
-          <p class="text-sm text-gray-400">
+        <div className="text-center mt-6">
+          <p className="text-sm text-gray-400">
             © 2025 The Maghreb Orbit • News Portal
           </p>
         </div>

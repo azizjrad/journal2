@@ -10,9 +10,10 @@ import { verifyToken } from "@/lib/auth";
 
 // GET user profile
 export async function GET(request: NextRequest) {
+  const noStoreHeaders = { "Cache-Control": "no-store" };
+
   try {
     // Always prevent caching of profile responses
-    const noStoreHeaders = { "Cache-Control": "no-store" };
     // Get user from token - check auth-token, admin-token, and writer-token
     const authToken = request.cookies.get("auth-token")?.value;
     const adminToken = request.cookies.get("admin-token")?.value;

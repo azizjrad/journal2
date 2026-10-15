@@ -82,7 +82,7 @@ export const reducer = (state: State, action: Action): State => {
       return {
         ...state,
         toasts: state.toasts.map((t) =>
-          t.id === action.toast.id ? { ...t, ...action.toast } : t
+          t.id === action.toast.id ? { ...t, ...action.toast } : t,
         ),
       };
 
@@ -107,7 +107,7 @@ export const reducer = (state: State, action: Action): State => {
                 ...t,
                 open: false,
               }
-            : t
+            : t,
         ),
       };
     }
@@ -138,7 +138,7 @@ function dispatch(action: Action) {
 
 type Toast = Omit<ToasterToast, "id">;
 
-function toast({ ...props }: Toast) {
+function showToast({ ...props }: Toast) {
   const id = genId();
 
   const update = (props: ToasterToast) =>
@@ -166,6 +166,20 @@ function toast({ ...props }: Toast) {
     update,
   };
 }
+
+type ToastShortcutOptions = Omit<Toast, "title" | "variant">;
+
+const toast = Object.assign(showToast, {
+  success(title: string, options: ToastShortcutOptions = {}) {
+    return showToast({ ...options, title, variant: "success" });
+  },
+  error(title: string, options: ToastShortcutOptions = {}) {
+    return showToast({ ...options, title, variant: "destructive" });
+  },
+  info(title: string, options: ToastShortcutOptions = {}) {
+    return showToast({ ...options, title, variant: "default" });
+  },
+});
 
 function useToast() {
   const [state, setState] = React.useState<State>(memoryState);

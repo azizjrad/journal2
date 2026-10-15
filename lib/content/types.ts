@@ -31,6 +31,32 @@ export interface ArticleInterface {
   slug?: string;
 }
 
+export interface ArticleTag {
+  name_en: string;
+  name_ar: string;
+  slug: string;
+}
+
+export interface ArticleCardData {
+  id: string;
+  title_en: string;
+  title_ar: string;
+  excerpt_en: string;
+  excerpt_ar: string;
+  image_url: string;
+  published_at: string;
+  category_name_en?: string;
+  category_name_ar?: string;
+  category_slug?: string;
+  tags?: ArticleTag[];
+  reading_time_minutes?: number;
+  author_name?: string;
+  author_role?: string;
+}
+
+export type ArticleViewData = Omit<ArticleInterface, "id" | "tags"> &
+  ArticleCardData & { tags?: ArticleTag[] };
+
 export interface SearchSuggestion {
   text: string;
   type: "query" | "category" | "tag";

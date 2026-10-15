@@ -2,10 +2,10 @@
 
 import { useLanguage } from "@/lib/context/language-context";
 import { Badge } from "@/components/ui/badge";
-import { type Article } from "@/lib/db";
+import type { ArticleTag, ArticleViewData } from "@/lib/content/types";
 
 interface ArticleContentProps {
-  article: Article;
+  article: ArticleViewData;
 }
 
 export function ArticleContent({ article }: ArticleContentProps) {
@@ -25,7 +25,7 @@ export function ArticleContent({ article }: ArticleContentProps) {
       : article.category_name_en;
   };
 
-  const getTagName = (tag: any) => {
+  const getTagName = (tag: ArticleTag) => {
     return language === "ar" ? tag.name_ar : tag.name_en;
   };
 

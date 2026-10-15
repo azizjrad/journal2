@@ -23,6 +23,10 @@ import { rateLimiters, createRateLimitResponse } from "@/lib/api/rate-limit";
 
 export async function POST(request: NextRequest) {
   // CSRF protection
+  const clientIP =
+    request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ||
+    request.headers.get("x-real-ip") ||
+    "unknown";
   if (!validateCsrf(request)) {
     return NextResponse.json(
       {

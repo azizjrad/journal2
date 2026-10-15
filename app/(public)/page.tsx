@@ -1,6 +1,6 @@
 import type { CategoryInterface } from "@/lib/services/category-service";
 import { getCategoriesCached } from "@/lib/services/category-service";
-import type { ArticleInterface } from "@/lib/content/types";
+import type { ArticleViewData } from "@/lib/content/types";
 import {
   getArticles,
   getArticlesByCategory,
@@ -111,7 +111,7 @@ export default async function HomePage() {
     ]);
 
   // Convert to minimal types for HomeContent
-  function toMinimalArticle(a: ArticleInterface): Article | null {
+  function toMinimalArticle(a: ArticleViewData): Article | null {
     if (typeof a.id === "string" && a.id.length > 0) {
       return {
         id: a.id,

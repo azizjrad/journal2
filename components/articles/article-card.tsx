@@ -9,26 +9,10 @@ import { Calendar, User } from "lucide-react";
 import { memo } from "react";
 import { getAuthorDisplayText } from "@/lib/utils/author-utils";
 import { ReportButton } from "@/components/shared/report-button";
-
-interface Article {
-  id: number;
-  title_en: string;
-  title_ar: string;
-  excerpt_en: string;
-  excerpt_ar: string;
-  image_url: string;
-  published_at: string;
-  category_name_en?: string;
-  category_name_ar?: string;
-  category_slug?: string;
-  tags?: { name_en: string; slug: string }[];
-  reading_time_minutes?: number;
-  author_name?: string;
-  author_role?: string;
-}
+import type { ArticleCardData } from "@/lib/content/types";
 
 interface ArticleCardProps {
-  article: Article;
+  article: ArticleCardData;
   featured?: boolean;
 }
 
@@ -95,7 +79,7 @@ export const ArticleCard = memo(function ArticleCard({
                     <span>
                       {getAuthorDisplayText(
                         article.author_role,
-                        article.author_name
+                        article.author_name,
                       )}
                     </span>
                   </div>
@@ -172,7 +156,7 @@ export const ArticleCard = memo(function ArticleCard({
                   <span>
                     {getAuthorDisplayText(
                       article.author_role,
-                      article.author_name
+                      article.author_name,
                     )}
                   </span>
                 </div>

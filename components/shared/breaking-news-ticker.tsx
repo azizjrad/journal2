@@ -5,10 +5,10 @@ import { useState, useEffect, useMemo, memo, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { X } from "lucide-react";
-import type { ArticleInterface } from "@/lib/content/types";
+import type { ArticleViewData } from "@/lib/content/types";
 
 interface BreakingNewsTickerProps {
-  articles?: ArticleInterface[];
+  articles?: ArticleViewData[];
   isVisible?: boolean;
   onClose?: () => void;
 }
@@ -64,7 +64,7 @@ export const BreakingNewsTicker = memo(function BreakingNewsTicker({
   }, [articles]);
 
   // Default featured articles if no articles provided - memoized
-  const defaultItems: ArticleInterface[] = useMemo(
+  const defaultItems: ArticleViewData[] = useMemo(
     () => [
       {
         id: "default-1",

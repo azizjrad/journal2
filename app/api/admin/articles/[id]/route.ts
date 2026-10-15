@@ -12,10 +12,10 @@ import { validateCsrf } from "@/lib/auth/csrf";
 
 export async function GET(
   request: NextRequest,
-  context: { params: { id: string } },
+  context: { params: Promise<{ id: string }> },
 ) {
   try {
-    const { id } = context.params;
+    const { id } = await context.params;
     if (!id) {
       return NextResponse.json(
         { error: "Missing article id" },
@@ -40,7 +40,7 @@ export async function GET(
 
 export async function PUT(
   request: NextRequest,
-  context: { params: { id: string } },
+  context: { params: Promise<{ id: string }> },
 ) {
   // CSRF protection
   if (!validateCsrf(request)) {
@@ -81,7 +81,7 @@ export async function PUT(
         );
       }
     }
-    const { id } = context.params;
+    const { id } = await context.params;
     const body = await request.json();
     const {
       title_en,
@@ -147,7 +147,7 @@ export async function PUT(
 
 export async function DELETE(
   request: NextRequest,
-  context: { params: { id: string } },
+  context: { params: Promise<{ id: string }> },
 ) {
   // CSRF protection
   if (!validateCsrf(request)) {
@@ -166,7 +166,7 @@ export async function DELETE(
         { status: 401 },
       );
     }
-    const { id } = context.params;
+    const { id } = await context.params;
     if (!id) {
       return NextResponse.json(
         { error: "Invalid article ID" },

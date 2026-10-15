@@ -79,6 +79,7 @@ import {
 import type {
   AnalyticsData,
   ArticleInterface,
+  ArticleViewData,
   SearchFilters,
   SearchSuggestion,
 } from "@/lib/content/types";
@@ -86,8 +87,11 @@ import type {
 export { dbConnect } from "./connection";
 
 export type {
+  ArticleCardData,
+  ArticleTag,
   ArticleInterface,
   ArticleWithAuthor,
+  ArticleViewData,
   SearchFilters,
   SearchSuggestion,
 } from "@/lib/content/types";
@@ -107,13 +111,13 @@ export type { UserInterface, UserProfileInterface } from "@/lib/user";
 export async function getArticles(
   limit?: number,
   featured?: boolean,
-): Promise<ArticleInterface[]> {
+): Promise<ArticleViewData[]> {
   return getArticlesRepository(limit, featured);
 }
 
 export async function getArticleById(
   id: string,
-): Promise<ArticleInterface | null> {
+): Promise<ArticleViewData | null> {
   return getArticleByIdRepository(id);
 }
 
@@ -126,19 +130,19 @@ export async function getArticleByIdAdmin(
 export async function getArticlesByCategory(
   categorySlug: string,
   limit?: number,
-): Promise<ArticleInterface[]> {
+): Promise<ArticleViewData[]> {
   return getArticlesByCategoryRepository(categorySlug, limit);
 }
 
 export async function searchArticles(
   query: string,
-): Promise<ArticleInterface[]> {
+): Promise<ArticleViewData[]> {
   return searchArticlesRepository(query);
 }
 
 export async function advancedSearchArticles(
   filters: SearchFilters,
-): Promise<ArticleInterface[]> {
+): Promise<ArticleViewData[]> {
   return advancedSearchArticlesRepository(filters);
 }
 

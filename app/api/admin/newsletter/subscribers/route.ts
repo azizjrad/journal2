@@ -53,7 +53,7 @@ export async function GET(request: NextRequest) {
     // Check if refresh is requested
     const refresh = searchParams.get("refresh");
     if (refresh === "true") {
-      revalidateTag("newsletter-subscribers");
+      revalidateTag("newsletter-subscribers", "max");
     }
 
     const [subscribers, stats] = await Promise.all([

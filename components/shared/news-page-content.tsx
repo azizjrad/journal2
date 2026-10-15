@@ -3,10 +3,10 @@
 import { useLanguage } from "@/lib/context/language-context";
 import { ArticleCard } from "@/components/articles/article-card";
 import { NewsPagination } from "@/components/shared/news-pagination";
-import type { Article } from "@/lib/db";
+import type { ArticleCardData } from "@/lib/content/types";
 
 interface NewsPageContentProps {
-  paginatedArticles: Article[];
+  paginatedArticles: ArticleCardData[];
   currentPage: number;
   totalPages: number;
   totalArticles: number;
@@ -31,7 +31,7 @@ export function NewsPageContent({
           {t(
             "news_description",
             "Stay informed with our comprehensive news coverage. Browse through all articles sorted by publication date.",
-            "ابق على اطلاع مع تغطيتنا الإخبارية الشاملة. تصفح جميع المقالات مرتبة حسب تاريخ النشر."
+            "ابق على اطلاع مع تغطيتنا الإخبارية الشاملة. تصفح جميع المقالات مرتبة حسب تاريخ النشر.",
           )}
         </p>
       </div>
@@ -79,14 +79,14 @@ export function NewsPageContent({
               {t(
                 "no_articles",
                 "No Articles Available",
-                "لا توجد مقالات متاحة"
+                "لا توجد مقالات متاحة",
               )}
             </h3>
             <p className="text-gray-600">
               {t(
                 "no_articles_description",
                 "There are currently no published articles. Please check back later.",
-                "لا توجد مقالات منشورة حالياً. يرجى المراجعة لاحقاً."
+                "لا توجد مقالات منشورة حالياً. يرجى المراجعة لاحقاً.",
               )}
             </p>
           </div>

@@ -41,7 +41,7 @@ export async function generateMetadata({
   // Combine keywords from meta_keywords and tags
   const keywords = [
     ...(article.meta_keywords_en ? article.meta_keywords_en.split(",") : []),
-    ...(article.tags || []),
+    ...(article.tags?.map((tag) => tag.name_en) || []),
   ].join(", ");
 
   return {
