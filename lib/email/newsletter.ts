@@ -1,6 +1,24 @@
-import { getNewsletterSubscribers } from "@/lib/services/newsletter-service";
+﻿import { getNewsletterSubscribers } from "@/lib/services/newsletter-service";
 import { sendNewsletterEmail } from "@/lib/email/email-sendgrid";
 import { SentNewsletter } from "@/lib/models/SentNewsletter";
+
+const BASE_URL = process.env.APP_BASE_URL || "http://localhost:3000";
+const BRAND_NAME = "The Maghreb Orbit";
+const BRAND_TAGLINE = "Your Trusted News Source";
+const ACCENT_COLOR = "#b91c1c";
+const TEXT_COLOR = "#111827";
+const MUTED_COLOR = "#4b5563";
+const BORDER_COLOR = "#e5e7eb";
+const BG_COLOR = "#f6f7f9";
+
+function escapeHtml(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
 
 // Beautiful newsletter HTML template
 function createNewsletterHTML(
@@ -8,247 +26,79 @@ function createNewsletterHTML(
   content: string,
   imageCount: number = 0,
 ): string {
-  // Auto-generate image HTML at the bottom if there are attachments
   let autoImages = "";
   if (imageCount > 0) {
-    autoImages = '<div style="margin-top: 30px;">';
+    autoImages = '<div style="margin-top:24px;">';
     for (let i = 1; i <= imageCount; i++) {
       autoImages += `
-        <div style="margin: 20px 0; text-align: center;">
-          <img src="cid:image${i}" alt="Attachment ${i}" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1);">
+        <div style="margin:16px 0;text-align:center;">
+          <img src="cid:image${i}" alt="Newsletter image ${i}" style="max-width:100%;height:auto;border-radius:6px;border:1px solid ${BORDER_COLOR};">
         </div>
       `;
     }
     autoImages += "</div>";
   }
 
-  return `
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>${subject}</title>
-      <style>
-        body {
-          margin: 0;
-          padding: 0;
-          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-          background-color: #f4f4f4;
-          line-height: 1.6;
-        }
-        .email-container {
-          max-width: 600px;
-          margin: 20px auto;
-          background-color: #ffffff;
-          border-radius: 12px;
-          overflow: hidden;
-          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        }
-        .email-header {
-          background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-          padding: 40px 30px;
-          text-align: center;
-        }
-        .logo {
-          font-size: 42px;
-          font-weight: bold;
-          color: #ffffff;
-          margin: 0;
-          letter-spacing: -1px;
-          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-        }
-        .tagline {
-          color: #ffffff;
-          font-size: 14px;
-          margin-top: 8px;
-          opacity: 0.95;
-          letter-spacing: 1px;
-        }
-        .email-body {
-          padding: 40px 30px;
-          color: #333333;
-        }
-        .email-subject {
-          font-size: 28px;
-          font-weight: bold;
-          color: #1f2937;
-          margin: 0 0 25px 0;
-          line-height: 1.3;
-        }
-        .email-content {
-          font-size: 16px;
-          color: #4b5563;
-          line-height: 1.8;
-          margin-bottom: 30px;
-        }
-        .email-content p {
-          margin: 15px 0;
-        }
-        .email-content img {
-          max-width: 100%;
-          height: auto;
-          border-radius: 8px;
-          margin: 20px 0;
-        }
-        .email-content a {
-          color: #dc2626;
-          text-decoration: none;
-          font-weight: 600;
-          border-bottom: 2px solid transparent;
-          transition: border-color 0.3s ease;
-        }
-        .email-content a:hover {
-          border-bottom-color: #dc2626;
-        }
-        .divider {
-          height: 1px;
-          background: linear-gradient(to right, transparent, #e5e7eb, transparent);
-          margin: 30px 0;
-        }
-        .cta-button {
-          display: inline-block;
-          padding: 14px 32px;
-          background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-          color: #ffffff !important;
-          text-decoration: none;
-          border-radius: 8px;
-          font-weight: bold;
-          font-size: 16px;
-          margin: 20px 0;
-          box-shadow: 0 4px 6px rgba(220, 38, 38, 0.3);
-          transition: transform 0.2s, box-shadow 0.2s;
-        }
-        .cta-button:hover {
-          transform: translateY(-2px);
-          box-shadow: 0 6px 12px rgba(220, 38, 38, 0.4);
-        }
-        .email-footer {
-          background-color: #f9fafb;
-          padding: 30px;
-          text-align: center;
-          border-top: 1px solid #e5e7eb;
-        }
-        .footer-text {
-          color: #6b7280;
-          font-size: 14px;
-          margin: 10px 0;
-        }
-        .footer-links {
-          margin: 20px 0;
-        }
-        .footer-links a {
-          color: #dc2626;
-          text-decoration: none;
-          margin: 0 12px;
-          font-size: 14px;
-          font-weight: 600;
-        }
-        .footer-links a:hover {
-          text-decoration: underline;
-        }
-        .social-icons {
-          margin: 20px 0;
-        }
-        .social-icons a {
-          display: inline-block;
-          margin: 0 8px;
-          text-decoration: none;
-        }
-        .unsubscribe {
-          color: #9ca3af;
-          font-size: 12px;
-          margin-top: 20px;
-        }
-        .unsubscribe a {
-          color: #6b7280;
-          text-decoration: underline;
-        }
-        @media only screen and (max-width: 600px) {
-          .email-container {
-            margin: 10px;
-            border-radius: 8px;
-          }
-          .email-header {
-            padding: 30px 20px;
-          }
-          .logo {
-            font-size: 32px;
-          }
-          .email-body {
-            padding: 30px 20px;
-          }
-          .email-subject {
-            font-size: 22px;
-          }
-          .email-content {
-            font-size: 15px;
-          }
-          .email-footer {
-            padding: 20px;
-          }
-        }
-      </style>
-    </head>
-    <body>
-      <div class="email-container">
-        <!-- Header -->
-        <div class="email-header">
-          <h1 class="logo">The Maghreb Orbit</h1>
-          <p class="tagline">Your Trusted News Source</p>
-        </div>
-        
-        <!-- Body -->
-        <div class="email-body">
-          <h2 class="email-subject">${subject}</h2>
-          <div class="divider"></div>
-          <div class="email-content">
-            ${content}
-            ${autoImages}
-          </div>
-          <div class="divider"></div>
-          <p style="text-align: center;">
-            <a href="${
-              process.env.APP_BASE_URL || "http://localhost:3000"
-            }" class="cta-button">
-              Visit The Maghreb Orbit
-            </a>
-          </p>
-        </div>
-        
-        <!-- Footer -->
-        <div class="email-footer">
-          <p class="footer-text">
-            <strong>The Maghreb Orbit</strong> - Delivering quality journalism you can trust
-          </p>
-          <div class="footer-links">
-            <a href="${
-              process.env.APP_BASE_URL || "http://localhost:3000"
-            }/about">About Us</a> |
-            <a href="${
-              process.env.APP_BASE_URL || "http://localhost:3000"
-            }/contact">Contact</a> |
-            <a href="${
-              process.env.APP_BASE_URL || "http://localhost:3000"
-            }/privacy">Privacy Policy</a>
-          </div>
-          <div class="social-icons">
-            <!-- Add your social media icons here -->
-          </div>
-          <p class="footer-text">
-            © ${new Date().getFullYear()} The Maghreb Orbit. All rights reserved.
-          </p>
-          <p class="unsubscribe">
-            You're receiving this email because you subscribed to The Maghreb Orbit Newsletter.<br>
-            <a href="${
-              process.env.APP_BASE_URL || "http://localhost:3000"
-            }/settings?tab=subscription">Manage your subscription</a>
-          </p>
-        </div>
-      </div>
-    </body>
-    </html>
-  `;
+  const year = new Date().getFullYear();
+  const safeSubject = escapeHtml(subject);
+
+  return `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>${safeSubject}</title>
+</head>
+<body style="margin:0;padding:0;background:${BG_COLOR};font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:${TEXT_COLOR};">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:${BG_COLOR};padding:24px 12px;">
+    <tr>
+      <td align="center">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:640px;background:#ffffff;border:1px solid ${BORDER_COLOR};border-radius:8px;">
+          <tr>
+            <td style="padding:28px 32px 16px 32px;border-bottom:1px solid ${BORDER_COLOR};">
+              <div style="font-size:20px;line-height:1.3;font-weight:700;color:${TEXT_COLOR};">${escapeHtml(BRAND_NAME)}</div>
+              <div style="margin-top:6px;font-size:13px;line-height:1.5;color:${MUTED_COLOR};">${escapeHtml(BRAND_TAGLINE)}</div>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:28px 32px 32px 32px;">
+              <h1 style="margin:0 0 16px 0;font-size:26px;line-height:1.3;font-weight:600;color:${TEXT_COLOR};">${safeSubject}</h1>
+              <div style="font-size:15px;line-height:1.8;color:${MUTED_COLOR};">
+                ${content}
+                ${autoImages}
+              </div>
+              <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:28px 0 0 0;">
+                <tr>
+                  <td align="center" style="border-radius:6px;background:${ACCENT_COLOR};">
+                    <a href="${escapeHtml(BASE_URL)}" style="display:inline-block;padding:12px 20px;color:#ffffff;text-decoration:none;font-weight:600;font-size:15px;line-height:1.2;">
+                      Visit ${escapeHtml(BRAND_NAME)}
+                    </a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+          <tr>
+            <td style="padding:20px 32px;background:#fafafa;border-top:1px solid ${BORDER_COLOR};border-radius:0 0 8px 8px;">
+              <p style="margin:0 0 10px 0;font-size:13px;line-height:1.6;color:${MUTED_COLOR};">You are receiving this email because you subscribed to the ${escapeHtml(BRAND_NAME)} newsletter.</p>
+              <p style="margin:0 0 10px 0;font-size:12px;line-height:1.6;">
+                <a href="${escapeHtml(BASE_URL)}/about" style="color:${ACCENT_COLOR};text-decoration:none;">About</a>
+                <span style="color:#9ca3af;">&nbsp;|&nbsp;</span>
+                <a href="${escapeHtml(BASE_URL)}/contact" style="color:${ACCENT_COLOR};text-decoration:none;">Contact</a>
+                <span style="color:#9ca3af;">&nbsp;|&nbsp;</span>
+                <a href="${escapeHtml(BASE_URL)}/privacy" style="color:${ACCENT_COLOR};text-decoration:none;">Privacy</a>
+                <span style="color:#9ca3af;">&nbsp;|&nbsp;</span>
+                <a href="${escapeHtml(BASE_URL)}/settings?tab=subscription" style="color:${ACCENT_COLOR};text-decoration:none;">Manage subscription</a>
+              </p>
+              <p style="margin:0;font-size:12px;line-height:1.6;color:#6b7280;">&copy; ${year} ${escapeHtml(BRAND_NAME)}. All rights reserved.</p>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+</html>`;
 }
 
 export async function sendNewsletterToSubscribers(

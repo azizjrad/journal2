@@ -284,151 +284,58 @@ export default function NewsletterAdmin() {
             <div className="mt-8 p-6 rounded-xl bg-white shadow-2xl border border-gray-200">
               <div className="mb-4 flex items-center justify-between">
                 <span className="text-xl font-bold text-gray-800">
-                  📧 Email Preview
+                  Email preview
                 </span>
                 <span className="text-sm text-gray-500 italic">
-                  This is how subscribers will see your newsletter
+                  Approximate preview of how subscribers will see your newsletter
                 </span>
               </div>
-              <div className="border-2 border-gray-300 rounded-lg overflow-hidden">
+              <div className="border border-gray-200 rounded-lg overflow-hidden bg-[#f6f7f9]">
                 <iframe
                   srcDoc={`
                     <!DOCTYPE html>
                     <html lang="en">
                     <head>
-                      <meta charset="UTF-8">
-                      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                      <meta charset="UTF-8" />
+                      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
                       <title>${subject || "Newsletter Preview"}</title>
-                      <style>
-                        body {
-                          margin: 0;
-                          padding: 0;
-                          font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-                          background-color: #f4f4f4;
-                          line-height: 1.6;
-                        }
-                        .email-container {
-                          max-width: 600px;
-                          margin: 20px auto;
-                          background-color: #ffffff;
-                          border-radius: 12px;
-                          overflow: hidden;
-                          box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-                        }
-                        .email-header {
-                          background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-                          padding: 40px 30px;
-                          text-align: center;
-                        }
-                        .logo {
-                          font-size: 42px;
-                          font-weight: bold;
-                          color: #ffffff;
-                          margin: 0;
-                          letter-spacing: -1px;
-                          text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
-                        }
-                        .tagline {
-                          color: #ffffff;
-                          font-size: 14px;
-                          margin-top: 8px;
-                          opacity: 0.95;
-                          letter-spacing: 1px;
-                        }
-                        .email-body {
-                          padding: 40px 30px;
-                          color: #333333;
-                        }
-                        .email-subject {
-                          font-size: 28px;
-                          font-weight: bold;
-                          color: #1f2937;
-                          margin: 0 0 25px 0;
-                          line-height: 1.3;
-                        }
-                        .email-content {
-                          font-size: 16px;
-                          color: #4b5563;
-                          line-height: 1.8;
-                          margin-bottom: 30px;
-                          white-space: pre-wrap;
-                        }
-                        .email-content p {
-                          margin: 15px 0;
-                        }
-                        .divider {
-                          height: 1px;
-                          background: linear-gradient(to right, transparent, #e5e7eb, transparent);
-                          margin: 30px 0;
-                        }
-                        .cta-button {
-                          display: inline-block;
-                          padding: 14px 32px;
-                          background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-                          color: #ffffff !important;
-                          text-decoration: none;
-                          border-radius: 8px;
-                          font-weight: bold;
-                          font-size: 16px;
-                          margin: 20px 0;
-                          box-shadow: 0 4px 6px rgba(220, 38, 38, 0.3);
-                        }
-                        .email-footer {
-                          background-color: #f9fafb;
-                          padding: 30px;
-                          text-align: center;
-                          border-top: 1px solid #e5e7eb;
-                        }
-                        .footer-text {
-                          color: #6b7280;
-                          font-size: 14px;
-                          margin: 10px 0;
-                        }
-                        .footer-links a {
-                          color: #dc2626;
-                          text-decoration: none;
-                          margin: 0 12px;
-                          font-size: 14px;
-                          font-weight: 600;
-                        }
-                      </style>
                     </head>
-                    <body>
-                      <div class="email-container">
-                        <div class="email-header">
-                          <h1 class="logo">The Maghreb Orbit</h1>
-                          <p class="tagline">Your Trusted News Source</p>
-                        </div>
-                        <div class="email-body">
-                          <h2 class="email-subject">${
-                            subject || "Newsletter Subject"
-                          }</h2>
-                          <div class="divider"></div>
-                          <div class="email-content">
-                            ${
-                              content ||
-                              "<p style='color: #9ca3af; font-style: italic;'>Your newsletter content will appear here...</p>"
-                            }
-                          </div>
-                          <div class="divider"></div>
-                          <p style="text-align: center;">
-                            <a href="#" class="cta-button">Visit The Maghreb Orbit</a>
-                          </p>
-                        </div>
-                        <div class="email-footer">
-                          <p class="footer-text">
-                            <strong>The Maghreb Orbit</strong> - Delivering quality journalism you can trust
-                          </p>
-                          <div class="footer-links">
-                            <a href="#">About Us</a> |
-                            <a href="#">Contact</a> |
-                            <a href="#">Privacy Policy</a>
-                          </div>
-                          <p class="footer-text">
-                            © ${new Date().getFullYear()} The Maghreb Orbit. All rights reserved.
-                          </p>
-                        </div>
-                      </div>
+                    <body style="margin:0;padding:0;background:#f6f7f9;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;color:#111827;">
+                      <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f6f7f9;padding:24px 12px;">
+                        <tr>
+                          <td align="center">
+                            <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:640px;background:#ffffff;border:1px solid #e5e7eb;border-radius:8px;">
+                              <tr>
+                                <td style="padding:28px 32px 16px 32px;border-bottom:1px solid #e5e7eb;">
+                                  <div style="font-size:20px;line-height:1.3;font-weight:700;color:#111827;">The Maghreb Orbit</div>
+                                  <div style="margin-top:6px;font-size:13px;line-height:1.5;color:#4b5563;">Your Trusted News Source</div>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="padding:28px 32px 32px 32px;">
+                                  <h1 style="margin:0 0 16px 0;font-size:26px;line-height:1.3;font-weight:600;color:#111827;">${subject || "Newsletter subject"}</h1>
+                                  <div style="font-size:15px;line-height:1.8;color:#4b5563;white-space:pre-wrap;">
+                                    ${content || "<p style='margin:0;color:#9ca3af;font-style:italic;'>Your newsletter content will appear here...</p>"}
+                                  </div>
+                                  <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:28px 0 0 0;">
+                                    <tr>
+                                      <td align="center" style="border-radius:6px;background:#b91c1c;">
+                                        <a href="#" style="display:inline-block;padding:12px 20px;color:#ffffff;text-decoration:none;font-weight:600;font-size:15px;line-height:1.2;">Visit The Maghreb Orbit</a>
+                                      </td>
+                                    </tr>
+                                  </table>
+                                </td>
+                              </tr>
+                              <tr>
+                                <td style="padding:20px 32px;background:#fafafa;border-top:1px solid #e5e7eb;border-radius:0 0 8px 8px;">
+                                  <p style="margin:0 0 10px 0;font-size:13px;line-height:1.6;color:#4b5563;">You are receiving this email because you subscribed to the The Maghreb Orbit newsletter.</p>
+                                  <p style="margin:0;font-size:12px;line-height:1.6;color:#6b7280;">&copy; ${new Date().getFullYear()} The Maghreb Orbit. All rights reserved.</p>
+                                </td>
+                              </tr>
+                            </table>
+                          </td>
+                        </tr>
+                      </table>
                     </body>
                     </html>
                   `}
