@@ -4,7 +4,6 @@ import {
   getFeaturedArticlesCached,
 } from "@/lib/content/article-service";
 import Header from "@/components/layout/header";
-import { BreakingNewsTicker } from "@/components/shared/breaking-news-ticker";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
 import { Badge } from "@/components/ui/badge";
 import { Footer } from "@/components/layout/footer";
@@ -111,35 +110,32 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#f8f7f4] text-slate-900">
       <ViewTracker articleId={article.id} title={article.title_en} />
       <Header categories={categories} />
-      <BreakingNewsTicker articles={featuredArticles} />
       <Breadcrumb items={breadcrumbItems} />
 
-      <main className="container mx-auto px-4 lg:px-6 py-6">
-        <article className="max-w-4xl mx-auto bg-white rounded-xl shadow-lg overflow-hidden border border-gray-200">
+      <main className="container mx-auto px-4 lg:px-6 py-8 md:py-10">
+        <article className="max-w-4xl mx-auto bg-white border border-stone-200 overflow-hidden">
           {/* Article Header */}
-          <div className="relative h-64 md:h-96 bg-gray-100">
+          <div className="relative aspect-[16/9] md:aspect-[21/10] bg-stone-200 border-b border-stone-200">
             <Image
               src={article.image_url || "/placeholder.svg"}
               alt={article.title_en}
               fill
               className="object-cover"
               priority
-              sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 60vw"
+              sizes="(max-width: 768px) 100vw, 900px"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
           </div>
 
           {/* Article Content with Language Support */}
           <ArticleContent article={article} />
 
           {/* Meta Information */}
-          <div className="px-6 md:px-10 pb-4">
-            <div className="flex items-center justify-between text-sm text-gray-600 border-t border-gray-200 pt-4">
-              <div className="flex items-center gap-4">
-                {/* Date */}
+          <div className="px-6 md:px-10 pb-6">
+            <div className="flex flex-wrap items-center justify-between gap-3 text-sm text-slate-500 border-t border-stone-200 pt-5">
+              <div className="flex flex-wrap items-center gap-x-5 gap-y-2">
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
                   <time dateTime={article.published_at}>
@@ -147,7 +143,6 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
                   </time>
                 </div>
 
-                {/* Author */}
                 {(article as any).author_role && (
                   <div className="flex items-center gap-2">
                     <User className="h-4 w-4" />
@@ -164,9 +159,8 @@ export default async function ArticlePage({ params }: ArticlePageProps) {
           </div>
 
           {/* Share Buttons */}
-          {/* Share Buttons */}
-          <div className="border-t-2 border-gray-200 mt-4 bg-gray-50 px-6 md:px-10 py-6 rounded-b-xl">
-            <div className="flex items-center justify-between">
+          <div className="border-t border-stone-200 bg-[#fbfaf7] px-6 md:px-10 py-5">
+            <div className="flex items-center justify-between gap-4">
               <div className="flex-1">
                 <ShareButtons
                   url={`${process.env.NEXT_PUBLIC_SITE_URL || ""}/article/${

@@ -41,7 +41,6 @@ interface HomeContentProps {
   bigStoryArticle?: BigStoryArticle | null;
 }
 
-// Memoized child components for better performance
 const MemoizedHeroSection = memo(HeroSection);
 const MemoizedLatestNewsSection = memo(LatestNewsSection);
 
@@ -53,33 +52,45 @@ function HomeContentComponent({
   featuredCategoryArticles = [],
   bigStoryArticle = null,
 }: HomeContentProps) {
-  return (
-    <main className="bg-stone-100">
-      {/* Hero Section with Breaking News and Featured Stories */}
-      <MemoizedHeroSection
-        featuredArticles={featuredArticles}
-        recentArticles={recentArticles}
-      />
+  const seen = new Set<string>();
+  const uniqueById = (arr: Article[]) => {
+    const out: Article[] = [];
+    for (const a of arr) {
+      if (!a?.id || seen.has(a.id)) continue;
+      seen.add(a.id);
+      out.push(a);
+    }
+    return out;
+  };
 
-      {/* Big Story Section (above featured categories) */}
+  const primaryPool = uniqueById([...featuredArticles, ...recentArticles]);
+  const lead = primaryPool[0];
+  const indexList = primaryPool.slice(1, 7);
+  const moreDispatches = uniqueById(otherArticles).slice(0, 6);
+
+  return (
+    <main className="bg-[#f8f7f4]">
+      <MemoizedHeroSection lead={lead} items={indexList} />
+
       {bigStoryArticle && (
-        <div className="container mx-auto px-4 lg:px-6 py-4">
+        <div className="container mx-auto px-4 lg:px-6 py-8 md:py-10 border-t border-stone-200">
           <BigStorySection article={bigStoryArticle} />
         </div>
       )}
 
-      {/* Featured Category Section (smaller, under big story, before latest news) */}
       {featuredCategoryArticles.length > 0 && (
-        <div className="container mx-auto px-4 lg:px-6 py-4">
-          <FeaturedCategorySection articles={featuredCategoryArticles} small />
+        <div className="container mx-auto px-4 lg:px-6 py-8 md:py-10 border-t border-stone-200">
+          <FeaturedCategorySection articles={featuredCategoryArticles} />
         </div>
       )}
 
-      {/* Latest News Grid */}
-      <MemoizedLatestNewsSection articles={otherArticles} />
+      {moreDispatches.length > 0 && (
+        <div className="border-t border-stone-200">
+          <MemoizedLatestNewsSection articles={moreDispatches} />
+        </div>
+      )}
     </main>
   );
 }
 
-// Memoize the entire component to prevent unnecessary re-renders
 export const HomeContent = memo(HomeContentComponent);

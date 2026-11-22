@@ -3,8 +3,8 @@ import Header from "@/components/layout/header";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
 
 export const metadata: Metadata = {
-  title: "Terms of Service - The Maghreb Orbit",
-  description: "Terms of service for The Maghreb Orbit website",
+  title: "Terms of Service - The Maghreb Corridor",
+  description: "Terms of service for The Maghreb Corridor website",
 };
 
 export default function TermsPage() {
@@ -30,7 +30,7 @@ export default function TermsPage() {
                   Acceptance of Terms
                 </h2>
                 <p className="text-gray-600 leading-relaxed">
-                  By accessing and using The Maghreb Orbit, you accept and agree
+                  By accessing and using The Maghreb Corridor, you accept and agree
                   to be bound by the terms and provision of this agreement. If
                   you do not agree to abide by the above, please do not use this
                   service.
@@ -43,7 +43,7 @@ export default function TermsPage() {
                 </h2>
                 <p className="text-gray-600 leading-relaxed">
                   Permission is granted to temporarily download one copy of the
-                  materials on The Maghreb Orbit for personal, non-commercial
+                  materials on The Maghreb Corridor for personal, non-commercial
                   transitory viewing only. This is the grant of a license, not a
                   transfer of title.
                 </p>
@@ -54,8 +54,8 @@ export default function TermsPage() {
                   Disclaimer
                 </h2>
                 <p className="text-gray-600 leading-relaxed">
-                  The materials on The Maghreb Orbit are provided on an 'as is'
-                  basis. The Maghreb Orbit makes no warranties, expressed or
+                  The materials on The Maghreb Corridor are provided on an 'as is'
+                  basis. The Maghreb Corridor makes no warranties, expressed or
                   implied, and hereby disclaims and negates all other warranties
                   including, without limitation, implied warranties or
                   conditions of merchantability, fitness for a particular
@@ -69,11 +69,11 @@ export default function TermsPage() {
                   Limitations
                 </h2>
                 <p className="text-gray-600 leading-relaxed">
-                  In no event shall The Maghreb Orbit or its suppliers be liable
+                  In no event shall The Maghreb Corridor or its suppliers be liable
                   for any damages (including, without limitation, damages for
                   loss of data or profit, or due to business interruption)
                   arising out of the use or inability to use the materials on
-                  The Maghreb Orbit, even if The Maghreb Orbit or an authorized
+                  The Maghreb Corridor, even if The Maghreb Corridor or an authorized
                   representative has been notified orally or in writing of the
                   possibility of such damage.
                 </p>
@@ -84,7 +84,7 @@ export default function TermsPage() {
                   Accuracy of Materials
                 </h2>
                 <p className="text-gray-600 leading-relaxed">
-                  The materials appearing on The Maghreb Orbit could include
+                  The materials appearing on The Maghreb Corridor could include
                   technical, typographical, or photographic errors. The Maghreb
                   Orbit does not warrant that any of the materials on its
                   website are accurate, complete, or current.

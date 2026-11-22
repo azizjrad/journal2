@@ -1,6 +1,5 @@
 import Header from "@/components/layout/header";
 import { Footer } from "@/components/layout/footer";
-import { BreakingNewsTicker } from "@/components/shared/breaking-news-ticker";
 import { ContactContent } from "@/components/shared/contact-content";
 import { getCategories } from "@/lib/services/category-service";
 import { getFeaturedArticlesCached } from "@/lib/content/article-service";
@@ -21,8 +20,6 @@ export default async function ContactPage() {
   return (
     <div className="min-h-screen bg-white">
       <Header categories={categories} />
-      <BreakingNewsTicker articles={featuredArticles} />
-
       <main className="container mx-auto px-4 lg:px-6">
         <ContactContent />
       </main>

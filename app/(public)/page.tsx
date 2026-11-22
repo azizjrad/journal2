@@ -156,15 +156,10 @@ export default async function HomePage() {
 
   return (
     <MainLayout>
-      <div className="min-h-screen bg-stone-100">
-        <FixedHeaderWrapper
-          categories={categoriesRaw}
-          articles={featuredArticlesRaw}
-        />
-        <div style={{ paddingTop: "140px" }}>
-          {/* Space for fixed header */}
+      <div className="min-h-screen bg-[#f8f7f4] text-slate-900">
+        <FixedHeaderWrapper categories={categoriesRaw} />
+        <div className="pt-[188px] md:pt-[208px]">
           <HomeBreadcrumb />
-          {/* Removed duplicate Featured Category Section; now only rendered inside HomeContent */}
           <HomeContent
             featuredArticles={featuredArticles}
             otherArticles={otherArticles}

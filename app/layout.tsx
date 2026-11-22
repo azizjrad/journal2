@@ -18,27 +18,26 @@ export const metadata: Metadata = {
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
   ),
-  title: "The Maghreb Orbit - المدار المغاربي | News as is... without bias",
+  title: "The Maghreb Corridor - نشرة الممر المغاربي",
   description:
-    "The Maghreb Orbit - News as is... without bias | المدار المغاربي - الخبر كما هو ...بلا انحياز. Your trusted source for unbiased news from the Maghreb region and beyond.",
+    "The Maghreb Corridor - Tri-weekly situational and policy briefing. Situational awareness, mobility and local governance across Libya and North Africa. نشرة الممر المغاربي - نشرة رصد وتحليل سياسات تصدر ثلاث مرات أسبوعياً.",
   keywords: [
     "news",
     "journal",
-    "digital",
-    "global",
-    "breaking news",
-    "أخبار",
-    "جريدة",
-    "عالمية",
-    "The Maghreb Orbit",
-    "المدار المغاربي",
-    "maghreb news",
-    "unbiased news",
-    "الخبر كما هو",
+    "briefing",
+    "maghreb",
+    "libya",
+    "north africa",
+    "policy",
+    "governance",
+    "mobility",
+    "The Maghreb Corridor",
+    "نشرة الممر المغاربي",
+    "الممر المغاربي",
   ],
-  authors: [{ name: "The Maghreb Orbit" }],
-  creator: "The Maghreb Orbit",
-  publisher: "The Maghreb Orbit",
+  authors: [{ name: "The Maghreb Corridor" }],
+  creator: "The Maghreb Corridor",
+  publisher: "The Maghreb Corridor",
   formatDetection: {
     email: false,
     address: false,
@@ -55,24 +54,24 @@ export const metadata: Metadata = {
   manifest: "/manifest.json",
   openGraph: {
     type: "website",
-    title: "The Maghreb Orbit - المدار المغاربي | News as is... without bias",
+    title: "The Maghreb Corridor - نشرة الممر المغاربي",
     description:
-      "The Maghreb Orbit - News as is... without bias | المدار المغاربي - الخبر كما هو ...بلا انحياز",
-    siteName: "The Maghreb Orbit",
+      "Tri-weekly situational and policy briefing across Libya and North Africa.",
+    siteName: "The Maghreb Corridor",
     images: [
       {
         url: "/logonews.png",
         width: 1200,
         height: 630,
-        alt: "The Maghreb Orbit",
+        alt: "The Maghreb Corridor",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "The Maghreb Orbit - المدار المغاربي | News as is... without bias",
+    title: "The Maghreb Corridor - نشرة الممر المغاربي",
     description:
-      "The Maghreb Orbit - News as is... without bias | المدار المغاربي - الخبر كما هو ...بلا انحياز",
+      "Tri-weekly situational and policy briefing across Libya and North Africa.",
     images: ["/logonews.png"],
   },
 };
@@ -81,7 +80,7 @@ export const viewport = {
   width: "device-width",
   initialScale: 1,
   maximumScale: 1,
-  themeColor: "#111827",
+  themeColor: "#1f2937",
   colorScheme: "dark light",
 };
 
@@ -116,8 +115,8 @@ export default async function RootLayout({
           sizes="180x180"
         />
         <link rel="manifest" href="/manifest.json" />
-        <meta name="theme-color" content="#111827" />
-        <meta name="msapplication-TileColor" content="#1f2937" />
+        <meta name="theme-color" content="#1f2937" />
+        <meta name="msapplication-TileColor" content="#f8f7f4" />
         <meta name="msapplication-config" content="/browserconfig.xml" />
       </head>
       <body className={inter.className}>

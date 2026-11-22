@@ -3,9 +3,9 @@ import Header from "@/components/layout/header";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
 
 export const metadata: Metadata = {
-  title: "Advertise with The Maghreb Orbit",
+  title: "Advertise with The Maghreb Corridor",
   description:
-    "Advertising opportunities with The Maghreb Orbit - reach a targeted Maghreb business readership",
+    "Advertising opportunities with The Maghreb Corridor - reach a targeted Maghreb business readership",
 };
 
 export default function AdvertisePage() {
@@ -22,7 +22,7 @@ export default function AdvertisePage() {
         <div className="max-w-4xl mx-auto px-4">
           <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
             <h1 className="text-4xl font-bold text-gray-900 mb-8">
-              Advertise with The Maghreb Orbit
+              Advertise with The Maghreb Corridor
             </h1>
 
             <div className="prose prose-lg max-w-none space-y-8">

@@ -307,7 +307,7 @@ export default function NewsletterAdmin() {
                             <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="max-width:640px;background:#ffffff;border:1px solid #e5e7eb;border-radius:8px;">
                               <tr>
                                 <td style="padding:28px 32px 16px 32px;border-bottom:1px solid #e5e7eb;">
-                                  <div style="font-size:20px;line-height:1.3;font-weight:700;color:#111827;">The Maghreb Orbit</div>
+                                  <div style="font-size:20px;line-height:1.3;font-weight:700;color:#111827;">The Maghreb Corridor</div>
                                   <div style="margin-top:6px;font-size:13px;line-height:1.5;color:#4b5563;">Your Trusted News Source</div>
                                 </td>
                               </tr>
@@ -320,7 +320,7 @@ export default function NewsletterAdmin() {
                                   <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:28px 0 0 0;">
                                     <tr>
                                       <td align="center" style="border-radius:6px;background:#b91c1c;">
-                                        <a href="#" style="display:inline-block;padding:12px 20px;color:#ffffff;text-decoration:none;font-weight:600;font-size:15px;line-height:1.2;">Visit The Maghreb Orbit</a>
+                                        <a href="#" style="display:inline-block;padding:12px 20px;color:#ffffff;text-decoration:none;font-weight:600;font-size:15px;line-height:1.2;">Visit The Maghreb Corridor</a>
                                       </td>
                                     </tr>
                                   </table>
@@ -328,8 +328,8 @@ export default function NewsletterAdmin() {
                               </tr>
                               <tr>
                                 <td style="padding:20px 32px;background:#fafafa;border-top:1px solid #e5e7eb;border-radius:0 0 8px 8px;">
-                                  <p style="margin:0 0 10px 0;font-size:13px;line-height:1.6;color:#4b5563;">You are receiving this email because you subscribed to the The Maghreb Orbit newsletter.</p>
-                                  <p style="margin:0;font-size:12px;line-height:1.6;color:#6b7280;">&copy; ${new Date().getFullYear()} The Maghreb Orbit. All rights reserved.</p>
+                                  <p style="margin:0 0 10px 0;font-size:13px;line-height:1.6;color:#4b5563;">You are receiving this email because you subscribed to the The Maghreb Corridor newsletter.</p>
+                                  <p style="margin:0;font-size:12px;line-height:1.6;color:#6b7280;">&copy; ${new Date().getFullYear()} The Maghreb Corridor. All rights reserved.</p>
                                 </td>
                               </tr>
                             </table>

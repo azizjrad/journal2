@@ -18,51 +18,43 @@ interface Props {
   small?: boolean;
 }
 
-export function FeaturedCategorySection({ articles, small }: Props) {
+export function FeaturedCategorySection({ articles }: Props) {
   const { language } = useLanguage();
   const isArabic = language === "ar";
-  // Ultra-compact style for homepage
+
   return (
-    <section className="w-full border-b border-gray-300 my-20">
-      <div className="flex flex-col gap-0.5 sm:flex-row sm:gap-4 justify-between items-stretch py-0.5 mb-4">
-        {articles.map((article, idx) => (
-          <React.Fragment key={article.id}>
-            <div className="flex-1 min-w-0 transition-all duration-300 rounded-xl hover:bg-gray-200/50 group py-4 px-2 sm:min-w-[320px] sm:pr-1 sm:py-4 sm:px-2 sm:hover:px-5 hover:px-5">
-              <Link href={article.href} className="block group">
-                <div className="flex flex-row items-start w-full">
-                  <div className="flex flex-col flex-1 min-w-0 justify-start">
-                    <div className="text-[11px] font-semibold tracking-widest uppercase text-gray-500 mb-3">
-                      {article.categoryLabel}
-                    </div>
-                    <div className="font-bold text-gray-900 group-hover:text-red-600 line-clamp-3 text-[15px] mt-0 leading-[1.1] transition-colors duration-300">
-                      {isArabic
-                        ? article.title_ar || article.title
-                        : article.title}
-                    </div>
-                  </div>
-                  {article.image_url && (
-                    <div className="flex-shrink-0 ml-2">
-                      <Image
-                        src={article.image_url}
-                        alt={
-                          isArabic
-                            ? article.title_ar || article.title
-                            : article.title
-                        }
-                        width={100}
-                        height={65}
-                        className="object-cover rounded-lg border border-gray-200 w-[100px] h-[65px] group-hover:scale-105 transition-transform duration-200"
-                      />
-                    </div>
-                  )}
+    <section className="w-full max-w-5xl mx-auto">
+      <div className="flex items-center gap-3 mb-4">
+        <h2 className="text-[11px] font-semibold tracking-[0.18em] uppercase text-slate-600">
+          {isArabic ? "ملفات مختارة" : "Selected Coverage"}
+        </h2>
+        <div className="h-px flex-1 bg-stone-300" />
+      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-5">
+        {articles.map((article) => (
+          <Link key={article.id} href={article.href} className="group block">
+            <div className="flex gap-3 items-start">
+              {article.image_url && (
+                <div className="relative flex-shrink-0 w-[72px] h-[72px] bg-stone-200 border border-stone-200 overflow-hidden">
+                  <Image
+                    src={article.image_url}
+                    alt={isArabic ? article.title_ar || article.title : article.title}
+                    fill
+                    sizes="72px"
+                    className="object-cover"
+                  />
                 </div>
-              </Link>
+              )}
+              <div className="flex-1 min-w-0">
+                <div className="text-[10px] font-semibold tracking-[0.14em] uppercase text-[#7a3030] mb-1">
+                  {article.categoryLabel}
+                </div>
+                <div className="font-medium text-slate-900 group-hover:text-slate-700 line-clamp-3 text-sm leading-snug transition-colors">
+                  {isArabic ? article.title_ar || article.title : article.title}
+                </div>
+              </div>
             </div>
-            {/* Separator: horizontal on mobile, vertical on desktop */}
-            {idx < articles.length - 1 && (
-              <div className="w-full h-px bg-gray-300 my-0.5 rounded-full sm:w-px sm:h-auto sm:self-stretch sm:mx-2 sm:my-0" />
-            )}
-          </React.Fragment>
+          </Link>
         ))}
       </div>
     </section>

@@ -3,8 +3,8 @@ import Header from "@/components/layout/header";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
 
 export const metadata: Metadata = {
-  title: "Privacy Policy - The Maghreb Orbit",
-  description: "Privacy policy for The Maghreb Orbit website",
+  title: "Privacy Policy - The Maghreb Corridor",
+  description: "Privacy policy for The Maghreb Corridor website",
 };
 
 export default function PrivacyPage() {

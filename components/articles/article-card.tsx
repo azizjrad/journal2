@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "@/lib/context/language-context";
 import { Card, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import { Calendar, User } from "lucide-react";
 import { memo } from "react";
 import { getAuthorDisplayText } from "@/lib/utils/author-utils";
@@ -44,132 +43,100 @@ export const ArticleCard = memo(function ArticleCard({
 
   if (featured) {
     return (
-      <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 border-2 hover:border-red-200 group">
+      <Card className="overflow-hidden border border-stone-200 shadow-none rounded-none bg-white group">
         <Link href={`/article/${article.id}`} className="block" prefetch={true}>
-          <div className="relative h-64 md:h-80">
+          <div className="relative aspect-[16/10] bg-stone-200 border-b border-stone-200">
             <Image
               src={article.image_url || "/placeholder.svg"}
               alt={title}
               fill
-              className="object-cover transition-transform duration-300 group-hover:scale-105"
+              className="object-cover"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
               priority={featured}
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent" />
-            <div className="absolute bottom-6 left-6 right-6 text-white">
+          </div>
+          <CardContent className="p-5 md:p-6">
+            <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-[11px] uppercase tracking-[0.14em] text-slate-500">
               {categoryName && (
-                <Badge
-                  variant="secondary"
-                  className="mb-3 bg-red-600 text-white hover:bg-red-700 text-sm font-semibold"
-                >
+                <span className="font-semibold text-slate-700 border border-stone-300 px-2 py-0.5 bg-[#f8f7f4]">
                   {categoryName}
-                </Badge>
+                </span>
               )}
-              <h2 className="text-xl md:text-2xl font-bold mb-3 line-clamp-2 leading-tight group-hover:text-red-200 transition-colors">
-                {title}
-              </h2>
-              <p className="text-sm opacity-90 line-clamp-2 leading-relaxed mb-3">
-                {excerpt}
-              </p>
-              <div className="flex items-center gap-4 text-sm opacity-80">
-                {/* Author */}
-                {article.author_role && (
-                  <div className="flex items-center gap-1">
-                    <User className="h-3 w-3" />
-                    <span>
-                      {getAuthorDisplayText(
-                        article.author_role,
-                        article.author_name,
-                      )}
-                    </span>
-                  </div>
-                )}
-                {/* Date */}
-                <div className="flex items-center gap-1">
-                  <Calendar className="h-3 w-3" />
-                  <time dateTime={article.published_at}>
-                    {formatDate(article.published_at)}
-                  </time>
-                </div>
+              <div className="flex items-center gap-1.5">
+                <Calendar className="h-3.5 w-3.5" />
+                <time dateTime={article.published_at}>{formatDate(article.published_at)}</time>
               </div>
             </div>
-          </div>
+            <h2 className="text-xl md:text-2xl font-semibold mb-3 line-clamp-3 leading-tight text-slate-900 group-hover:text-slate-700 transition-colors">
+              {title}
+            </h2>
+            <p className="text-sm md:text-[15px] text-slate-600 line-clamp-3 leading-relaxed mb-4">
+              {excerpt}
+            </p>
+            {article.author_role && (
+              <div className="flex items-center gap-1.5 text-xs text-slate-500">
+                <User className="h-3.5 w-3.5" />
+                <span>{getAuthorDisplayText(article.author_role, article.author_name)}</span>
+              </div>
+            )}
+          </CardContent>
         </Link>
       </Card>
     );
   }
 
   return (
-    <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 border-2 hover:border-red-200 group bg-white">
-      <Link href={`/article/${article.id}`} className="block" prefetch={true}>
-        <div className="relative h-48">
+    <Card className="overflow-hidden border-0 shadow-none rounded-none bg-transparent group h-full">
+      <Link href={`/article/${article.id}`} className="block h-full" prefetch={true}>
+        <div className="relative aspect-[16/10] bg-stone-200 border border-stone-200 mb-3 overflow-hidden">
           <Image
             src={article.image_url || "/placeholder.svg"}
             alt={title}
             fill
-            className="object-cover transition-transform duration-300 group-hover:scale-105"
+            className="object-cover"
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
           />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
         </div>
-        <CardContent className="p-6">
-          {categoryName && (
-            <Badge
-              variant="outline"
-              className="mb-3 border-red-600 text-red-600 hover:bg-red-50 font-semibold"
-            >
-              {categoryName}
-            </Badge>
-          )}
-          <h3 className="font-bold text-lg mb-3 line-clamp-2 leading-tight text-gray-900 group-hover:text-red-700 transition-colors">
+        <CardContent className="p-0">
+          <div className="mb-2 flex flex-wrap items-center gap-x-2 gap-y-1 text-[10px] uppercase tracking-[0.14em] text-slate-500">
+            {categoryName && <span className="font-semibold text-slate-700">{categoryName}</span>}
+            {categoryName && <span className="text-stone-300">•</span>}
+            <time dateTime={article.published_at}>{formatDate(article.published_at)}</time>
+          </div>
+          <h3 className="font-semibold text-[17px] mb-2 line-clamp-3 leading-snug text-slate-900 group-hover:text-slate-700 transition-colors">
             {title}
           </h3>
-          <p className="text-base text-gray-600 mb-4 line-clamp-3 leading-relaxed">
+          <p className="text-sm text-slate-600 mb-3 line-clamp-3 leading-relaxed">
             {excerpt}
           </p>
-          {/* Tags display */}
           {article.tags && article.tags.length > 0 && (
-            <div className="flex flex-wrap gap-2 mb-2">
-              {article.tags.map((tag) => (
+            <div className="flex flex-wrap gap-1.5 mb-3">
+              {article.tags.slice(0, 3).map((tag) => (
                 <span
                   key={tag.slug}
-                  className="inline-block bg-gray-100 text-xs text-gray-700 px-2 py-1 rounded-full"
+                  className="inline-block border border-stone-200 text-[11px] text-slate-600 px-2 py-0.5 bg-white"
                 >
                   #{tag.name_en}
                 </span>
               ))}
             </div>
           )}
-          {/* Date and Author */}
-          <div className="flex items-center justify-between text-sm text-gray-500 pt-2 border-t border-gray-100">
-            <div className="flex items-center gap-2">
-              <Calendar className="h-4 w-4" />
-              <time dateTime={article.published_at}>
-                {formatDate(article.published_at)}
-              </time>
-            </div>
-            <div className="flex items-center gap-2">
-              {/* Author */}
+          <div className="flex items-center justify-between text-xs text-slate-500 pt-3 border-t border-stone-200">
+            <div className="flex items-center gap-1.5">
               {article.author_role && (
-                <div className="flex items-center gap-1 text-xs">
-                  <User className="h-3 w-3" />
-                  <span>
-                    {getAuthorDisplayText(
-                      article.author_role,
-                      article.author_name,
-                    )}
-                  </span>
-                </div>
+                <>
+                  <User className="h-3.5 w-3.5" />
+                  <span>{getAuthorDisplayText(article.author_role, article.author_name)}</span>
+                </>
               )}
-              {/* Report Button */}
-              <div onClick={(e) => e.preventDefault()}>
-                <ReportButton
-                  articleId={article.id.toString()}
-                  articleTitle={title}
-                  variant="icon"
-                  size="sm"
-                />
-              </div>
+            </div>
+            <div onClick={(e) => e.preventDefault()}>
+              <ReportButton
+                articleId={article.id.toString()}
+                articleTitle={title}
+                variant="icon"
+                size="sm"
+              />
             </div>
           </div>
         </CardContent>

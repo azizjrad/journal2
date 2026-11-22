@@ -1,9 +1,9 @@
-﻿import { getNewsletterSubscribers } from "@/lib/services/newsletter-service";
+import { getNewsletterSubscribers } from "@/lib/services/newsletter-service";
 import { sendNewsletterEmail } from "@/lib/email/email-sendgrid";
 import { SentNewsletter } from "@/lib/models/SentNewsletter";
 
 const BASE_URL = process.env.APP_BASE_URL || "http://localhost:3000";
-const BRAND_NAME = "The Maghreb Orbit";
+const BRAND_NAME = "The Maghreb Corridor";
 const BRAND_TAGLINE = "Your Trusted News Source";
 const ACCENT_COLOR = "#b91c1c";
 const TEXT_COLOR = "#111827";

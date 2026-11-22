@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useLanguage } from "@/lib/context/language-context";
 import { ArticleCard } from "@/components/articles/article-card";
@@ -21,25 +21,24 @@ export function NewsPageContent({
   const { t } = useLanguage();
 
   return (
-    <main className="container mx-auto px-4 lg:px-6 py-8">
-      {/* Page Header */}
-      <div className="text-center mb-12">
-        <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4 bg-gradient-to-r from-gray-900 to-gray-700 bg-clip-text text-transparent">
-          {t("all_news", "All News", "جميع الأخبار")}
+    <main className="container mx-auto px-4 lg:px-6 py-10 md:py-14">
+      <div className="max-w-4xl mx-auto text-center mb-10 md:mb-14">
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-semibold tracking-tight text-slate-950 mb-3">
+          {t("all_dispatches", "All Dispatches", "جميع التقارير")}
         </h1>
-        <p className="text-xl text-gray-600 max-w-3xl mx-auto mb-6">
+        <p className="text-sm md:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed">
           {t(
-            "news_description",
-            "Stay informed with our comprehensive news coverage. Browse through all articles sorted by publication date.",
-            "ابق على اطلاع مع تغطيتنا الإخبارية الشاملة. تصفح جميع المقالات مرتبة حسب تاريخ النشر.",
+            "dispatches_description",
+            "Browse all dispatches and briefings, sorted by publication date.",
+            "تصفّح جميع التقارير والإحاطات، مرتبة حسب تاريخ النشر.",
           )}
         </p>
+        <div className="mt-6 mx-auto h-px w-24 bg-stone-300" />
       </div>
 
-      {/* Articles Grid */}
       {paginatedArticles.length > 0 ? (
         <>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 md:gap-8 mb-12">
             {paginatedArticles.map((article, index) => (
               <ArticleCard
                 key={`news-article-${article.id || index}`}
@@ -48,7 +47,6 @@ export function NewsPageContent({
             ))}
           </div>
 
-          {/* Pagination */}
           {totalPages > 1 && (
             <NewsPagination
               currentPage={currentPage}
@@ -58,38 +56,17 @@ export function NewsPageContent({
           )}
         </>
       ) : (
-        <div className="text-center py-16">
-          <div className="max-w-md mx-auto">
-            <div className="w-24 h-24 bg-gray-200 rounded-full flex items-center justify-center mx-auto mb-6">
-              <svg
-                className="w-12 h-12 text-gray-400"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
-                />
-              </svg>
-            </div>
-            <h3 className="text-xl font-semibold text-gray-900 mb-2">
-              {t(
-                "no_articles",
-                "No Articles Available",
-                "لا توجد مقالات متاحة",
-              )}
-            </h3>
-            <p className="text-gray-600">
-              {t(
-                "no_articles_description",
-                "There are currently no published articles. Please check back later.",
-                "لا توجد مقالات منشورة حالياً. يرجى المراجعة لاحقاً.",
-              )}
-            </p>
-          </div>
+        <div className="max-w-xl mx-auto text-center py-16 border border-stone-200 bg-white rounded-lg">
+          <h3 className="text-lg font-semibold text-slate-900 mb-2">
+            {t("no_articles", "No Articles Available", "لا توجد مقالات متاحة")}
+          </h3>
+          <p className="text-sm text-slate-600">
+            {t(
+              "no_articles_description",
+              "There are currently no published articles. Please check back later.",
+              "لا توجد مقالات منشورة حالياً. يرجى المراجعة لاحقاً.",
+            )}
+          </p>
         </div>
       )}
     </main>

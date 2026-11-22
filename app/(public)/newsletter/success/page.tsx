@@ -4,18 +4,18 @@ import { CheckCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
-  title: "Subscription Successful - The Maghreb Orbit",
+  title: "Subscription Successful - The Maghreb Corridor",
   description: "Your newsletter subscription was successful",
 };
 
 export default function SuccessPage() {
   return (
     <>
-      {/* White navbar with centered The Maghreb Orbit logo */}
+      {/* White navbar with centered The Maghreb Corridor logo */}
       <nav className="w-full bg-white border-b border-gray-200 py-4 flex items-center justify-center">
         <Link href="/" className="block">
           <div className="text-4xl font-black text-red-700 tracking-tight hover:text-red-800 transition-colors duration-300 text-center">
-            The Maghreb Orbit
+            The Maghreb Corridor
           </div>
         </Link>
       </nav>
@@ -35,7 +35,7 @@ export default function SuccessPage() {
           </h1>
 
           <p className="text-gray-600 text-base sm:text-lg mb-6 leading-relaxed">
-            Thank you for subscribing to The Maghreb Orbit Newsletter. You now
+            Thank you for subscribing to The Maghreb Corridor Newsletter. You now
             have full access to our premium content and will receive our
             newsletters.
           </p>

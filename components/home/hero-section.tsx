@@ -1,8 +1,7 @@
 "use client";
 
 import { useLanguage } from "@/lib/context/language-context";
-import { HeroCarousel } from "@/components/articles/hero-carousel";
-import { TrendingUp, Clock } from "lucide-react";
+import { Clock } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -21,161 +20,125 @@ interface Article {
 }
 
 interface HeroSectionProps {
-  featuredArticles: Article[];
-  recentArticles: Article[];
+  lead?: Article;
+  items: Article[];
 }
 
-export function HeroSection({
-  featuredArticles,
-  recentArticles,
-}: HeroSectionProps) {
+export function HeroSection({ lead, items }: HeroSectionProps) {
   const { language, t } = useLanguage();
+  const isArabic = language === "ar";
 
-  // Get articles for each section
-  const todaysPicks = featuredArticles.slice(0, 3); // Left section - Today's Picks (3 articles)
-  const mainFeaturedArticles = featuredArticles.slice(0, 5); // Center carousel (5 articles max)
-  const mostRecentArticles = recentArticles.slice(0, 5); // Right section - Most Recent (5 articles)
+  if (!lead) return null;
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString(isArabic ? "ar-TN" : "en-GB", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+  };
+
+  const leadTitle = isArabic ? lead.title_ar : lead.title_en;
+  const leadExcerpt = isArabic ? lead.excerpt_ar : lead.excerpt_en;
+  const leadCategory = isArabic ? lead.category_name_ar : lead.category_name_en;
 
   return (
-    <div className="bg-stone-100 relative overflow-hidden">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiMwMDAwMDAiIGZpbGwtb3BhY2l0eT0iMC4wMiI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iNCIvPjwvZz48L2c+PC9zdmc+')] opacity-20"></div>
+    <section className="bg-[#f8f7f4]">
+      <div className="container mx-auto px-4 lg:px-6 py-8 md:py-10">
+        <div className="max-w-5xl mx-auto">
+          <div className="mb-6 flex items-center gap-3">
+            <h2 className="text-[11px] font-semibold tracking-[0.18em] uppercase text-slate-600">
+              {t("dispatch_index", "Dispatch Index", "فهرس التقارير")}
+            </h2>
+            <div className="h-px flex-1 bg-stone-300" />
+          </div>
 
-      <div className="container mx-auto px-4 lg:px-6 py-12 relative">
-        {/* Three Column Layout */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          {/* LEFT COLUMN - Today's Picks */}
-          <div className="lg:col-span-3">
-            <div className="p-6 h-full">
-              {/* Header */}
-              <div className="flex items-center mb-6">
-                <div className="bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-lg text-sm font-bold">
-                  {t("todays_picks", "TODAY'S PICKS", "اختيارات اليوم")}
-                </div>
+          <Link
+            href={`/article/${lead.id}`}
+            className="group grid grid-cols-1 md:grid-cols-12 gap-5 md:gap-6 items-start pb-6 border-b border-stone-200"
+          >
+            <div className="md:col-span-5 lg:col-span-4">
+              <div className="relative aspect-[4/3] w-full overflow-hidden bg-stone-200 border border-stone-200">
+                <Image
+                  src={lead.image_url || "/placeholder.svg"}
+                  alt={leadTitle}
+                  fill
+                  sizes="(max-width: 768px) 100vw, 360px"
+                  className="object-cover"
+                  priority
+                />
               </div>
+            </div>
+            <div className="md:col-span-7 lg:col-span-8">
+              <div className="mb-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-[11px] uppercase tracking-[0.14em] text-slate-500">
+                {leadCategory && (
+                  <span className="font-semibold text-[#7a3030]">
+                    {leadCategory}
+                  </span>
+                )}
+                <span className="inline-flex items-center gap-1.5">
+                  <Clock className="w-3.5 h-3.5" />
+                  {formatDate(lead.published_at)}
+                </span>
+              </div>
+              <h1 className="text-xl md:text-2xl lg:text-3xl font-semibold leading-tight tracking-tight text-slate-950 group-hover:text-slate-700 transition-colors">
+                {leadTitle}
+              </h1>
+              {leadExcerpt && (
+                <p className="mt-2.5 text-sm md:text-base text-slate-600 leading-relaxed line-clamp-2 max-w-3xl">
+                  {leadExcerpt}
+                </p>
+              )}
+            </div>
+          </Link>
 
-              {/* Today's Picks Articles */}
-              <div className="space-y-6">
-                {todaysPicks.map((article, index) => (
-                  <div key={`todays-pick-${article.id || index}`}>
-                    <Link
-                      href={`/article/${article.id}`}
-                      className="group block"
-                    >
-                      <div className="space-y-3">
-                        {/* Article Image */}
-                        <div className="relative w-full h-32 rounded-lg overflow-hidden">
-                          <Image
-                            src={article.image_url || "/placeholder.svg"}
-                            alt={
-                              language === "ar"
-                                ? article.title_ar
-                                : article.title_en
-                            }
-                            fill
-                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 25vw, 300px"
-                            className="object-cover group-hover:scale-105 transition-transform duration-300"
-                          />
-                        </div>
-
-                        {/* Article Title */}
-                        <h3 className="text-gray-800 text-sm font-semibold leading-tight group-hover:text-red-600 transition-colors line-clamp-3">
-                          {language === "ar"
-                            ? article.title_ar
-                            : article.title_en}
-                        </h3>
-
-                        {/* Author */}
-                        <p className="text-gray-600 text-xs uppercase tracking-wide">
-                          {t("by_author", "BY AUTHOR", "بقلم الكاتب")}
+          {items.length > 0 && (
+            <div className="divide-y divide-stone-200">
+              {items.map((article) => {
+                const title = isArabic ? article.title_ar : article.title_en;
+                const excerpt = isArabic ? article.excerpt_ar : article.excerpt_en;
+                const category = isArabic
+                  ? article.category_name_ar
+                  : article.category_name_en;
+                return (
+                  <Link
+                    key={`dispatch-${article.id}`}
+                    href={`/article/${article.id}`}
+                    className="group grid grid-cols-[96px_minmax(0,1fr)] sm:grid-cols-[112px_minmax(0,1fr)] gap-4 py-4 items-start"
+                  >
+                    <div className="relative h-[72px] sm:h-[84px] w-24 sm:w-28 overflow-hidden bg-stone-200 border border-stone-200">
+                      <Image
+                        src={article.image_url || "/placeholder.svg"}
+                        alt={title}
+                        fill
+                        sizes="112px"
+                        className="object-cover"
+                      />
+                    </div>
+                    <div className="min-w-0">
+                      <div className="mb-1 flex flex-wrap items-center gap-x-2.5 gap-y-1 text-[10px] uppercase tracking-[0.14em] text-slate-500">
+                        {category && (
+                          <span className="font-semibold text-[#7a3030]">{category}</span>
+                        )}
+                        <span>{formatDate(article.published_at)}</span>
+                      </div>
+                      <h3 className="text-[15px] md:text-base font-semibold leading-snug text-slate-900 group-hover:text-slate-700 transition-colors line-clamp-2">
+                        {title}
+                      </h3>
+                      {excerpt && (
+                        <p className="mt-1 text-sm text-slate-600 leading-relaxed line-clamp-1 sm:line-clamp-2">
+                          {excerpt}
                         </p>
-                      </div>
-                    </Link>
-                    {/* Divider line - except for last item */}
-                    {index < todaysPicks.length - 1 && (
-                      <div className="border-b border-gray-300 mt-6"></div>
-                    )}
-                  </div>
-                ))}
-              </div>
+                      )}
+                    </div>
+                  </Link>
+                );
+              })}
             </div>
-          </div>
-
-          {/* CENTER COLUMN - Main Carousel */}
-          <div className="lg:col-span-6">
-            <HeroCarousel articles={mainFeaturedArticles} />
-          </div>
-
-          {/* RIGHT COLUMN - Most Recent */}
-          <div className="lg:col-span-3">
-            <div className="p-6 h-full">
-              {/* Header */}
-              <div className="flex items-center mb-6">
-                <div className="bg-gradient-to-r from-red-500 to-red-600 text-white px-4 py-2 rounded-lg text-sm font-bold">
-                  {t("most_recent", "MOST RECENT", "الأحدث")}
-                </div>
-              </div>
-
-              {/* Most Recent Articles */}
-              <div className="space-y-4">
-                {mostRecentArticles.map((article, index) => (
-                  <div key={`recent-article-${article.id || index}`}>
-                    <Link
-                      href={`/article/${article.id}`}
-                      className="group block"
-                    >
-                      <div className="flex items-start space-x-3 rtl:space-x-reverse p-3 rounded-xl hover:bg-gray-200/50 transition-all duration-300">
-                        <div className="flex-1 min-w-0">
-                          {/* Article Title */}
-                          <h4 className="text-gray-800 text-sm font-semibold leading-tight group-hover:text-red-600 transition-colors line-clamp-2 mb-2">
-                            {language === "ar"
-                              ? article.title_ar
-                              : article.title_en}
-                          </h4>
-
-                          {/* Author & Date */}
-                          <div className="space-y-1">
-                            <p className="text-gray-600 text-xs uppercase tracking-wide">
-                              {t("by_author", "BY AUTHOR", "بقلم الكاتب")}
-                            </p>
-                            <div className="flex items-center text-xs text-gray-500">
-                              <Clock className="w-3 h-3 mr-1" />
-                              <span>
-                                {new Date(
-                                  article.published_at
-                                ).toLocaleDateString()}
-                              </span>
-                            </div>
-                          </div>
-                        </div>
-
-                        {/* Small Article Image - moved to right */}
-                        <div className="flex-shrink-0 relative w-16 h-12 rounded-lg overflow-hidden ml-3">
-                          <Image
-                            src={article.image_url || "/placeholder.svg"}
-                            alt={
-                              language === "ar"
-                                ? article.title_ar
-                                : article.title_en
-                            }
-                            fill
-                            sizes="64px"
-                            className="object-cover group-hover:scale-105 transition-transform duration-300"
-                          />
-                        </div>
-                      </div>
-                    </Link>
-                    {/* Divider line - except for last item */}
-                    {index < mostRecentArticles.length - 1 && (
-                      <div className="border-b border-gray-300 mt-4"></div>
-                    )}
-                  </div>
-                ))}
-              </div>
-            </div>
-          </div>
+          )}
         </div>
       </div>
-    </div>
+    </section>
   );
 }

@@ -215,39 +215,28 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 relative overflow-hidden flex items-center justify-center p-4">
-      {/* Background Pattern */}
-      <div className="absolute inset-0 opacity-10">
-        <div className="absolute top-0 left-0 w-96 h-96 bg-red-500 rounded-full mix-blend-multiply filter blur-xl transform -translate-x-1/2 -translate-y-1/2"></div>
-        <div className="absolute top-1/3 right-0 w-96 h-96 bg-red-600 rounded-full mix-blend-multiply filter blur-xl transform translate-x-1/2 -translate-y-1/2"></div>
-        <div className="absolute bottom-0 left-1/3 w-96 h-96 bg-red-700 rounded-full mix-blend-multiply filter blur-xl"></div>
-      </div>
-
-      <div className="w-full max-w-md relative z-10">
-        {/* Header */}
+    <div className="min-h-screen bg-[#f8f7f4] flex items-center justify-center px-4 py-12">
+      <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <Link href="/" className="inline-block">
-            <div className="flex items-center justify-center space-x-3 mb-6 cursor-pointer hover:scale-105 transition-transform duration-200">
-              <div className="w-16 h-16 bg-gradient-to-br from-red-600 to-red-700 rounded-2xl flex items-center justify-center shadow-2xl">
-                <Shield className="w-8 h-8 text-white" />
-              </div>
-              <div>
-                <h1 className="text-4xl font-black text-white tracking-tight">
-                  The Maghreb Orbit
-                </h1>
-                <p className="text-red-300 text-sm font-medium">Login Portal</p>
-              </div>
+            <div className="space-y-1">
+              <p className="text-[11px] tracking-[0.18em] uppercase text-slate-500 font-medium">
+                The Maghreb Corridor
+              </p>
+              <h1 className="text-2xl md:text-3xl font-semibold text-slate-900 tracking-tight">
+                Account access
+              </h1>
             </div>
           </Link>
         </div>
 
-        <Card className="bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl">
-          <CardHeader className="text-center pb-6">
-            <CardTitle className="text-2xl font-bold text-white">
+        <Card className="border border-stone-200 bg-white shadow-sm rounded-lg">
+          <CardHeader className="text-center pb-4">
+            <CardTitle className="text-xl font-semibold text-slate-900">
               Welcome
             </CardTitle>
-            <p className="text-gray-300 mt-2">
-              Sign in to your account or create a new one
+            <p className="text-slate-600 mt-1 text-sm">
+              Use your email and password to continue
             </p>
           </CardHeader>
 
@@ -257,22 +246,22 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
               onValueChange={setActiveTab}
               className="w-full"
             >
-              <TabsList className="grid w-full grid-cols-3 mb-6 bg-white/5">
+              <TabsList className="grid w-full grid-cols-3 mb-6 bg-stone-100 p-1 rounded-md h-auto">
                 <TabsTrigger
                   value="login"
-                  className="text-white data-[state=active]:bg-red-600"
+                  className="text-slate-600 data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm rounded-sm py-1.5"
                 >
                   Sign In
                 </TabsTrigger>
                 <TabsTrigger
                   value="register"
-                  className="text-white data-[state=active]:bg-red-600"
+                  className="text-slate-600 data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm rounded-sm py-1.5"
                 >
                   Sign Up
                 </TabsTrigger>
                 <TabsTrigger
                   value="forgot"
-                  className="text-white data-[state=active]:bg-red-600"
+                  className="text-slate-600 data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm rounded-sm py-1.5"
                 >
                   Reset
                 </TabsTrigger>
@@ -282,17 +271,17 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
               <TabsContent value="login">
                 <form onSubmit={handleLogin} className="space-y-4">
                   {loginError && (
-                    <Alert className="border-red-400 bg-red-900/20">
-                      <AlertDescription className="text-red-300">
+                    <Alert className="border-red-200 bg-red-50">
+                      <AlertDescription className="text-red-800">
                         {loginError}
                       </AlertDescription>
                     </Alert>
                   )}
 
                   <div className="space-y-2">
-                    <Label className="text-gray-200">Email</Label>
+                    <Label className="text-slate-700">Email</Label>
                     <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                       <Input
                         type="email"
                         placeholder="Enter your email"
@@ -302,15 +291,15 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
                           setLoginError("");
                         }}
                         required
-                        className="pl-10 bg-white/10 border-white/20 text-white placeholder-gray-300"
+                        className="pl-10 bg-white border-stone-300 text-slate-900 placeholder:text-slate-400"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-gray-200">Password</Label>
+                    <Label className="text-slate-700">Password</Label>
                     <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                       <Input
                         type={showLoginPassword ? "text" : "password"}
                         placeholder="Enter your password"
@@ -320,13 +309,13 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
                           setLoginError("");
                         }}
                         required
-                        className="pl-10 pr-10 bg-white/10 border-white/20 text-white placeholder-gray-300"
+                        className="pl-10 pr-10 bg-white border-stone-300 text-slate-900 placeholder:text-slate-400"
                       />
                       <Button
                         type="button"
                         variant="ghost"
                         size="sm"
-                        className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 text-gray-400 hover:text-gray-200 hover:bg-white/10 transition-colors duration-200"
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 text-slate-400 hover:text-slate-700 hover:bg-stone-100 transition-colors duration-200"
                         onClick={() => setShowLoginPassword(!showLoginPassword)}
                       >
                         {showLoginPassword ? (
@@ -340,7 +329,7 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
 
                   <Button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold"
+                    className="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium"
                     disabled={loginLoading}
                   >
                     {loginLoading ? "Signing In..." : "Sign In"}
@@ -351,7 +340,7 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
                       type="button"
                       variant="link"
                       onClick={handleForgotPasswordClick}
-                      className="text-red-400 hover:text-red-300 font-medium text-sm p-0 h-auto"
+                      className="text-slate-600 hover:text-slate-900 font-medium text-sm p-0 h-auto"
                     >
                       Forgot Password?
                     </Button>
@@ -365,16 +354,16 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
               <TabsContent value="register">
                 <form onSubmit={handleRegister} className="space-y-4">
                   {regError && (
-                    <Alert className="border-red-400 bg-red-900/20">
-                      <AlertDescription className="text-red-300">
+                    <Alert className="border-red-200 bg-red-50">
+                      <AlertDescription className="text-red-800">
                         {regError}
                       </AlertDescription>
                     </Alert>
                   )}
 
                   {regSuccess && (
-                    <Alert className="border-green-400 bg-green-900/20">
-                      <AlertDescription className="text-green-300">
+                    <Alert className="border-green-200 bg-green-50">
+                      <AlertDescription className="text-green-800">
                         {regSuccess}
                       </AlertDescription>
                     </Alert>
@@ -382,74 +371,74 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
 
                   <div className="grid grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label className="text-gray-200">First Name</Label>
+                      <Label className="text-slate-700">First Name</Label>
                       <Input
                         type="text"
                         placeholder="First name"
                         value={regFirstName}
                         onChange={(e) => setRegFirstName(e.target.value)}
-                        className="bg-white/10 border-white/20 text-white placeholder-gray-300"
+                        className="bg-white border-stone-300 text-slate-900 placeholder:text-slate-400"
                       />
                     </div>
                     <div className="space-y-2">
-                      <Label className="text-gray-200">Last Name</Label>
+                      <Label className="text-slate-700">Last Name</Label>
                       <Input
                         type="text"
                         placeholder="Last name"
                         value={regLastName}
                         onChange={(e) => setRegLastName(e.target.value)}
-                        className="bg-white/10 border-white/20 text-white placeholder-gray-300"
+                        className="bg-white border-stone-300 text-slate-900 placeholder:text-slate-400"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-gray-200">Username</Label>
+                    <Label className="text-slate-700">Username</Label>
                     <div className="relative">
-                      <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                      <User className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                       <Input
                         type="text"
                         placeholder="Choose a username"
                         value={regUsername}
                         onChange={(e) => setRegUsername(e.target.value)}
                         required
-                        className="pl-10 bg-white/10 border-white/20 text-white placeholder-gray-300"
+                        className="pl-10 bg-white border-stone-300 text-slate-900 placeholder:text-slate-400"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-gray-200">Email</Label>
+                    <Label className="text-slate-700">Email</Label>
                     <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                       <Input
                         type="email"
                         placeholder="Enter your email"
                         value={regEmail}
                         onChange={(e) => setRegEmail(e.target.value)}
                         required
-                        className="pl-10 bg-white/10 border-white/20 text-white placeholder-gray-300"
+                        className="pl-10 bg-white border-stone-300 text-slate-900 placeholder:text-slate-400"
                       />
                     </div>
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-gray-200">Password</Label>
+                    <Label className="text-slate-700">Password</Label>
                     <div className="relative">
-                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                      <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                       <Input
                         type={showRegPassword ? "text" : "password"}
                         placeholder="Create a password"
                         value={regPassword}
                         onChange={(e) => setRegPassword(e.target.value)}
                         required
-                        className="pl-10 pr-10 bg-white/10 border-white/20 text-white placeholder-gray-300"
+                        className="pl-10 pr-10 bg-white border-stone-300 text-slate-900 placeholder:text-slate-400"
                       />
                       <Button
                         type="button"
                         variant="ghost"
                         size="sm"
-                        className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 text-gray-400 hover:text-gray-200 hover:bg-white/10 transition-colors duration-200"
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 text-slate-400 hover:text-slate-700 hover:bg-stone-100 transition-colors duration-200"
                         onClick={() => setShowRegPassword(!showRegPassword)}
                       >
                         {showRegPassword ? (
@@ -462,18 +451,18 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
                   </div>
 
                   <div className="space-y-2">
-                    <Label className="text-gray-200">Account Type</Label>
+                    <Label className="text-slate-700">Account Type</Label>
                     <Select
                       value={regAccountType}
                       onValueChange={setRegAccountType}
                     >
-                      <SelectTrigger className="bg-white/10 border-white/20 text-white">
+                      <SelectTrigger className="bg-white border-stone-300 text-slate-900">
                         <SelectValue placeholder="Select account type" />
                       </SelectTrigger>
-                      <SelectContent className="bg-gray-800 border-gray-600 text-white">
+                      <SelectContent className="bg-white border-stone-200 text-slate-900">
                         <SelectItem
                           value="user"
-                          className="text-gray-200 hover:text-white hover:bg-gray-700 focus:text-white focus:bg-gray-700 data-[highlighted]:text-white data-[highlighted]:bg-gray-700"
+                          className="text-slate-700 hover:text-slate-900 hover:bg-stone-100 focus:text-slate-900 focus:bg-stone-100 data-[highlighted]:text-slate-900 data-[highlighted]:bg-stone-100"
                         >
                           <div className="flex items-center gap-2">
                             <Users className="h-4 w-4" />
@@ -482,7 +471,7 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
                         </SelectItem>
                         <SelectItem
                           value="writer"
-                          className="text-gray-200 hover:text-white hover:bg-gray-700 focus:text-white focus:bg-gray-700 data-[highlighted]:text-white data-[highlighted]:bg-gray-700"
+                          className="text-slate-700 hover:text-slate-900 hover:bg-stone-100 focus:text-slate-900 focus:bg-stone-100 data-[highlighted]:text-slate-900 data-[highlighted]:bg-stone-100"
                         >
                           <div className="flex items-center gap-2">
                             <PenTool className="h-4 w-4" />
@@ -492,7 +481,7 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
                       </SelectContent>
                     </Select>
                     {regAccountType === "writer" && (
-                      <div className="text-sm text-yellow-400 mt-2">
+                      <div className="text-sm text-amber-700 mt-2">
                         ⚠️ Writer applications are subject to admin approval.
                         You'll start with regular user permissions.
                       </div>
@@ -501,7 +490,7 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
 
                   <Button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold"
+                    className="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium"
                     disabled={regLoading}
                   >
                     {regLoading ? "Creating Account..." : "Create Account"}
@@ -515,8 +504,8 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
               <TabsContent value="forgot">
                 <form onSubmit={handleForgotPassword} className="space-y-4">
                   {forgotError && (
-                    <Alert className="border-red-400 bg-red-900/20">
-                      <AlertDescription className="text-red-300">
+                    <Alert className="border-red-200 bg-red-50">
+                      <AlertDescription className="text-red-800">
                         {forgotError}
                       </AlertDescription>
                     </Alert>
@@ -525,21 +514,21 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
                   {(forgotSuccess || forgotError) && (
                     <>
                       {forgotError ? (
-                        <Alert className="border-red-400 bg-red-900/20">
-                          <AlertDescription className="text-red-300">
+                        <Alert className="border-red-200 bg-red-50">
+                          <AlertDescription className="text-red-800">
                             {forgotError}
                           </AlertDescription>
                         </Alert>
                       ) : (
-                        <Alert className="border-green-400 bg-green-900/20">
-                          <AlertDescription className="text-green-300">
+                        <Alert className="border-green-200 bg-green-50">
+                          <AlertDescription className="text-green-800">
                             {forgotSuccess}
                           </AlertDescription>
                         </Alert>
                       )}
                       <Button
                         type="button"
-                        className="w-full mt-2 bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold"
+                        className="w-full mt-2 bg-slate-900 hover:bg-slate-800 text-white font-medium"
                         disabled={forgotLoading || showSuccessSpinner}
                         onClick={async () => {
                           if (!forgotEmail) return;
@@ -583,23 +572,23 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
                   )}
 
                   <div className="space-y-2">
-                    <Label className="text-gray-200">Email</Label>
+                    <Label className="text-slate-700">Email</Label>
                     <div className="relative">
-                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+                      <Mail className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-slate-400" />
                       <Input
                         type="email"
                         placeholder="Enter your email"
                         value={forgotEmail}
                         onChange={(e) => setForgotEmail(e.target.value)}
                         required
-                        className="pl-10 bg-white/10 border-white/20 text-white placeholder-gray-300"
+                        className="pl-10 bg-white border-stone-300 text-slate-900 placeholder:text-slate-400"
                       />
                     </div>
                   </div>
 
                   <Button
                     type="submit"
-                    className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold"
+                    className="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium"
                     disabled={forgotLoading}
                   >
                     {forgotLoading ? "Sending..." : "Send Reset Link"}
@@ -611,8 +600,8 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
         </Card>
 
         <div className="text-center mt-6">
-          <p className="text-sm text-gray-400">
-            © 2025 The Maghreb Orbit • News Portal
+          <p className="text-xs text-slate-500">
+            © {new Date().getFullYear()} The Maghreb Corridor
           </p>
         </div>
       </div>

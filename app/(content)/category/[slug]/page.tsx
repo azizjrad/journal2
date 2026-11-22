@@ -4,12 +4,10 @@ import {
 } from "@/lib/services/category-service";
 import {
   getArticlesByCategoryCached,
-  getFeaturedArticlesCached,
 } from "@/lib/content/article-service";
 import Header from "@/components/layout/header";
-import { BreakingNewsTicker } from "@/components/shared/breaking-news-ticker";
 import { Footer } from "@/components/layout/footer";
-import { ArticleCard } from "@/components/articles/article-card";
+import { CategoryPageView } from "@/components/articles/category-page-view";
 import { notFound } from "next/navigation";
 
 interface CategoryPageProps {
@@ -20,11 +18,10 @@ interface CategoryPageProps {
 
 export default async function CategoryPage({ params }: CategoryPageProps) {
   const resolvedParams = await params;
-  const [articles, category, categories, featuredArticles] = await Promise.all([
+  const [articles, category, categories] = await Promise.all([
     getArticlesByCategoryCached(resolvedParams.slug),
     getCategoryBySlug(resolvedParams.slug),
     getCategoriesCached(),
-    getFeaturedArticlesCached(5), // Get featured articles for ticker
   ]);
 
   if (!category) {
@@ -32,32 +29,12 @@ export default async function CategoryPage({ params }: CategoryPageProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-[#f8f7f4] text-slate-900">
       <Header categories={categories} />
-      <BreakingNewsTicker articles={featuredArticles} />
-
-      <main className="container mx-auto px-4 py-8">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">{category.name_en}</h1>
-          <h2 className="text-2xl font-bold text-muted-foreground" dir="rtl">
-            {category.name_ar}
-          </h2>
-        </div>
-
-        {articles.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-            {articles.map((article) => (
-              <ArticleCard key={article.id} article={article} />
-            ))}
-          </div>
-        ) : (
-          <div className="text-center py-12">
-            <p className="text-muted-foreground">
-              No articles found in this category.
-            </p>
-          </div>
-        )}
-      </main>
+      <CategoryPageView
+        category={{ name_en: category.name_en, name_ar: category.name_ar }}
+        articles={articles}
+      />
       <Footer categories={categories} />
     </div>
   );

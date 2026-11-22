@@ -1,11 +1,11 @@
 {
-  "name": "The Maghreb Orbit - المدار المغاربي",
-  "short_name": "The Maghreb Orbit",
-  "description": "حركة الخبر بين ضفتي المتوسط بلا انحياز - News movement between the Mediterranean shores without bias",
+  "name": "The Maghreb Corridor - نشرة الممر المغاربي",
+  "short_name": "The Maghreb Corridor",
+  "description": "Tri-weekly situational and policy briefing across Libya and North Africa - نشرة رصد وتحليل سياسات تصدر ثلاث مرات أسبوعياً",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#1f2937",
-  "theme_color": "#111827",
+  "background_color": "#f8f7f4",
+  "theme_color": "#1f2937",
   "orientation": "portrait-primary",
   "icons": [
     {

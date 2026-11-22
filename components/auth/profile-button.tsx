@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
@@ -17,7 +17,7 @@ import { useAuth } from "@/lib/context/user-auth";
 
 export function ProfileButton() {
   const { t } = useLanguage();
-  const { user, isAuthenticated, isLoading, logout, refreshUser } = useAuth();
+  const { user, isAuthenticated, isLoading, logout } = useAuth();
   const [showMenu, setShowMenu] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -38,7 +38,6 @@ export function ProfileButton() {
     try {
       await logout();
       setShowMenu(false);
-      // No reload or redirect; UI will update to show login button
     } catch (error) {
       console.error("Error logging out:", error);
       setShowMenu(false);
@@ -50,7 +49,7 @@ export function ProfileButton() {
       <Button
         variant="outline"
         size="sm"
-        className="flex items-center gap-2 px-4 py-2 border border-gray-300 text-gray-400 rounded-lg"
+        className="flex items-center gap-2 px-3 md:px-4 h-9 border-stone-300 text-stone-400 rounded-md"
         disabled
       >
         <User className="h-4 w-4" />
@@ -60,7 +59,6 @@ export function ProfileButton() {
   }
 
   if (isAuthenticated && user) {
-    // User is logged in - show profile menu
     const displayName = user.first_name || user.username;
 
     return (
@@ -69,7 +67,7 @@ export function ProfileButton() {
           variant="outline"
           size="sm"
           onClick={() => setShowMenu(!showMenu)}
-          className="flex items-center gap-2 px-4 py-2 border border-green-600 text-green-600 hover:bg-green-600 hover:text-white transition-all duration-300 rounded-lg"
+          className="flex items-center gap-2 px-3 md:px-4 h-9 border-stone-300 text-slate-800 hover:bg-stone-100 hover:text-slate-900 transition-colors rounded-md"
         >
           <User className="h-4 w-4" />
           <span className="hidden sm:inline font-medium max-w-20 truncate">
@@ -79,11 +77,11 @@ export function ProfileButton() {
         </Button>
 
         {showMenu && (
-          <div className="absolute right-0 mt-2 w-56 bg-white border border-gray-200 rounded-lg shadow-lg z-50">
+          <div className="absolute right-0 mt-2 w-56 bg-white border border-stone-200 rounded-md shadow-lg z-50">
             <div className="py-2">
               <Link
                 href="/account"
-                className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 text-slate-700 hover:bg-stone-50 transition-colors"
                 onClick={() => setShowMenu(false)}
               >
                 <User className="h-4 w-4" />
@@ -92,7 +90,7 @@ export function ProfileButton() {
 
               <Link
                 href="/profile"
-                className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 text-slate-700 hover:bg-stone-50 transition-colors"
                 onClick={() => setShowMenu(false)}
               >
                 <Settings className="h-4 w-4" />
@@ -105,10 +103,10 @@ export function ProfileButton() {
 
               {(user.role === "admin" || user.role === "writer") && (
                 <>
-                  <hr className="my-1 border-gray-200" />
+                  <hr className="my-1 border-stone-200" />
                   <Link
                     href={user.role === "admin" ? "/admin" : "/writer"}
-                    className="flex items-center gap-2 px-4 py-2 text-gray-700 hover:bg-gray-100 transition-colors"
+                    className="flex items-center gap-2 px-4 py-2 text-slate-700 hover:bg-stone-50 transition-colors"
                     onClick={() => setShowMenu(false)}
                   >
                     {user.role === "admin" ? (
@@ -131,13 +129,13 @@ export function ProfileButton() {
                 </>
               )}
 
-              <hr className="my-1 border-gray-200" />
+              <hr className="my-1 border-stone-200" />
               <button
                 onClick={() => {
                   setShowMenu(false);
                   handleLogout();
                 }}
-                className="flex items-center gap-2 px-4 py-2 w-full text-left text-red-600 hover:bg-red-50 transition-colors"
+                className="flex items-center gap-2 px-4 py-2 w-full text-left text-slate-700 hover:bg-stone-50 transition-colors"
               >
                 <LogOut className="h-4 w-4" />
                 {t("logout", "Logout", "تسجيل الخروج")}
@@ -149,13 +147,12 @@ export function ProfileButton() {
     );
   }
 
-  // User is not logged in - show login button
   return (
     <Link href="/auth">
       <Button
         variant="outline"
         size="sm"
-        className="flex items-center gap-2 px-4 py-2 border border-red-600 text-red-600 hover:bg-red-600 hover:text-white transition-all duration-300 rounded-lg"
+        className="flex items-center gap-2 px-3 md:px-4 h-9 border-stone-300 text-slate-800 hover:bg-stone-100 hover:text-slate-900 transition-colors rounded-md"
       >
         <LogIn className="h-4 w-4" />
         <span className="hidden sm:inline">

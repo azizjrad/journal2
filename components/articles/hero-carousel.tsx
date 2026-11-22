@@ -5,7 +5,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useLanguage } from "@/lib/context/language-context";
 import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 import {
   Carousel,
   CarouselContent,
@@ -85,49 +84,41 @@ export function HeroCarousel({ articles }: HeroCarouselProps) {
       >
         <CarouselContent>
           {articles.map((article, index) => {
-            const title =
-              language === "ar" ? article.title_ar : article.title_en;
-            const excerpt =
-              language === "ar" ? article.excerpt_ar : article.excerpt_en;
+            const title = language === "ar" ? article.title_ar : article.title_en;
+            const excerpt = language === "ar" ? article.excerpt_ar : article.excerpt_en;
             const categoryName =
-              language === "ar"
-                ? article.category_name_ar
-                : article.category_name_en;
+              language === "ar" ? article.category_name_ar : article.category_name_en;
             return (
               <CarouselItem key={`carousel-article-${article.id || index}`}>
-                <Card className="border-0 shadow-2xl overflow-hidden">
+                <Card className="border border-stone-200 shadow-none overflow-hidden rounded-none bg-white">
                   <Link href={`/article/${article.id}`} className="block">
-                    <div className="relative h-96 md:h-[500px]">
+                    <div className="relative aspect-[16/10] md:aspect-[16/11] bg-stone-200">
                       <Image
                         src={article.image_url || "/placeholder.svg"}
                         alt={title}
                         fill
                         className="object-cover"
-                        priority
+                        priority={index === 0}
                       />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                      <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8 text-white">
-                        <div className="mb-4 flex flex-wrap items-center gap-3">
-                          {categoryName && (
-                            <Badge
-                              variant="destructive"
-                              className="bg-red-600 hover:bg-red-700 text-sm font-medium"
-                            >
-                              {categoryName}
-                            </Badge>
-                          )}
-                          <div className="flex items-center text-sm text-gray-200">
-                            <Calendar className="w-4 h-4 mr-2" />
-                            {formatDate(article.published_at)}
-                          </div>
+                    </div>
+                    <div className="p-5 md:p-7">
+                      <div className="mb-3 flex flex-wrap items-center gap-x-3 gap-y-2 text-[11px] uppercase tracking-[0.14em] text-slate-500">
+                        {categoryName && (
+                          <span className="font-semibold text-slate-700 border border-stone-300 px-2 py-0.5 bg-[#f8f7f4]">
+                            {categoryName}
+                          </span>
+                        )}
+                        <div className="flex items-center gap-1.5">
+                          <Calendar className="w-3.5 h-3.5" />
+                          {formatDate(article.published_at)}
                         </div>
-                        <h1 className="text-2xl md:text-4xl font-bold mb-4 leading-tight line-clamp-2">
-                          {title}
-                        </h1>
-                        <p className="text-lg md:text-xl text-gray-200 line-clamp-2 max-w-4xl">
-                          {excerpt}
-                        </p>
                       </div>
+                      <h1 className="text-2xl md:text-4xl font-semibold mb-3 leading-tight text-slate-900 tracking-tight">
+                        {title}
+                      </h1>
+                      <p className="text-base md:text-lg text-slate-600 leading-relaxed line-clamp-3 max-w-3xl">
+                        {excerpt}
+                      </p>
                     </div>
                   </Link>
                 </Card>
@@ -135,8 +126,8 @@ export function HeroCarousel({ articles }: HeroCarouselProps) {
             );
           })}
         </CarouselContent>
-        <CarouselPrevious className="w-16 h-16 md:w-20 md:h-20 text-red-600 bg-transparent border-0 shadow-none hover:bg-transparent hover:border-0 hover:text-red-600" />
-        <CarouselNext className="w-16 h-16 md:w-20 md:h-20 text-red-600 bg-transparent border-0 shadow-none hover:bg-transparent hover:border-0 hover:text-red-600" />
+        <CarouselPrevious className="left-3 top-[28%] md:top-[30%] h-9 w-9 rounded-md border border-stone-300 bg-white/90 text-slate-700 hover:bg-white hover:text-slate-900 shadow-none" />
+        <CarouselNext className="right-3 top-[28%] md:top-[30%] h-9 w-9 rounded-md border border-stone-300 bg-white/90 text-slate-700 hover:bg-white hover:text-slate-900 shadow-none" />
       </Carousel>
     </div>
   );

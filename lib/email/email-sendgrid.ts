@@ -1,10 +1,10 @@
-﻿import sgMail from "@sendgrid/mail";
+import sgMail from "@sendgrid/mail";
 
 const SENDGRID_API_KEY = process.env.SENDGRID_API_KEY;
 const FROM_EMAIL = process.env.FROM_EMAIL || "azizjrad9@gmail.com";
-const FROM_NAME = process.env.FROM_NAME || "The Maghreb Orbit";
+const FROM_NAME = process.env.FROM_NAME || "The Maghreb Corridor";
 const BASE_URL = process.env.APP_BASE_URL || "http://localhost:3000";
-const BRAND_NAME = "The Maghreb Orbit";
+const BRAND_NAME = "The Maghreb Corridor";
 const BRAND_TAGLINE = "Your Trusted News Source";
 const ACCENT_COLOR = "#b91c1c";
 const TEXT_COLOR = "#111827";

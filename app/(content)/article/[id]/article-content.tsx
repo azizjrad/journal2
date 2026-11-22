@@ -35,8 +35,8 @@ export function ArticleContent({ article }: ArticleContentProps) {
       {getCategoryName() && (
         <div className="mb-6">
           <Badge
-            variant="default"
-            className="bg-red-600 hover:bg-red-700 text-white px-3 py-1 text-sm font-semibold"
+            variant="outline"
+            className="border-stone-300 text-slate-700 bg-[#f8f7f4] hover:bg-stone-100 px-3 py-1 text-xs font-semibold uppercase tracking-[0.14em] rounded-sm"
           >
             {getCategoryName()}
           </Badge>
@@ -45,16 +45,16 @@ export function ArticleContent({ article }: ArticleContentProps) {
 
       {/* Tags */}
       {article.tags && article.tags.length > 0 && (
-        <div className="mb-6 pb-4 border-b border-gray-200">
-          <h3 className="text-sm font-semibold text-gray-700 mb-3">
-            {t("tags", "Tags:", "العلامات:")}
+        <div className="mb-8 pb-5 border-b border-stone-200">
+          <h3 className="text-xs font-semibold uppercase tracking-[0.14em] text-slate-500 mb-3">
+            {t("tags", "Tags", "العلامات")}
           </h3>
           <div className="flex flex-wrap gap-2">
             {article.tags.map((tag) => (
               <Badge
                 key={tag.slug}
                 variant="outline"
-                className="border-gray-300 text-gray-600 hover:bg-gray-50 text-xs px-3 py-1"
+                className="border-stone-300 text-slate-600 hover:bg-stone-50 text-xs px-2.5 py-0.5 rounded-sm font-normal"
               >
                 #{getTagName(tag)}
               </Badge>
@@ -68,14 +68,15 @@ export function ArticleContent({ article }: ArticleContentProps) {
         className={language === "ar" ? "text-right" : ""}
         dir={language === "ar" ? "rtl" : "ltr"}
       >
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-bold mb-6 leading-tight text-gray-900">
+        <h1 className="text-3xl md:text-4xl lg:text-[2.75rem] font-semibold mb-8 leading-tight tracking-tight text-slate-900 max-w-3xl">
           {getTitle()}
         </h1>
-        <div className="prose prose-lg lg:prose-xl max-w-none text-gray-700 leading-relaxed">
+        <div className="max-w-3xl text-slate-700 leading-relaxed">
           {getContent()
             .split("\n")
+            .filter((paragraph: string) => paragraph.trim().length > 0)
             .map((paragraph: string, index: number) => (
-              <p key={index} className="mb-6 text-lg leading-8">
+              <p key={index} className="mb-6 text-[17px] md:text-lg leading-8">
                 {paragraph}
               </p>
             ))}

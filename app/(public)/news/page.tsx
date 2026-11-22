@@ -16,30 +16,29 @@ export const revalidate = 60;
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "All News - Digital Journal - الجريدة الرقمية",
+  title: "All Dispatches - The Maghreb Corridor",
   description:
-    "Browse all news articles from Digital Journal. Stay updated with the latest breaking news, politics, business, technology, and more from around the world - تصفح جميع الأخبار من الجريدة الرقمية",
+    "Browse all dispatches and briefings from The Maghreb Corridor, sorted by publication date.",
   keywords: [
-    "news",
-    "all articles",
-    "latest news",
-    "breaking news",
-    "digital journal",
-    "أخبار",
-    "جميع الأخبار",
-    "آخر الأخبار",
+    "dispatches",
+    "all dispatches",
+    "latest dispatches",
+    "briefings",
+    "The Maghreb Corridor",
+    "جميع التقارير",
+    "تقارير",
   ],
   openGraph: {
-    title: "All News - Digital Journal",
+    title: "All Dispatches - The Maghreb Corridor",
     description:
-      "Browse all news articles from Digital Journal. Latest breaking news and updates from around the world.",
+      "Browse all dispatches and briefings from The Maghreb Corridor, sorted by publication date.",
     type: "website",
   },
   twitter: {
     card: "summary_large_image",
-    title: "All News - Digital Journal",
+    title: "All Dispatches - The Maghreb Corridor",
     description:
-      "Browse all news articles from Digital Journal. Latest breaking news and updates from around the world.",
+      "Browse all dispatches and briefings from The Maghreb Corridor, sorted by publication date.",
   },
 };
 
@@ -56,10 +55,9 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
   const currentPage = parseInt(resolvedSearchParams.page || "1", 10);
   const offset = (currentPage - 1) * ARTICLES_PER_PAGE;
 
-  const [allArticles, categories, featuredArticles] = await Promise.all([
+  const [allArticles, categories] = await Promise.all([
     getArticles(), // Get all articles
     getCategoriesCached(),
-    getFeaturedArticlesCached(5), // Get featured articles for ticker
   ]);
 
   // Calculate pagination
@@ -70,14 +68,15 @@ export default async function NewsPage({ searchParams }: NewsPageProps) {
     offset + ARTICLES_PER_PAGE,
   );
 
-  const breadcrumbItems = [{ label: "Home", href: "/" }, { label: "All News" }];
+  const breadcrumbItems = [
+    { label: "Home", href: "/" },
+    { label: "All Dispatches" },
+  ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <FixedHeaderWrapper categories={categories} articles={featuredArticles} />
-      <div style={{ paddingTop: "140px" }}>
-        {" "}
-        {/* Space for fixed header */}
+    <div className="min-h-screen bg-[#f8f7f4]">
+      <FixedHeaderWrapper categories={categories} />
+      <div style={{ paddingTop: "208px" }}>
         <Breadcrumb items={breadcrumbItems} />
         <NewsPageContent
           paginatedArticles={paginatedArticles}

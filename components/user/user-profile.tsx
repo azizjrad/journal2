@@ -95,8 +95,13 @@ export function UserProfile() {
       if (data.success) {
         setSubscriptionData(data.subscription);
       }
-    } catch (error) {
-      console.error("Failed to load subscription:", error);
+    } catch (error: any) {
+      const status = error?.response?.status;
+      if (status === 401) {
+        setSubscriptionData(null);
+      } else {
+        console.error("Failed to load subscription:", error);
+      }
     } finally {
       setSubscriptionLoading(false);
     }

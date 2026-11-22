@@ -72,7 +72,7 @@ export default function OfflinePage() {
         {/* Branding */}
         <div className="mt-12 text-center">
           <p className="text-gray-400 text-sm">
-            © 2025 The Maghreb Orbit • News Portal
+            © 2025 The Maghreb Corridor • News Portal
           </p>
         </div>
       </div>

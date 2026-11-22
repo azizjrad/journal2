@@ -6,7 +6,6 @@ import {
   getPopularSearches,
 } from "@/lib/content/article-service";
 import Header from "@/components/layout/header";
-import { BreakingNewsTicker } from "@/components/shared/breaking-news-ticker";
 import { Footer } from "@/components/layout/footer";
 import { SearchPageContent } from "@/components/search/search-page-content";
 import { Metadata } from "next";
@@ -71,8 +70,6 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
   return (
     <div className="min-h-screen bg-white">
       <Header categories={categories} />
-      <BreakingNewsTicker articles={latestArticles.slice(0, 5)} />
-
       <SearchPageContent
         filters={filters}
         hasFilters={hasFilters}

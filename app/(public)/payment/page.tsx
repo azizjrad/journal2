@@ -518,7 +518,7 @@ export default function PaymentPage() {
       <div className="w-full flex justify-center pt-8 pb-6">
         <a href="/" className="block">
           <div className="text-3xl sm:text-4xl font-black text-red-700 tracking-tight hover:text-red-800 transition-colors duration-300 text-center">
-            The Maghreb Orbit
+            The Maghreb Corridor
           </div>
         </a>
       </div>

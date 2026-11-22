@@ -1,8 +1,8 @@
-# 🌍 The Maghreb Orbit - Enterprise-Grade Bilingual News Platform
+# 🌍 The Maghreb Corridor - Enterprise-Grade Bilingual News Platform
 
 <div align="center">
 
-![The Maghreb Orbit Logo](public/favicon.svg)
+![The Maghreb Corridor Logo](public/favicon.svg)
 
 **A production-ready, scalable bilingual news platform built with modern web technologies and enterprise-grade security**
 
@@ -105,7 +105,7 @@
 
 ### 🎯 **Dashboard Overview**
 
-The Maghreb Orbit admin dashboard is a powerful, feature-rich control center designed for efficient news platform management. Built with modern web technologies and enterprise-grade security, it provides administrators and writers with all the tools needed to manage content, users, subscriptions, and analytics.
+The Maghreb Corridor admin dashboard is a powerful, feature-rich control center designed for efficient news platform management. Built with modern web technologies and enterprise-grade security, it provides administrators and writers with all the tools needed to manage content, users, subscriptions, and analytics.
 
 **Access:** `/admin` (requires admin authentication)
 
@@ -620,7 +620,7 @@ SENDGRID_API_KEY=SG.your-sendgrid-api-key
 SENDGRID_FROM_EMAIL=noreply@yourdomain.com
 
 # Email sender name (optional)
-SENDGRID_FROM_NAME="The Maghreb Orbit"
+SENDGRID_FROM_NAME="The Maghreb Corridor"
 
 # ============================================
 # CLOUDINARY CONFIGURATION (Image Storage)
@@ -702,7 +702,7 @@ NODE_ENV=development
 | `NEXT_PUBLIC_SITE_URL`               | ✅ Yes         | -                   | Public site URL                  |
 | `SENDGRID_API_KEY`                   | ⚠️ Recommended | -                   | SendGrid API key for emails      |
 | `SENDGRID_FROM_EMAIL`                | ⚠️ Recommended | -                   | Email sender address             |
-| `SENDGRID_FROM_NAME`                 | ❌ No          | `The Maghreb Orbit` | Email sender name                |
+| `SENDGRID_FROM_NAME`                 | ❌ No          | `The Maghreb Corridor` | Email sender name                |
 | `NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME`  | ✅ Yes         | -                   | Cloudinary cloud name            |
 | `CLOUDINARY_API_KEY`                 | ✅ Yes         | -                   | Cloudinary API key               |
 | `CLOUDINARY_API_SECRET`              | ✅ Yes         | -                   | Cloudinary API secret            |

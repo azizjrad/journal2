@@ -1,7 +1,6 @@
 import { getCategoriesCached } from "@/lib/services/category-service";
 import { getFeaturedArticlesCached } from "@/lib/content/article-service";
 import Header from "@/components/layout/header";
-import { BreakingNewsTicker } from "@/components/shared/breaking-news-ticker";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
 import { Footer } from "@/components/layout/footer";
 import { AboutContent } from "@/components/shared/about-content";
@@ -37,7 +36,6 @@ export default async function AboutPage() {
   return (
     <div className="min-h-screen bg-stone-100">
       <Header categories={categories} />
-      <BreakingNewsTicker articles={featuredArticles} />
       <Breadcrumb items={breadcrumbItems} />
 
       <main className="container mx-auto px-4 lg:px-6 py-12">

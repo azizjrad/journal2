@@ -3,7 +3,7 @@ import { Suspense } from "react";
 import { UserProfile } from "@/components/user/user-profile";
 
 export const metadata: Metadata = {
-  title: "Profile Settings - The Maghreb Orbit",
+  title: "Profile Settings - The Maghreb Corridor",
   description:
     "Manage your profile settings, account information, and password",
 };
