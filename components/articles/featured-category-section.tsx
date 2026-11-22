@@ -10,6 +10,7 @@ export interface FeaturedCategoryArticle {
   image_url: string;
   category: string;
   categoryLabel: string;
+  categoryLabel_ar?: string;
   href: string;
 }
 
@@ -47,7 +48,7 @@ export function FeaturedCategorySection({ articles }: Props) {
               )}
               <div className="flex-1 min-w-0">
                 <div className="text-[10px] font-semibold tracking-[0.14em] uppercase text-[#7a3030] mb-1">
-                  {article.categoryLabel}
+                  {isArabic ? article.categoryLabel_ar || article.categoryLabel : article.categoryLabel}
                 </div>
                 <div className="font-medium text-slate-900 group-hover:text-slate-700 line-clamp-3 text-sm leading-snug transition-colors">
                   {isArabic ? article.title_ar || article.title : article.title}

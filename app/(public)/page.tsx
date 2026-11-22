@@ -39,7 +39,8 @@ export default async function HomePage() {
       title_ar: business[0].title_ar || business[0].title_en,
       image_url: business[0].image_url,
       category: "business",
-      categoryLabel: "BUSINESS",
+      categoryLabel: business[0].category_name_en || "Business",
+      categoryLabel_ar: business[0].category_name_ar || "الأعمال",
       href: `/article/${business[0].id}`,
     },
     culture[0] && {
@@ -48,7 +49,8 @@ export default async function HomePage() {
       title_ar: culture[0].title_ar || culture[0].title_en,
       image_url: culture[0].image_url,
       category: "culture",
-      categoryLabel: "CULTURE",
+      categoryLabel: culture[0].category_name_en || "Culture",
+      categoryLabel_ar: culture[0].category_name_ar || "الثقافة",
       href: `/article/${culture[0].id}`,
     },
     politics[0] && {
@@ -57,7 +59,8 @@ export default async function HomePage() {
       title_ar: politics[0].title_ar || politics[0].title_en,
       image_url: politics[0].image_url,
       category: "politics",
-      categoryLabel: "POLITICS",
+      categoryLabel: politics[0].category_name_en || "Politics",
+      categoryLabel_ar: politics[0].category_name_ar || "السياسة",
       href: `/article/${politics[0].id}`,
     },
     science[0] && {
@@ -66,7 +69,8 @@ export default async function HomePage() {
       title_ar: science[0].title_ar || science[0].title_en,
       image_url: science[0].image_url,
       category: "science",
-      categoryLabel: "SCIENCE",
+      categoryLabel: science[0].category_name_en || "Science",
+      categoryLabel_ar: science[0].category_name_ar || "العلوم",
       href: `/article/${science[0].id}`,
     },
   ].filter(Boolean) as FeaturedCategoryArticle[];
@@ -86,11 +90,11 @@ export default async function HomePage() {
       image_url: bigStory[0].image_url,
       category: "the-big-story",
       categoryLabel:
-        bigStory[0].category_name_en?.toUpperCase() || "THE BIG STORY",
+        bigStory[0].category_name_en?.toUpperCase() || "BIG STORY",
       categoryLabel_ar:
-        bigStory[0].category_name_ar?.toUpperCase() ||
+        bigStory[0].category_name_ar ||
         bigStory[0].category_name_en?.toUpperCase() ||
-        "THE BIG STORY",
+        "قصة كبرى",
       href: `/article/${bigStory[0].id}`,
       authors: authorName,
       excerpt: bigStory[0].excerpt_en || "",
