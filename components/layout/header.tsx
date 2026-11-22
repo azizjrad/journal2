@@ -87,6 +87,7 @@ export default function Header({
   const isHomeActive = pathname === "/";
   const isDispatchesActive =
     pathname === "/news" || pathname?.startsWith("/news/");
+  const isRTL = language === "ar";
 
   const SidebarComponent = () => (
     <>
@@ -221,41 +222,83 @@ export default function Header({
       <header className="bg-[#f8f7f4]/98 backdrop-blur-sm border-b border-stone-200">
         <div className="container mx-auto px-4 lg:px-6">
           <div className="flex items-center justify-between gap-3 py-2 border-b border-stone-200/70">
-            <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => setSidebarOpen(true)}
-                className="text-slate-700 hover:text-slate-900 hover:bg-stone-100 p-2 rounded-md"
-                aria-label={t("menu", "Menu", "القائمة")}
-              >
-                <Menu className="h-5 w-5" />
-              </Button>
-            </div>
+            {isRTL ? (
+              <>
+                <div className="flex items-center gap-2 md:gap-3 shrink-0">
+                  <ProfileButton />
 
-            <div className="flex items-center gap-2 md:gap-3 shrink-0">
-              <div className="hidden md:flex items-center gap-2 text-[11px] lg:text-xs whitespace-nowrap">
-                <span className="text-slate-500">{t("locations", "Tripoli / Tunis", "طرابلس / تونس")}</span>
-                <span className="text-stone-300">•</span>
-                <span className="text-black">{headerDate}</span>
-              </div>
+                  <Link href="/newsletter" className="hidden md:block">
+                    <Button
+                      size="sm"
+                      className="flex items-center gap-2 px-4 h-9 text-sm font-medium bg-[#7a3030] hover:bg-[#632626] text-white rounded-md border-0"
+                    >
+                      <Mail className="h-4 w-4" />
+                      {t("newsletter_subscribe", "Subscribe", "اشترك مجاناً")}
+                    </Button>
+                  </Link>
 
-              <ProfileButton />
+                  <div className="hidden md:block">
+                    <LanguageSwitcher />
+                  </div>
+                </div>
 
-              <Link href="/newsletter" className="hidden md:block">
-                <Button
-                  size="sm"
-                  className="flex items-center gap-2 px-4 h-9 text-sm font-medium bg-[#7a3030] hover:bg-[#632626] text-white rounded-md border-0"
-                >
-                  <Mail className="h-4 w-4" />
-                  {t("newsletter_subscribe", "Subscribe", "اشترك مجاناً")}
-                </Button>
-              </Link>
+                <div className="flex items-center gap-2 md:gap-3 min-w-0 flex-row-reverse">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setSidebarOpen(true)}
+                    className="text-slate-700 hover:text-slate-900 hover:bg-stone-100 p-2 rounded-md"
+                    aria-label={t("menu", "Menu", "القائمة")}
+                  >
+                    <Menu className="h-5 w-5" />
+                  </Button>
 
-              <div className="hidden md:block">
-                <LanguageSwitcher />
-              </div>
-            </div>
+                  <div className="hidden md:flex items-center gap-2 text-[11px] lg:text-xs whitespace-nowrap">
+                    <span className="text-slate-500">{t("locations", "Tripoli / Tunis", "طرابلس / تونس")}</span>
+                    <span className="text-stone-300">•</span>
+                    <span className="text-black">{headerDate}</span>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="flex items-center gap-2 md:gap-3 min-w-0">
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => setSidebarOpen(true)}
+                    className="text-slate-700 hover:text-slate-900 hover:bg-stone-100 p-2 rounded-md"
+                    aria-label={t("menu", "Menu", "القائمة")}
+                  >
+                    <Menu className="h-5 w-5" />
+                  </Button>
+
+                  <div className="hidden md:flex items-center gap-2 text-[11px] lg:text-xs whitespace-nowrap">
+                    <span className="text-slate-500">{t("locations", "Tripoli / Tunis", "طرابلس / تونس")}</span>
+                    <span className="text-stone-300">•</span>
+                    <span className="text-black">{headerDate}</span>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 md:gap-3 shrink-0">
+                  <ProfileButton />
+
+                  <Link href="/newsletter" className="hidden md:block">
+                    <Button
+                      size="sm"
+                      className="flex items-center gap-2 px-4 h-9 text-sm font-medium bg-[#7a3030] hover:bg-[#632626] text-white rounded-md border-0"
+                    >
+                      <Mail className="h-4 w-4" />
+                      {t("newsletter_subscribe", "Subscribe", "اشترك مجاناً")}
+                    </Button>
+                  </Link>
+
+                  <div className="hidden md:block">
+                    <LanguageSwitcher />
+                  </div>
+                </div>
+              </>
+            )}
           </div>
 
           <div className="py-4 md:py-5 text-center">
