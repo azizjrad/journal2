@@ -93,8 +93,15 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
+        <script
+          suppressHydrationWarning
+          dangerouslySetInnerHTML={{
+            __html:
+              "try{var l=localStorage.getItem('language');if(l==='ar'){document.documentElement.lang='ar';document.documentElement.dir='rtl';}else if(l==='en'){document.documentElement.lang='en';document.documentElement.dir='ltr';}}catch(e){}",
+          }}
+        />
         {/* Additional favicon and meta tags */}
         <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
         <link

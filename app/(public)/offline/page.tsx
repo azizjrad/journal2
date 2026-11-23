@@ -1,86 +1,57 @@
 "use client";
 
 import Link from "next/link";
-import { Wifi, WifiOff, RefreshCw } from "lucide-react";
+import { WifiOff, RefreshCw, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useLanguage } from "@/lib/context/language-context";
 
 export default function OfflinePage() {
+  const { t } = useLanguage();
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-slate-800 to-gray-900 flex items-center justify-center px-4">
-      <div className="max-w-md w-full text-center">
-        {/* Offline Icon */}
-        <div className="mb-8">
-          <div className="mx-auto w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mb-4">
-            <WifiOff className="w-12 h-12 text-red-600" />
-          </div>
-          <h1 className="text-4xl font-bold text-white mb-2">You're Offline</h1>
-          <p className="text-gray-300 text-lg">
-            No internet connection detected
-          </p>
+    <div className="min-h-screen bg-[#f8f7f4] text-slate-900 flex items-center justify-center px-4 py-12">
+      <div className="max-w-lg w-full bg-white/80 border border-stone-200 rounded-md p-8 md:p-10 text-center">
+        <div className="mx-auto w-14 h-14 rounded-full border border-stone-200 bg-[#f8f7f4] flex items-center justify-center mb-5">
+          <WifiOff className="w-6 h-6 text-slate-700" />
         </div>
 
-        {/* Offline Message */}
-        <div className="bg-white/10 backdrop-blur-xl border border-white/20 rounded-2xl p-6 mb-8">
-          <h2 className="text-xl font-semibold text-white mb-3">
-            Don't worry!
-          </h2>
-          <p className="text-gray-300 mb-4">
-            Some content may still be available from your recent visits. Check
-            your connection and try again.
-          </p>
+        <p className="text-[11px] md:text-xs tracking-[0.18em] uppercase text-[#7a3030] font-semibold mb-2">
+          {t("offline_kicker", "Connection unavailable", "الاتصال غير متاح")}
+        </p>
+        <h1 className="text-3xl font-semibold tracking-tight text-slate-950 mb-3">
+          {t("offline_title", "You are offline", "أنت غير متصل")}
+        </h1>
+        <p className="text-slate-600 leading-relaxed mb-8">
+          {t(
+            "offline_body",
+            "We couldn't reach The Maghreb Corridor right now. Check your connection and try again. Some recently visited content may still be available in your browser cache.",
+            "تعذر الوصول إلى نشرة الممر المغاربي حاليًا. تحقق من اتصالك وحاول مرة أخرى. قد تظل بعض الصفحات التي زرتها مؤخرًا متاحة في ذاكرة المتصفح المؤقتة.",
+          )}
+        </p>
 
-          {/* Connection Status */}
-          <div className="flex items-center justify-center gap-2 text-red-400 mb-4">
-            <WifiOff className="w-4 h-4" />
-            <span className="text-sm">Connection lost</span>
-          </div>
-        </div>
-
-        {/* Action Buttons */}
-        <div className="space-y-4">
-          <Button
-            onClick={() => window.location.reload()}
-            className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold"
-          >
-            <RefreshCw className="w-4 h-4 mr-2" />
-            Try Again
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
+          <Button onClick={() => window.location.reload()} className="bg-[#7a3030] hover:bg-[#632626] text-white">
+            <RefreshCw className="w-4 h-4 me-2" />
+            {t("try_again", "Try again", "إعادة المحاولة")}
           </Button>
-
-          <Link href="/">
-            <Button
-              variant="outline"
-              className="w-full text-white border-white/20 bg-white/10 backdrop-blur-sm hover:bg-white/20"
-            >
-              Go to Homepage
-            </Button>
-          </Link>
+          <Button asChild variant="outline" className="border-stone-300 text-slate-700 hover:bg-stone-100">
+            <Link href="/">
+              <Home className="w-4 h-4 me-2" />
+              {t("go_home", "Go to homepage", "العودة إلى الرئيسية")}
+            </Link>
+          </Button>
         </div>
 
-        {/* Tips */}
-        <div className="mt-8 text-left">
-          <h3 className="text-white font-semibold mb-3">
-            Troubleshooting Tips:
-          </h3>
-          <ul className="text-gray-300 text-sm space-y-2">
-            <li>• Check your WiFi or mobile data connection</li>
-            <li>• Make sure you're not in airplane mode</li>
-            <li>• Try refreshing the page</li>
-            <li>• Contact your internet service provider if issues persist</li>
+        <div className="mt-8 pt-6 border-t border-stone-200 text-start">
+          <h2 className="text-sm font-semibold text-slate-900 mb-2">
+            {t("troubleshooting", "Troubleshooting", "استكشاف الأخطاء")}
+          </h2>
+          <ul className="text-sm text-slate-600 space-y-1.5">
+            <li>{t("tip_wifi", "Check your Wi-Fi or mobile data connection.", "تحقق من اتصال Wi-Fi أو بيانات الهاتف.")}</li>
+            <li>{t("tip_airplane", "Disable airplane mode if it is enabled.", "عطّل وضع الطيران إذا كان مفعّلًا.")}</li>
+            <li>{t("tip_refresh", "Refresh the page after reconnecting.", "حدّث الصفحة بعد إعادة الاتصال.")}</li>
           </ul>
         </div>
-
-        {/* Branding */}
-        <div className="mt-12 text-center">
-          <p className="text-gray-400 text-sm">
-            © 2025 The Maghreb Corridor • News Portal
-          </p>
-        </div>
-      </div>
-
-      {/* Background Animation */}
-      <div className="fixed inset-0 -z-10 overflow-hidden">
-        <div className="absolute -top-40 -right-32 w-96 h-96 bg-red-500/10 rounded-full blur-3xl animate-pulse"></div>
-        <div className="absolute -bottom-40 -left-32 w-96 h-96 bg-blue-500/10 rounded-full blur-3xl animate-pulse delay-1000"></div>
       </div>
     </div>
   );

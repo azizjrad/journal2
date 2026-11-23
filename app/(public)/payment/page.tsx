@@ -31,7 +31,7 @@ export default function PaymentPage() {
     message: string;
     redirectTo?: string;
   }>({ open: false, title: "", message: "" });
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const { user, isAuthenticated } = useAuth();
   const searchParams = useSearchParams();
   const plan = (searchParams.get("plan") as "annual" | "monthly") || "annual";
@@ -108,56 +108,56 @@ export default function PaymentPage() {
         : t(
             "card_number_incomplete",
             "Your card number is incomplete.",
-            "رقم البطاقة غير مكتمل."
+            "رÙ‚Ù… اÙ„بطاÙ‚ة غÙŠر Ù…ÙƒتÙ…Ù„."
           ),
       expiry: cardFields.expiry
         ? ""
         : t(
             "card_expiry_incomplete",
             "Your card's expiration date is incomplete.",
-            "تاريخ انتهاء البطاقة غير مكتمل."
+            "تارÙŠخ اÙ†تÙ‡اء اÙ„بطاÙ‚ة غÙŠر Ù…ÙƒتÙ…Ù„."
           ),
       cvc: cardFields.cvc
         ? ""
         : t(
             "card_cvc_incomplete",
             "Your card's security code is incomplete.",
-            "رمز أمان البطاقة غير مكتمل."
+            "رÙ…ز أÙ…اÙ† اÙ„بطاÙ‚ة غÙŠر Ù…ÙƒتÙ…Ù„."
           ),
       firstName: cardFields.firstName
         ? ""
         : t(
             "first_name_required",
             "Please provide your first name.",
-            "يرجى إدخال الاسم الأول."
+            "ÙŠرجÙ‰ إدخاÙ„ اÙ„اسÙ… اÙ„أÙˆÙ„."
           ),
       lastName: cardFields.lastName
         ? ""
         : t(
             "last_name_required",
             "Please provide your last name.",
-            "يرجى إدخال اسم العائلة."
+            "ÙŠرجÙ‰ إدخاÙ„ اسÙ… اÙ„عائÙ„ة."
           ),
       address: cardFields.address
         ? ""
         : t(
             "address_required",
             "This field is incomplete.",
-            "هذا الحقل غير مكتمل."
+            "Ù‡ذا اÙ„حÙ‚Ù„ غÙŠر Ù…ÙƒتÙ…Ù„."
           ),
       address2: "",
       postal: !cardFields.postal
         ? t(
             "postal_required",
             "This field is incomplete.",
-            "هذا الحقل غير مكتمل."
+            "Ù‡ذا اÙ„حÙ‚Ù„ غÙŠر Ù…ÙƒتÙ…Ù„."
           )
         : "",
       city: !cardFields.city
         ? t(
             "city_required",
             "This field is incomplete.",
-            "هذا الحقل غير مكتمل."
+            "Ù‡ذا اÙ„حÙ‚Ù„ غÙŠر Ù…ÙƒتÙ…Ù„."
           )
         : "",
     };
@@ -175,10 +175,10 @@ export default function PaymentPage() {
     let valid = true;
     const emailValue = email.trim();
     if (!emailValue) {
-      setEmailError("Enter an email address");
+      setEmailError(t("enter_email", "Enter an email address", "???? ????? ?????? ??????????"));
       valid = false;
     } else if (!/^\S+@\S+\.\S+$/.test(emailValue)) {
-      setEmailError("Add a valid email address");
+      setEmailError(t("valid_email", "Add a valid email address", "???? ?????? ?????????? ??????"));
       valid = false;
     } else {
       setEmailError("");
@@ -193,7 +193,7 @@ export default function PaymentPage() {
       title: t(
         "annual_digital",
         "Annual Digital Access (auto-renews)",
-        "الاشتراك السنوي الرقمي (يتجدد تلقائيًا)"
+        "?????? ?????? ?????? (????? ????????)"
       ),
       price: user?.has_used_trial ? "$24" : "$0",
       oldPrice: user?.has_used_trial ? "" : "$4",
@@ -201,26 +201,26 @@ export default function PaymentPage() {
         ? t(
             "annual_charge_desc_no_trial",
             "Charged as $24 for the first year. Renews automatically for $48/year.",
-            "يتم احتساب $24 للسنة الأولى. يتجدد تلقائيًا مقابل $48/سنة."
+            "ÙŠتÙ… احتساب $24 Ù„Ù„سÙ†ة اÙ„أÙˆÙ„Ù‰. ÙŠتجدد تÙ„Ù‚ائÙŠÙ‹ا Ù…Ù‚ابÙ„ $48/سÙ†ة."
           )
         : t(
             "annual_charge_desc",
             "Charged as $24 after your free trial. Renews automatically for $48/year.",
-            "يتم احتساب $24 لسنة واحدة بعد الفترة التجريبية المجانية. يتجدد تلقائيًا مقابل $48/سنة."
+            "ÙŠتÙ… احتساب $24 Ù„سÙ†ة Ùˆاحدة بعد اÙ„فترة اÙ„تجرÙŠبÙŠة اÙ„Ù…جاÙ†ÙŠة. ÙŠتجدد تÙ„Ù‚ائÙŠÙ‹ا Ù…Ù‚ابÙ„ $48/سÙ†ة."
           ),
     },
     monthly: {
       title: t(
         "monthly_digital",
         "Monthly Digital Access (auto-renews)",
-        "الاشتراك الشهري الرقمي (يتجدد تلقائيًا)"
+        "?????? ?????? ?????? (????? ????????)"
       ),
       price: "$4",
       oldPrice: "",
       desc: t(
         "monthly_renew_desc",
         "Renews automatically for $4/month.",
-        "يتجدد تلقائيًا مقابل $4/شهر."
+        "ÙŠتجدد تÙ„Ù‚ائÙŠÙ‹ا Ù…Ù‚ابÙ„ $4/شÙ‡ر."
       ),
     },
   };
@@ -231,7 +231,7 @@ export default function PaymentPage() {
         {/* Review Card (left) */}
         <div className="flex-1 min-w-[340px] max-w-2xl bg-white rounded-xl p-8 flex flex-col gap-4 shadow border border-gray-100 order-1 md:order-none">
           <h2 className="text-2xl font-bold text-gray-900 mb-0">
-            {t("review", "Review", "مراجعة")}
+            {t("review", "Review", "??????")}
           </h2>
           <div className="text-gray-500 text-sm mb-1 flex items-center gap-2">
             <Image
@@ -245,16 +245,16 @@ export default function PaymentPage() {
             {t(
               "secure_encrypted",
               "All transactions are secure and encrypted.",
-              "جميع المعاملات آمنة ومشفرة."
+              "???? ????????? ???? ??????."
             )}
           </div>
           <div className="bg-gray-50 rounded-lg p-6 border border-gray-100 mt-0">
             <div className="text-xs text-gray-500 mb-1">
-              {t("subscription_plan", "Subscription Plan", "خطة الاشتراك")}
+              {t("subscription_plan", "Subscription Plan", "??? ????????")}
             </div>
             <div className="text-lg font-semibold text-gray-900 mb-1">
               {planDetails[plan].title}{" "}
-              {t("auto_renews", "(auto-renews)", "(تجدد تلقائي)")}
+              {t("auto_renews", "(auto-renews)", "(????? ????????)")}
             </div>
             <div className="flex items-center gap-2 mb-1">
               {planDetails[plan].oldPrice && (
@@ -271,12 +271,12 @@ export default function PaymentPage() {
             </div>
             <hr className="my-3 border-dashed border-gray-200" />
             <div className="flex justify-between items-center text-base font-semibold mb-1">
-              <span>{t("due_now", "Due now", "المستحق الآن")}</span>
+              <span>{t("due_now", "Due now", "??????? ????")}</span>
               <span className="text-gray-900">{planDetails[plan].price}</span>
             </div>
             <hr className="my-3 border-dashed border-gray-200" />
             <div className="text-xs text-gray-500 mb-1">
-              {t("payment_method", "Payment Method", "طريقة الدفع")}
+              {t("payment_method", "Payment Method", "????? ?????")}
             </div>
             <div className="flex items-center gap-2 text-base font-medium text-gray-900 mb-2">
               {paymentMethod === "paypal" && (
@@ -292,7 +292,7 @@ export default function PaymentPage() {
               )}
               {paymentMethod === "card" && (
                 <>
-                  <span>{t("credit_card", "Credit Card", "بطاقة مصرفية")}</span>
+                  <span>{t("credit_card", "Credit Card", "????? ??????")}</span>
                   <Image src="/card.png" alt="Card" width={22} height={22} />
                 </>
               )}
@@ -302,7 +302,7 @@ export default function PaymentPage() {
               {t(
                 "subscription_account",
                 "Subscription account",
-                "حساب الاشتراك"
+                "حساب اÙ„اشتراÙƒ"
               )}
             </div>
             <div className="text-base text-gray-900">{email}</div>
@@ -315,21 +315,21 @@ export default function PaymentPage() {
               {t(
                 "auto_renewal_title",
                 "Automatic renewal and cancellation",
-                "التجديد التلقائي والإلغاء"
+                "اÙ„تجدÙŠد اÙ„تÙ„Ù‚ائÙŠ ÙˆاÙ„إÙ„غاء"
               )}
             </span>
             <br />
             {t(
               "auto_renewal_desc",
               "After your free trial, your subscription will continue and you will be charged the annual rate unless you cancel. To cancel before your free trial ends, or for future renewals, manage your subscription online or contact support. Payments are non-refundable unless you cancel within 14 days of the charge.",
-              "بعد انتهاء الفترة التجريبية، سيستمر اشتراكك وسيتم تحصيل الرسوم السنوية ما لم تقم بالإلغاء. لإلغاء الاشتراك قبل انتهاء الفترة التجريبية أو للتجديدات المستقبلية، قم بإدارة اشتراكك عبر الإنترنت أو اتصل بالدعم. المدفوعات غير قابلة للاسترداد إلا إذا ألغيت خلال 14 يومًا من التحصيل."
+              "بعد اÙ†تÙ‡اء اÙ„فترة اÙ„تجرÙŠبÙŠةØŒ سÙŠستÙ…ر اشتراÙƒÙƒ ÙˆسÙŠتÙ… تحصÙŠÙ„ اÙ„رسÙˆÙ… اÙ„سÙ†ÙˆÙŠة Ù…ا Ù„Ù… تÙ‚Ù… باÙ„إÙ„غاء. Ù„إÙ„غاء اÙ„اشتراÙƒ Ù‚بÙ„ اÙ†تÙ‡اء اÙ„فترة اÙ„تجرÙŠبÙŠة أÙˆ Ù„Ù„تجدÙŠدات اÙ„Ù…ستÙ‚بÙ„ÙŠةØŒ Ù‚Ù… بإدارة اشتراÙƒÙƒ عبر اÙ„إÙ†ترÙ†ت أÙˆ اتصÙ„ باÙ„دعÙ…. اÙ„Ù…دفÙˆعات غÙŠر Ù‚ابÙ„ة Ù„Ù„استرداد إÙ„ا إذا أÙ„غÙŠت خÙ„اÙ„ 14 ÙŠÙˆÙ…Ù‹ا Ù…Ù† اÙ„تحصÙŠÙ„."
             )}
           </div>
           <div className="flex items-center gap-2 mt-1">
             <span className="relative inline-flex items-center w-5 h-5 min-w-[1.25rem] min-h-[1.25rem] max-w-[1.25rem] max-h-[1.25rem] flex-shrink-0">
               <input
                 type="checkbox"
-                className="peer appearance-none w-5 h-5 border border-gray-300 rounded bg-white checked:bg-red-600 checked:border-red-600 focus:ring-2 focus:ring-red-400 transition-colors duration-200 align-middle"
+                className="peer appearance-none w-5 h-5 border border-gray-300 rounded bg-white checked:bg-[#7a3030] checked:border-[#7a3030] focus:ring-2 focus:ring-[#7a3030]/30 transition-colors duration-200 align-middle"
                 style={{ display: "inline-block", verticalAlign: "middle" }}
                 id="legalAgree"
                 checked={legalAgree}
@@ -355,7 +355,7 @@ export default function PaymentPage() {
               {t(
                 "agree_terms",
                 "I agree to the Automatic Renewal and Cancellation terms above",
-                "أوافق على شروط التجديد التلقائي والإلغاء أعلاه"
+                "أÙˆافÙ‚ عÙ„Ù‰ شرÙˆط اÙ„تجدÙŠد اÙ„تÙ„Ù‚ائÙŠ ÙˆاÙ„إÙ„غاء أعÙ„اÙ‡"
               )}
             </label>
           </div>
@@ -363,24 +363,24 @@ export default function PaymentPage() {
             {t(
               "by_subscribing",
               "By subscribing, I also agree to the",
-              "بالاشتراك، أوافق أيضًا على "
+              "باÙ„اشتراÙƒØŒ أÙˆافÙ‚ أÙŠضÙ‹ا عÙ„Ù‰ "
             )}
             <a
               href="/user-agreement"
-              className="underline text-gray-700 hover:text-red-700 mx-1"
+              className="underline text-gray-700 hover:text-[#7a3030] mx-1"
               target="_blank"
               rel="noopener noreferrer"
             >
-              {t("user_agreement", "user agreement", "اتفاقية المستخدم")}
+              {t("user_agreement", "user agreement", "??????? ????????")}
             </a>
-            {t("and", "and", "و")}
+            {t("and", "and", "?")}
             <a
               href="/privacy"
-              className="underline text-gray-700 hover:text-red-700 mx-1"
+              className="underline text-gray-700 hover:text-[#7a3030] mx-1"
               target="_blank"
               rel="noopener noreferrer"
             >
-              {t("privacy_policy", "privacy policy", "سياسة الخصوصية")}
+              {t("privacy_policy", "privacy policy", "????? ????????")}
             </a>
           </div>
           <Button
@@ -390,11 +390,11 @@ export default function PaymentPage() {
               if (!legalAgree) {
                 setErrorModal({
                   open: true,
-                  title: t("required", "Required", "مطلوب"),
+                  title: t("required", "Required", "?????"),
                   message: t(
                     "agree_terms_required",
                     "Please agree to the terms and conditions before proceeding.",
-                    "يرجى الموافقة على الشروط والأحكام قبل المتابعة."
+                    "ÙŠرجÙ‰ اÙ„Ù…ÙˆافÙ‚ة عÙ„Ù‰ اÙ„شرÙˆط ÙˆاÙ„أحÙƒاÙ… Ù‚بÙ„ اÙ„Ù…تابعة."
                   ),
                 });
                 return;
@@ -436,7 +436,7 @@ export default function PaymentPage() {
                       title: t(
                         "subscription_exists",
                         "Subscription Already Active",
-                        "الاشتراك نشط بالفعل"
+                        "اÙ„اشتراÙƒ Ù†شط باÙ„فعÙ„"
                       ),
                       message: data.message,
                       redirectTo: "/settings?tab=subscription",
@@ -444,13 +444,13 @@ export default function PaymentPage() {
                   } else {
                     setErrorModal({
                       open: true,
-                      title: t("error", "Error", "خطأ"),
+                      title: t("error", "Error", "???"),
                       message:
                         data.message ||
                         t(
                           "checkout_failed",
                           "Failed to create checkout session. Please try again.",
-                          "فشل إنشاء جلسة الدفع. يرجى المحاولة مرة أخرى."
+                          "فشÙ„ إÙ†شاء جÙ„سة اÙ„دفع. ÙŠرجÙ‰ اÙ„Ù…حاÙˆÙ„ة Ù…رة أخرÙ‰."
                         ),
                     });
                   }
@@ -460,11 +460,11 @@ export default function PaymentPage() {
                 setIsProcessing(false);
                 setErrorModal({
                   open: true,
-                  title: t("error", "Error", "خطأ"),
+                  title: t("error", "Error", "???"),
                   message: t(
                     "error_occurred",
                     "An error occurred. Please try again.",
-                    "حدث خطأ. يرجى المحاولة مرة أخرى."
+                    "حدث خطأ. ÙŠرجÙ‰ اÙ„Ù…حاÙˆÙ„ة Ù…رة أخرÙ‰."
                   ),
                 });
               }
@@ -492,19 +492,19 @@ export default function PaymentPage() {
                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                   ></path>
                 </svg>
-                {t("processing", "Processing...", "جاري المعالجة...")}
+                {t("processing", "Processing...", "???? ????????...")}
               </>
             ) : paymentMethod === "paypal" ? (
-              t("pay_with_paypal", "Pay with PayPal", "ادفع عبر PayPal")
+              t("pay_with_paypal", "Pay with PayPal", "????? ??? PayPal")
             ) : (
-              t("pay_now", "Pay Now", "ادفع الآن")
+              t("pay_now", "Pay Now", "???? ????")
             )}
           </Button>
           <div className="text-xs text-gray-500 text-center mt-1">
             {t(
               "cancel_anytime",
               "Cancel or pause anytime.",
-              "يمكنك الإلغاء أو الإيقاف المؤقت في أي وقت."
+              "????? ??????? ?? ??????? ?? ?? ???."
             )}
           </div>
         </div>
@@ -517,7 +517,7 @@ export default function PaymentPage() {
       {/* Logo */}
       <div className="w-full flex justify-center pt-8 pb-6">
         <a href="/" className="block">
-          <div className="text-3xl sm:text-4xl font-black text-red-700 tracking-tight hover:text-red-800 transition-colors duration-300 text-center">
+          <div className="text-3xl sm:text-4xl font-black text-[#7a3030] tracking-tight hover:text-[#632626] transition-colors duration-300 text-center">
             The Maghreb Corridor
           </div>
         </a>
@@ -542,7 +542,7 @@ export default function PaymentPage() {
                   step > 1
                     ? "bg-green-500 border-green-200 text-white cursor-pointer hover:opacity-80"
                     : step === 1
-                    ? "bg-red-600 border-red-200 text-white"
+                    ? "bg-[#7a3030] border-[#7a3030]/30 text-white"
                     : "bg-gray-200 border-gray-100 text-gray-500"
                 }`}
               >
@@ -574,7 +574,7 @@ export default function PaymentPage() {
                   : "text-gray-400"
               }`}
             >
-              {t("add_account", "Add account", "أضف حساب")}
+              {t("add_account", "Add account", "??? ????")}
             </span>
           </div>
           {/* Stepper line 1 */}
@@ -597,7 +597,7 @@ export default function PaymentPage() {
                   step > 2
                     ? "bg-green-500 border-green-200 text-white cursor-pointer hover:opacity-80"
                     : step === 2
-                    ? "bg-red-600 border-red-200 text-white"
+                    ? "bg-[#7a3030] border-[#7a3030]/30 text-white"
                     : "bg-gray-200 border-gray-100 text-gray-500"
                 }`}
               >
@@ -625,7 +625,7 @@ export default function PaymentPage() {
                 step === 2 ? "text-gray-700" : "text-gray-400"
               }`}
             >
-              {t("add_details", "Add details", "أضف التفاصيل")}
+              {t("add_details", "Add details", "??? ????????")}
             </span>
           </div>
           {/* Stepper line 2 */}
@@ -648,7 +648,7 @@ export default function PaymentPage() {
                   step > 3
                     ? "bg-green-500 border-green-200 text-white cursor-pointer hover:opacity-80"
                     : step === 3
-                    ? "bg-red-600 border-red-200 text-white"
+                    ? "bg-[#7a3030] border-[#7a3030]/30 text-white"
                     : "bg-gray-200 border-gray-100 text-gray-500"
                 }`}
               >
@@ -676,7 +676,7 @@ export default function PaymentPage() {
                 step === 3 ? "text-gray-700" : "text-gray-400"
               }`}
             >
-              {t("review", "Review", "مراجعة")}
+              {t("review", "Review", "??????")}
             </span>
           </div>
         </div>
@@ -691,23 +691,23 @@ export default function PaymentPage() {
                 {t(
                   "subscribe_with_account",
                   "Subscribe with an account",
-                  "اشترك بحساب"
+                  "????? ?????"
                 )}
               </h2>
               <p className="text-gray-500 mb-6">
                 {t(
                   "access_subscription_email",
-                  "You’ll access your subscription through this email.",
-                  "ستصل إلى اشتراكك عبر هذا البريد الإلكتروني."
+                  "Youâ€™ll access your subscription through this email.",
+                  "???? ??? ??????? ??? ??? ?????? ??????????."
                 )}
               </p>
               <input
-                className={`w-full border rounded-lg px-4 py-3 mb-1 text-lg focus:outline-none focus:ring-2 focus:ring-red-400 bg-white ${
+                className={`w-full border rounded-lg px-4 py-3 mb-1 text-lg focus:outline-none focus:ring-2 focus:ring-[#7a3030]/30 bg-white ${
                   emailError && !email
-                    ? "border-red-500 text-red-600 placeholder-red-500"
+                    ? "border-[#7a3030] text-[#7a3030] placeholder-[#7a3030]"
                     : "border-gray-300 text-gray-900 placeholder-gray-400"
                 }`}
-                placeholder={t("email", "Email", "البريد الإلكتروني")}
+                placeholder={t("email", "Email", "?????? ??????????")}
                 value={email}
                 onChange={(e) => {
                   setEmail(e.target.value);
@@ -715,14 +715,14 @@ export default function PaymentPage() {
                 }}
               />
               {emailError && (
-                <div className="text-red-600 text-sm mb-3">{emailError}</div>
+                <div className="text-[#7a3030] text-sm mb-3">{emailError}</div>
               )}
               <div className="flex flex-col gap-3 mb-4">
                 <label className="flex items-start gap-2 text-gray-700 text-sm">
                   <span className="relative mt-1 inline-block w-5 h-5 min-w-[1.25rem] min-h-[1.25rem] max-w-[1.25rem] max-h-[1.25rem] align-middle flex-shrink-0">
                     <input
                       type="checkbox"
-                      className="peer appearance-none w-5 h-5 border border-gray-300 rounded bg-white checked:bg-red-600 checked:border-red-600 focus:ring-2 focus:ring-red-400 transition-colors duration-200"
+                      className="peer appearance-none w-5 h-5 border border-gray-300 rounded bg-white checked:bg-[#7a3030] checked:border-[#7a3030] focus:ring-2 focus:ring-[#7a3030]/30 transition-colors duration-200"
                       style={{
                         display: "inline-block",
                         verticalAlign: "middle",
@@ -746,14 +746,14 @@ export default function PaymentPage() {
                   {t(
                     "wired_promotional_emails",
                     "Sign up for promotional emails, including digests of stories, perk notifications, and event invites that are included in your subscription.",
-                    "اشترك في رسائلنا الترويجية، بما في ذلك ملخصات القصص، وإشعارات المزايا، ودعوات الفعاليات."
+                    "اشترÙƒ فÙŠ رسائÙ„Ù†ا اÙ„ترÙˆÙŠجÙŠةØŒ بÙ…ا فÙŠ ذÙ„Ùƒ Ù…Ù„خصات اÙ„Ù‚صصØŒ Ùˆإشعارات اÙ„Ù…زاÙŠاØŒ ÙˆدعÙˆات اÙ„فعاÙ„ÙŠات."
                   )}
                 </label>
                 <label className="flex items-start gap-2 text-gray-700 text-sm">
                   <span className="relative mt-1 inline-block w-5 h-5 min-w-[1.25rem] min-h-[1.25rem] max-w-[1.25rem] max-h-[1.25rem] align-middle flex-shrink-0">
                     <input
                       type="checkbox"
-                      className="peer appearance-none w-5 h-5 border border-gray-300 rounded bg-white checked:bg-red-600 checked:border-red-600 focus:ring-2 focus:ring-red-400 transition-colors duration-200"
+                      className="peer appearance-none w-5 h-5 border border-gray-300 rounded bg-white checked:bg-[#7a3030] checked:border-[#7a3030] focus:ring-2 focus:ring-[#7a3030]/30 transition-colors duration-200"
                       style={{
                         display: "inline-block",
                         verticalAlign: "middle",
@@ -777,7 +777,7 @@ export default function PaymentPage() {
                   {t(
                     "wired_marketing_emails",
                     "Receive marketing emails about other brands and our marketing partners.",
-                    "استلم رسائل تسويقية عن علاماتنا التجارية وشركائنا."
+                    "استÙ„Ù… رسائÙ„ تسÙˆÙŠÙ‚ÙŠة عÙ† عÙ„اÙ…اتÙ†ا اÙ„تجارÙŠة ÙˆشرÙƒائÙ†ا."
                   )}
                 </label>
               </div>
@@ -785,20 +785,20 @@ export default function PaymentPage() {
                 {t(
                   "email_marketing_notice",
                   "By continuing, your email may be used for marketing and account-related purposes, in accordance with our ",
-                  "بالمتابعة، قد يُستخدم بريدك الإلكتروني لأغراض تسويقية وحسابية وفقًا ل"
+                  "باÙ„Ù…تابعةØŒ Ù‚د ÙŠُستخدÙ… برÙŠدÙƒ اÙ„إÙ„ÙƒترÙˆÙ†ÙŠ Ù„أغراض تسÙˆÙŠÙ‚ÙŠة ÙˆحسابÙŠة ÙˆفÙ‚Ù‹ا Ù„"
                 )}
                 <a
                   href="/privacy"
-                  className="underline text-red-700 hover:text-red-800 mx-1"
+                  className="underline text-[#7a3030] hover:text-[#632626] mx-1"
                   target="_blank"
                   rel="noopener noreferrer"
                 >
-                  {t("privacy_policy", "privacy policy", "سياسة الخصوصية")}
+                  {t("privacy_policy", "privacy policy", "????? ????????")}
                 </a>
                 {t(
                   "email_marketing_notice_cont",
                   "and applicable law.",
-                  "والقانون المعمول به."
+                  "ÙˆاÙ„Ù‚اÙ†ÙˆÙ† اÙ„Ù…عÙ…ÙˆÙ„ بÙ‡."
                 )}
               </p>
             </div>
@@ -816,7 +816,7 @@ export default function PaymentPage() {
                       {planDetails[plan].oldPrice}
                     </span>
                   )}
-                  <span className="text-2xl font-bold text-red-700">
+                  <span className="text-2xl font-bold text-[#7a3030]">
                     {planDetails[plan].price}
                   </span>
                 </div>
@@ -825,12 +825,12 @@ export default function PaymentPage() {
                 </div>
               </div>
               <Button
-                className="w-full py-4 text-lg font-bold bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-xl shadow-xl transition-all duration-300"
+                className="w-full py-4 text-lg font-bold bg-[#7a3030] hover:bg-[#632626] text-white rounded-xl shadow-xl transition-all duration-300"
                 onClick={() => {
                   if (validate()) setStep(2);
                 }}
               >
-                {t("continue", "Continue", "استمر")}
+                {t("continue", "Continue", "??????")}
               </Button>
             </div>
           </>
@@ -843,7 +843,7 @@ export default function PaymentPage() {
                 {t(
                   "select_payment_method",
                   "Select payment method",
-                  "اختر طريقة الدفع"
+                  "???? ????? ?????"
                 )}
               </h2>
               <p className="text-gray-500 text-sm mb-4 flex items-center gap-2">
@@ -858,11 +858,11 @@ export default function PaymentPage() {
                 {t(
                   "secure_encrypted",
                   "All transactions are secure and encrypted.",
-                  "جميع المعاملات آمنة ومشفرة."
+                  "???? ????????? ???? ??????."
                 )}
               </p>
               <div className="flex flex-col gap-2">
-                <label className="flex items-center gap-3 p-4 border rounded-lg cursor-pointer bg-white hover:border-red-400 transition-all">
+                <label className="flex items-center gap-3 p-4 border rounded-lg cursor-pointer bg-white hover:border-[#7a3030]/50 transition-all">
                   <span className="relative flex items-center">
                     <input
                       type="radio"
@@ -877,20 +877,20 @@ export default function PaymentPage() {
                     {/* Show PayPal email if PayPal is selected */}
                     {paymentMethod === "paypal" && paypalEmail && (
                       <div className="mb-4 text-base text-gray-700">
-                        <span className="font-semibold">PayPal Email:</span>{" "}
+                        <span className="font-semibold">{t("paypal_email_label", "PayPal Email:", "???? PayPal ??????????:")}</span>{" "}
                         {paypalEmail}
                       </div>
                     )}
                     <span
                       className={`w-6 h-6 flex items-center justify-center rounded-full border-2 transition-colors bg-white ${
                         paymentMethod === "paypal"
-                          ? "border-red-600"
+                          ? "border-[#7a3030]"
                           : "border-black"
                       }`}
                     >
                       <span
                         className={`w-3 h-3 rounded-full transition-colors ${
-                          paymentMethod === "paypal" ? "bg-red-600" : "bg-white"
+                          paymentMethod === "paypal" ? "bg-[#7a3030]" : "bg-white"
                         }`}
                       ></span>
                     </span>
@@ -907,7 +907,7 @@ export default function PaymentPage() {
                     />
                   </span>
                 </label>
-                <label className="flex items-center gap-3 p-4 border rounded-lg cursor-pointer bg-white hover:border-red-400 transition-all relative">
+                <label className="flex items-center gap-3 p-4 border rounded-lg cursor-pointer bg-white hover:border-[#7a3030]/50 transition-all relative">
                   <span className="relative flex items-center">
                     <input
                       type="radio"
@@ -921,19 +921,19 @@ export default function PaymentPage() {
                     <span
                       className={`w-6 h-6 flex items-center justify-center rounded-full border-2 transition-colors bg-white ${
                         paymentMethod === "card"
-                          ? "border-red-600"
+                          ? "border-[#7a3030]"
                           : "border-black"
                       }`}
                     >
                       <span
                         className={`w-3 h-3 rounded-full transition-colors ${
-                          paymentMethod === "card" ? "bg-red-600" : "bg-white"
+                          paymentMethod === "card" ? "bg-[#7a3030]" : "bg-white"
                         }`}
                       ></span>
                     </span>
                   </span>
                   <span className="font-medium text-gray-900">
-                    Credit / Debit card
+                    {t("credit_debit_card", "Credit / Debit card", "????? ?????? / ???")}
                   </span>
                   <span className="ml-auto flex gap-1">
                     <Image
@@ -955,10 +955,9 @@ export default function PaymentPage() {
                 {paymentMethod === "card" && (
                   <div className="mt-4 bg-blue-50 rounded-xl p-4 border border-blue-200">
                     <p className="text-sm text-blue-800">
-                      <strong>💳 Secure Payment</strong>
+                      <strong>ðŸ’³ Secure Payment</strong>
                       <br />
-                      You'll be redirected to our secure payment page to enter
-                      your card details in the next step.
+                      {t("redirect_card_details", "You'll be redirected to our secure payment page to enter your card details in the next step.", "???? ?????? ??? ???? ????? ?????? ?????? ?????? ?????? ?? ?????? ???????.")}
                     </p>
                   </div>
                 )}
@@ -978,7 +977,7 @@ export default function PaymentPage() {
                       {planDetails[plan].oldPrice}
                     </span>
                   )}
-                  <span className="text-2xl font-bold text-red-700">
+                  <span className="text-2xl font-bold text-[#7a3030]">
                     {planDetails[plan].price}
                   </span>
                 </div>
@@ -989,14 +988,14 @@ export default function PaymentPage() {
               <div className="bg-white rounded-xl p-4 sm:p-6 shadow flex flex-col gap-4">
                 <div className="flex items-center justify-between">
                   <span className="text-lg font-semibold text-gray-900">
-                    {t("due_now", "Due now", "المستحق الآن")}
+                    {t("due_now", "Due now", "??????? ????")}
                   </span>
                   <span className="text-2xl font-bold text-gray-900">
                     {planDetails[plan].price}
                   </span>
                 </div>
                 <Button
-                  className="w-full py-3 text-lg font-bold bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white rounded-xl shadow-xl transition-all duration-300"
+                  className="w-full py-3 text-lg font-bold bg-[#7a3030] hover:bg-[#632626] text-white rounded-xl shadow-xl transition-all duration-300"
                   onClick={() => {
                     setStep(3);
                   }}
@@ -1004,7 +1003,7 @@ export default function PaymentPage() {
                   {t(
                     "continue_to_review",
                     "Continue to review",
-                    "استمر للمراجعة"
+                    "???????? ????????"
                   )}
                 </Button>
               </div>
@@ -1027,11 +1026,11 @@ export default function PaymentPage() {
               t(
                 "subscription_exists",
                 "Subscription Already Active",
-                "الاشتراك نشط بالفعل"
+                "اÙ„اشتراÙƒ Ù†شط باÙ„فعÙ„"
               ) ? (
-                <span className="text-2xl">✅</span>
+                <span className="text-2xl">âœ…</span>
               ) : (
-                <span className="text-2xl">⚠️</span>
+                <span className="text-2xl">âš ï¸</span>
               )}
               {errorModal.title}
             </AlertDialogTitle>
@@ -1046,16 +1045,16 @@ export default function PaymentPage() {
                   setErrorModal({ ...errorModal, open: false });
                   window.location.href = errorModal.redirectTo!;
                 }}
-                className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition-all duration-200"
+                className="w-full bg-[#7a3030] hover:bg-[#632626] text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition-all duration-200"
               >
-                {t("view_subscription", "View Subscription", "عرض الاشتراك")}
+                {t("view_subscription", "View Subscription", "??? ????????")}
               </AlertDialogAction>
             ) : (
               <AlertDialogAction
                 onClick={() => setErrorModal({ ...errorModal, open: false })}
-                className="w-full bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition-all duration-200"
+                className="w-full bg-[#7a3030] hover:bg-[#632626] text-white font-semibold px-6 py-3 rounded-lg shadow-lg transition-all duration-200"
               >
-                {t("ok", "OK", "حسناً")}
+                {t("ok", "OK", "?????")}
               </AlertDialogAction>
             )}
           </AlertDialogFooter>

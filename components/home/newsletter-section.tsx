@@ -1,78 +1,76 @@
 "use client";
 
+import { useState } from "react";
+import { Mail, Bell, Star, Gift } from "lucide-react";
+
 import { useLanguage } from "@/lib/context/language-context";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Mail, Bell, Star, Gift } from "lucide-react";
-import { useState } from "react";
 
 export function NewsletterSection() {
   const { t } = useLanguage();
   const [email, setEmail] = useState("");
-  const [isSubscribed, setIsSubscribed] = useState(false);
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
     if (email) {
-      // Redirect to payment page with annual plan and pre-filled email
-      window.location.href = `/payment?plan=annual&email=${encodeURIComponent(
-        email
-      )}`;
+      window.location.href = `/payment?plan=annual&email=${encodeURIComponent(email)}`;
     }
   };
 
-  return (
-    <div className="container mx-auto px-4 lg:px-6 py-16">
-      <Card className="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 border-0 overflow-hidden relative">
-        {/* Background Pattern */}
-        <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNjAiIGhlaWdodD0iNjAiIHZpZXdCb3g9IjAgMCA2MCA2MCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZyBmaWxsPSJub25lIiBmaWxsLXJ1bGU9ImV2ZW5vZGQiPjxnIGZpbGw9IiNmZmZmZmYiIGZpbGwtb3BhY2l0eT0iMC4wNSI+PGNpcmNsZSBjeD0iMzAiIGN5PSIzMCIgcj0iNCIvPjwvZz48L2c+PC9zdmc+')] opacity-30"></div>
+  const benefits = [
+    {
+      icon: <Bell className="h-4 w-4" />,
+      label: t("dispatch_alerts", "Dispatch alerts", "تنبيهات الإحاطات"),
+    },
+    {
+      icon: <Star className="h-4 w-4" />,
+      label: t("subscriber_briefings", "Subscriber briefings", "إحاطات للمشتركين"),
+    },
+    {
+      icon: <Gift className="h-4 w-4" />,
+      label: t("weekly_digest", "Weekly digest", "ملخص أسبوعي"),
+    },
+  ];
 
-        <CardContent className="p-12 lg:p-16 text-center relative">
-          <div className="max-w-4xl mx-auto">
-            {/* Icon */}
-            <div className="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-r from-red-500 to-red-600 rounded-full mb-8 shadow-2xl">
-              <Mail className="w-10 h-10 text-white" />
+  return (
+    <div className="container mx-auto px-4 lg:px-6 py-12 md:py-16">
+      <Card className="border border-stone-300/80 bg-[#fbfaf7] shadow-none rounded-md">
+        <CardContent className="p-6 md:p-10 lg:p-12">
+          <div className="mx-auto max-w-3xl">
+            <div className="mb-6 flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-full border border-stone-300 bg-white text-[#7a3030]">
+                <Mail className="h-5 w-5" aria-hidden="true" />
+              </div>
+              <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#7a3030]">
+                {t("newsletter", "Newsletter", "النشرة")}
+              </p>
             </div>
-            {/* Heading */}
-            <h3 className="text-4xl md:text-5xl font-bold text-white mb-6 leading-tight">
-              {t("stay_informed", "Stay Informed", "ابق على اطلاع")}
+
+            <h3 className="mb-3 text-2xl font-semibold tracking-tight text-slate-950 md:text-3xl">
+              {t("stay_informed", "Stay informed", "ابقَ على اطلاع")}
             </h3>
-            <p className="text-xl md:text-2xl text-gray-300 mb-4 font-light">
+            <p className="mb-8 max-w-2xl text-sm leading-relaxed text-slate-600 md:text-base">
               {t(
                 "newsletter_description",
-                "Get breaking news, exclusive stories, and insider insights delivered directly to your inbox",
-                "احصل على الأخبار العاجلة والقصص الحصرية والرؤى الداخلية مباشرة في صندوق الوارد"
+                "Receive editorial briefings and updates from The Maghreb Corridor directly in your inbox.",
+                "استقبل الإحاطات التحريرية والتحديثات من نشرة الممر المغاربي مباشرة في بريدك الوارد.",
               )}
             </p>
-            {/* Benefits */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12 mt-12">
-              <div className="flex items-center justify-center space-x-3 text-gray-300">
-                <Bell className="w-6 h-6 text-red-400" />
-                <span className="font-semibold">
-                  {t(
-                    "breaking_alerts",
-                    "Breaking News Alerts",
-                    "تنبيهات الأخبار العاجلة"
-                  )}
-                </span>
-              </div>
-              <div className="flex items-center justify-center space-x-3 text-gray-300">
-                <Star className="w-6 h-6 text-red-400" />
-                <span className="font-semibold">
-                  {t("exclusive_content", "Exclusive Content", "محتوى حصري")}
-                </span>
-              </div>
-              <div className="flex items-center justify-center space-x-3 text-gray-300">
-                <Gift className="w-6 h-6 text-red-400" />
-                <span className="font-semibold">
-                  {t("weekly_digest", "Weekly Digest", "ملخص أسبوعي")}
-                </span>
-              </div>
-            </div>{" "}
-            {/* Subscription Form */}
-            {/* Always show the form, redirect on submit */}
-            <form onSubmit={handleSubscribe} className="max-w-2xl mx-auto">
-              <div className="flex flex-col sm:flex-row gap-4 sm:items-center">
+
+            <div className="mb-8 flex flex-wrap gap-x-6 gap-y-3 text-sm text-slate-700">
+              {benefits.map((benefit) => (
+                <div key={benefit.label} className="inline-flex items-center gap-2">
+                  <span className="text-[#7a3030]" aria-hidden="true">
+                    {benefit.icon}
+                  </span>
+                  <span>{benefit.label}</span>
+                </div>
+              ))}
+            </div>
+
+            <form onSubmit={handleSubscribe} className="max-w-2xl">
+              <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                 <input
                   type="email"
                   value={email}
@@ -80,23 +78,23 @@ export function NewsletterSection() {
                   placeholder={t(
                     "enter_email",
                     "Enter your email address",
-                    "أدخل عنوان بريدك الإلكتروني"
+                    "أدخل عنوان بريدك الإلكتروني",
                   )}
-                  className="flex-1 px-6 py-4 rounded-xl border-2 border-gray-600 bg-white/10 backdrop-blur-sm text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all duration-300 text-lg"
+                  className="h-11 flex-1 rounded-md border border-stone-300 bg-white px-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#7a3030]/25 focus:border-[#7a3030]/40"
                   required
                 />
                 <Button
                   type="submit"
-                  className="bg-gradient-to-r from-red-600 to-red-700 hover:from-red-700 hover:to-red-800 text-white px-10 py-4 rounded-xl font-bold text-lg whitespace-nowrap shadow-xl hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 h-[60px] flex items-center justify-center"
+                  className="h-11 bg-[#7a3030] px-6 text-white hover:bg-[#632626] shadow-none rounded-md"
                 >
-                  {t("subscribe_now", "Subscribe Now", "اشترك الآن")}
+                  {t("subscribe_now", "Subscribe", "اشترك")}
                 </Button>
               </div>
-              <p className="text-sm text-gray-400 mt-4">
+              <p className="mt-3 text-xs text-slate-500">
                 {t(
                   "privacy_notice",
-                  "We respect your privacy. Unsubscribe at any time.",
-                  "نحن نحترم خصوصيتك. يمكنك إلغاء الاشتراك في أي وقت."
+                  "You can unsubscribe at any time.",
+                  "يمكنك إلغاء الاشتراك في أي وقت.",
                 )}
               </p>
             </form>

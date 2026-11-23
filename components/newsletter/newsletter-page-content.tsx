@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/lib/context/user-auth";
-import { NewsletterSection } from "@/components/home/newsletter-section";
+import { useLanguage } from "@/lib/context/language-context";
 import { NewsletterSubscriptionOptions } from "@/components/newsletter/newsletter-subscription-options";
 import { NewsletterSubscriptionPopup } from "@/components/newsletter/newsletter-subscription-popup";
 import { NewsletterManagement } from "@/components/newsletter/newsletter-management";
@@ -18,15 +18,8 @@ interface NewsletterPageContentProps {
 }
 
 async function getSubscriptionStatus(userId: string) {
-  // This would typically fetch from your database
-  // For now, we'll simulate the check
   try {
-    // Add your database logic here to check subscription status
-    // Example:
-    // const subscription = await db.subscriptions.findFirst({
-    //   where: { userId: userId, status: 'active' }
-    // });
-    return null; // Return subscription data if exists
+    return null;
   } catch (error) {
     return null;
   }
@@ -37,12 +30,12 @@ export function NewsletterPageContent({
 }: NewsletterPageContentProps) {
   const { user, isAuthenticated, isLoading } = useAuth();
   const router = useRouter();
+  const { language, t } = useLanguage();
   const [subscription, setSubscription] = useState(null);
   const [subscriptionLoading, setSubscriptionLoading] = useState(true);
   const [selectedPlan, setSelectedPlan] = useState("annual");
 
   useEffect(() => {
-    // Restore selected plan from sessionStorage if returning from login
     const pendingPlan = sessionStorage.getItem("pendingNewsletterPlan");
     if (pendingPlan) {
       setSelectedPlan(pendingPlan);
@@ -50,7 +43,6 @@ export function NewsletterPageContent({
     }
 
     if (user?.id) {
-      // Check subscription status only for authenticated users
       getSubscriptionStatus(user.id)
         .then(setSubscription)
         .finally(() => setSubscriptionLoading(false));
@@ -61,45 +53,70 @@ export function NewsletterPageContent({
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-white flex items-center justify-center">
+      <div className="min-h-screen bg-[#f8f7f4] flex items-center justify-center">
         <div className="text-center">
-          <Loader2 className="w-8 h-8 animate-spin text-red-500 mx-auto mb-4" />
-          <p className="text-gray-900 text-lg">Loading newsletter page...</p>
+          <Loader2 className="w-8 h-8 animate-spin text-[#7a3030] mx-auto mb-4" />
+          <p className="text-slate-700 text-base">
+            {t("newsletter_loading", "Loading newsletter page...", "جارٍ تحميل صفحة النشرة...")}
+          </p>
         </div>
       </div>
     );
   }
 
   return (
-    <>
-      {/* White navbar with centered The Maghreb Corridor logo */}
-      <nav className="w-full bg-white border-b border-gray-200 py-2 flex items-center justify-center">
-        <a href="/" className="block">
-          <div className="text-4xl font-black text-red-700 tracking-tight hover:text-red-800 transition-colors duration-300 text-center">
-            The Maghreb Corridor
+    <div className="min-h-screen bg-[#f8f7f4] text-slate-900">
+      <nav className="w-full bg-[#f8f7f4]/95 border-b border-stone-200 py-4 flex items-center justify-center">
+        <a href="/" className="block text-center px-4">
+          <div className="text-sm tracking-[0.16em] uppercase text-[#7a3030] font-semibold mb-1">
+            {language === "ar" ? "نشرة الممر المغاربي" : "The Maghreb Corridor"}
+          </div>
+          <div className="text-xs text-slate-600">
+            {t("newsletter_nav", "Newsletter & subscriptions", "النشرة والاشتراكات")}
           </div>
         </a>
       </nav>
+
       {isAuthenticated && user && subscription ? (
         <NewsletterManagement user={user} subscription={subscription} />
       ) : (
         <>
-          <div className="min-h-screen bg-gray-50 flex items-center justify-center pt-4 pb-12">
-            <div className="w-full max-w-2xl">
-              <div className="mb-8">
-                <NewsletterSubscriptionOptions
-                  selected={selectedPlan}
-                  setSelected={setSelectedPlan}
-                />
-              </div>
+          <main className="container mx-auto px-4 lg:px-6 py-10 md:py-14">
+            <div className="max-w-4xl mx-auto space-y-8 md:space-y-10">
+              <section className="text-center space-y-3">
+                <p className="text-[11px] md:text-xs tracking-[0.18em] uppercase text-[#7a3030] font-semibold">
+                  {t("newsletter_kicker", "Newsletter", "النشرة البريدية")}
+                </p>
+                <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-slate-950">
+                  {t(
+                    "newsletter_title",
+                    "Subscribe for briefings and exclusive updates",
+                    "اشترك للحصول على الإحاطات والتحديثات الحصرية",
+                  )}
+                </h1>
+                <p className="text-slate-600 max-w-2xl mx-auto leading-relaxed">
+                  {t(
+                    "newsletter_subtitle",
+                    "Choose a plan to receive editorial briefings, updates, and subscriber access features.",
+                    "اختر خطة مناسبة لتلقي الإحاطات التحريرية والتحديثات وميزات الوصول للمشتركين.",
+                  )}
+                </p>
+              </section>
+
+              <NewsletterSubscriptionOptions
+                selected={selectedPlan}
+                setSelected={setSelectedPlan}
+              />
             </div>
-          </div>
+          </main>
+
           <AnnualDigitalFeatures />
           <NewsletterSubscriptionPopup selectedPlan={selectedPlan} />
         </>
       )}
+
       <NewsletterFAQ />
       <Footer categories={categories} />
-    </>
+    </div>
   );
 }

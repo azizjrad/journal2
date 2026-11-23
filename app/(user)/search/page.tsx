@@ -1,4 +1,4 @@
-import { getCategories } from "@/lib/services/category-service";
+﻿import { getCategories } from "@/lib/services/category-service";
 import type { SearchFilters } from "@/lib/content/types";
 import {
   advancedSearchArticles,
@@ -10,17 +10,16 @@ import { Footer } from "@/components/layout/footer";
 import { SearchPageContent } from "@/components/search/search-page-content";
 import { Metadata } from "next";
 
-// Dynamic rendering for search functionality
 export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
-  title: "Search - Digital Journal",
+  title: "Search - The Maghreb Corridor",
   description:
-    "Search through thousands of articles covering technology, politics, culture, and more from our expert journalists.",
+    "Search dispatches and articles from The Maghreb Corridor.",
 };
 
 interface SearchPageProps {
-  searchParams: {
+  searchParams: Promise<{
     q?: string;
     category?: string;
     dateFrom?: string;
@@ -28,47 +27,37 @@ interface SearchPageProps {
     tags?: string;
     sortBy?: string;
     sortOrder?: string;
-  };
+  }>;
 }
 
 export default async function SearchPage({ searchParams }: SearchPageProps) {
   const resolvedSearchParams = await searchParams;
 
-  // Build search filters from URL params
   const filters: SearchFilters = {
     query: resolvedSearchParams.q || "",
     categoryId: resolvedSearchParams.category || undefined,
     dateFrom: resolvedSearchParams.dateFrom || undefined,
     dateTo: resolvedSearchParams.dateTo || undefined,
-    tags: resolvedSearchParams.tags
-      ? resolvedSearchParams.tags.split(",")
-      : undefined,
-    sortBy:
-      (resolvedSearchParams.sortBy as "date" | "relevance") || "relevance",
+    tags: resolvedSearchParams.tags ? resolvedSearchParams.tags.split(",") : undefined,
+    sortBy: (resolvedSearchParams.sortBy as "date" | "relevance") || "relevance",
     sortOrder: (resolvedSearchParams.sortOrder as "asc" | "desc") || "desc",
   };
 
   const hasFilters = Boolean(
-    filters.query ||
-    filters.categoryId ||
-    filters.dateFrom ||
-    filters.dateTo ||
-    filters.tags?.length,
+    filters.query || filters.categoryId || filters.dateFrom || filters.dateTo || filters.tags?.length,
   );
 
-  const [searchResults, categories, popularSearches, latestArticles] =
-    await Promise.all([
-      hasFilters ? advancedSearchArticles(filters) : Promise.resolve([]),
-      getCategories(),
-      getPopularSearches(),
-      getArticles(50), // Get more articles for pagination
-    ]);
+  const [searchResults, categories, popularSearches, latestArticles] = await Promise.all([
+    hasFilters ? advancedSearchArticles(filters) : Promise.resolve([]),
+    getCategories(),
+    getPopularSearches(),
+    getArticles(50),
+  ]);
 
-  // Ensure searchResults is always an array
   const articleResults = Array.isArray(searchResults) ? searchResults : [];
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#f8f7f4] text-slate-900">
       <Header categories={categories} />
       <SearchPageContent
         filters={filters}
@@ -77,7 +66,6 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
         latestArticles={latestArticles}
         popularSearches={popularSearches}
       />
-
       <Footer categories={categories} />
     </div>
   );

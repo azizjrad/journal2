@@ -1,355 +1,122 @@
 "use client";
 
 import { useLanguage } from "@/lib/context/language-context";
-import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Globe, Target, Newspaper, Users } from "lucide-react";
 import { NewsletterSection } from "@/components/home/newsletter-section";
 
 export function AboutContent() {
-  const { language, t } = useLanguage();
+  const { t } = useLanguage();
 
   const stats = [
     {
-      icon: <Newspaper className="w-8 h-8" />,
-      number: "10,000+",
-      label: t("articles_published", "Articles Published", "مقال منشور"),
-      color: "text-blue-600",
+      icon: <Newspaper className="h-5 w-5" />,
+      number: t("focus_regions_value", "3+", "+٣"),
+      label: t("focus_regions", "Focus regions", "مناطق تركيز"),
     },
     {
-      icon: <Users className="w-8 h-8" />,
-      number: "500K+",
-      label: t("monthly_readers", "Monthly Readers", "قارئ شهري"),
-      color: "text-green-600",
+      icon: <Users className="h-5 w-5" />,
+      number: t("key_themes_value", "4", "٤"),
+      label: t("key_themes", "Key themes", "محاور أساسية"),
     },
     {
-      icon: <Globe className="w-8 h-8" />,
-      number: "25+",
-      label: t("countries_reached", "Countries Reached", "دولة وصلنا إليها"),
-      color: "text-purple-600",
+      icon: <Globe className="h-5 w-5" />,
+      number: t("bilingual_value", "EN/AR", "عربي/إنجليزي"),
+      label: t("bilingual_reporting", "Bilingual reporting", "تغطية ثنائية اللغة"),
+    },
+    {
+      icon: <Target className="h-5 w-5" />,
+      number: t("editorial_standard_value", "Editorial", "تحريري"),
+      label: t("editorial_standard", "Clear, sourced analysis", "تحليل واضح وموثّق"),
+    },
+  ];
+
+  const values = [
+    {
+      title: t("accuracy", "Accuracy", "الدقة"),
+      body: t(
+        "accuracy_desc",
+        "We prioritize verified information, clear sourcing, and careful editorial review.",
+        "نُعطي الأولوية للمعلومات الموثقة والمصادر الواضحة والمراجعة التحريرية الدقيقة.",
+      ),
+    },
+    {
+      title: t("clarity", "Clarity", "الوضوح"),
+      body: t(
+        "clarity_desc",
+        "We present developments in a clear, accessible format for readers across the region and beyond.",
+        "نقدّم التطورات بصياغة واضحة وسهلة للقراء داخل المنطقة وخارجها.",
+      ),
+    },
+    {
+      title: t("independence", "Independence", "الاستقلالية"),
+      body: t(
+        "independence_desc",
+        "Our editorial perspective is guided by public-interest reporting and professional standards.",
+        "يوجّه عملنا التحريري المصلحة العامة والمعايير المهنية.",
+      ),
     },
   ];
 
   return (
-    <div className="max-w-7xl mx-auto space-y-16">
-      {/* Hero Section */}
-      <div className="text-center space-y-6">
-        <Badge
-          variant="secondary"
-          className="bg-red-100 text-red-700 px-4 py-2 text-sm font-medium"
-        >
-          {t("about_badge", "About Our Journal", "حول مجلتنا")}
-        </Badge>
-
-        <h1 className="text-4xl md:text-6xl font-bold text-gray-900 leading-tight">
-          {t("main_title", "Redefining Digital", "إعادة تعريف")}{" "}
-          <span className="bg-gradient-to-r from-red-600 to-red-800 bg-clip-text text-transparent">
-            {t("journalism", "Journalism", "الصحافة الرقمية")}
-          </span>
+    <div className="space-y-10 md:space-y-14">
+      <section className="max-w-3xl">
+        <p className="text-[11px] md:text-xs tracking-[0.18em] uppercase text-[#7a3030] font-semibold mb-3">
+          {t("about_kicker", "About", "من نحن")}
+        </p>
+        <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-slate-950 mb-4">
+          {t("about_title", "An editorial dispatch on the Maghreb corridor", "نشرة تحريرية عن الممر المغاربي")}
         </h1>
-
-        <p className="text-xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+        <p className="text-slate-600 leading-relaxed text-base md:text-lg">
           {t(
-            "hero_desc",
-            "We are committed to delivering accurate, timely, and impactful news that empowers our readers to stay informed in an ever-changing world.",
-            "نحن ملتزمون بتقديم أخبار دقيقة وفي الوقت المناسب ومؤثرة تمكن قرائنا من البقاء على اطلاع في عالم متغير باستمرار."
+            "about_intro",
+            "The Maghreb Corridor publishes focused reporting and analysis on the political, economic, and civic developments shaping Tunisia, Libya, and their wider neighborhood — with attention to governance, mobility, markets, and cross-border dynamics.",
+            "تنشر نشرة الممر المغاربي تقارير وتحليلات مركّزة حول التطورات السياسية والاقتصادية والمدنية التي تشكّل تونس وليبيا ومحيطهما الأوسع، مع اهتمام بالحوكمة والتنقل والأسواق والديناميات العابرة للحدود.",
           )}
         </p>
-      </div>
+      </section>
 
-      {/* Stats Section */}
-      <div className="flex justify-center">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-4xl">
-          {stats.map((stat, index) => (
-            <Card
-              key={index}
-              className="border-0 shadow-lg hover:shadow-xl transition-shadow duration-300"
-            >
-              <CardContent className="p-6 text-center space-y-4">
-                <div
-                  className={`mx-auto w-16 h-16 rounded-full bg-gray-50 flex items-center justify-center ${stat.color}`}
-                >
-                  {stat.icon}
-                </div>
-                <div className="space-y-1">
-                  <div className="text-3xl font-bold text-gray-900">
-                    {stat.number}
-                  </div>
-                  <div className="text-sm text-gray-600 font-medium">
-                    {stat.label}
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      </div>
+      <section className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+        {stats.map((stat) => (
+          <Card key={stat.label} className="border-stone-200 bg-white/80 shadow-none rounded-md">
+            <CardContent className="p-4 md:p-5">
+              <div className="text-[#7a3030] mb-2">{stat.icon}</div>
+              <div className="text-xl md:text-2xl font-semibold text-slate-950">{stat.number}</div>
+              <div className="text-xs md:text-sm text-slate-600 mt-1">{stat.label}</div>
+            </CardContent>
+          </Card>
+        ))}
+      </section>
 
-      {/* About Our Journal */}
-      <div className="space-y-8">
-        <div className="space-y-6">
-          <div className="space-y-4">
-            <Badge variant="outline" className="border-red-200 text-red-700">
-              <Target className="w-4 h-4 mr-2" />
-              {t("about_us", "About Our Journal", "حول مجلتنا")}
-            </Badge>
-            <h2 className="text-3xl font-bold text-gray-900">
-              {t(
-                "journal_title",
-                "Your Trusted Source for News & Information",
-                "مصدرك الموثوق للأخبار والمعلومات"
-              )}
-            </h2>
-          </div>
+      <section className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
+        {values.map((value) => (
+          <article key={value.title} className="border border-stone-200 bg-white/70 rounded-md p-5">
+            <h2 className="text-base md:text-lg font-semibold text-slate-950 mb-2">{value.title}</h2>
+            <p className="text-sm md:text-[15px] text-slate-600 leading-relaxed">{value.body}</p>
+          </article>
+        ))}
+      </section>
 
-          <div className="prose prose-lg max-w-none text-gray-600 space-y-6">
-            <p>
-              {t(
-                "about_platform_desc",
-                "The Maghreb Corridor is a digital news platform providing comprehensive coverage of current events, politics, business, and culture.",
-                "أخبارنا هي منصة إخبارية رقمية تقدم تغطية شاملة للأحداث الجارية والسياسة والأعمال والثقافة."
-              )}
-            </p>
+      <section className="max-w-3xl border-t border-stone-200 pt-8">
+        <h2 className="text-xl md:text-2xl font-semibold text-slate-950 mb-3">
+          {t("our_mission", "Our mission", "رسالتنا")}
+        </h2>
+        <p className="text-slate-600 leading-relaxed mb-4">
+          {t(
+            "mission_body",
+            "We aim to help readers follow complex regional developments with clarity — connecting events, policies, and local realities through careful reporting and accessible analysis.",
+            "نهدف إلى مساعدة القراء على متابعة التطورات الإقليمية المعقّدة بوضوح، عبر ربط الأحداث والسياسات والواقع المحلي بتغطية دقيقة وتحليل ميسّر.",
+          )}
+        </p>
+        <p className="text-slate-600 leading-relaxed">
+          {t(
+            "coverage_body",
+            "Our coverage follows corridor-wide themes including municipal governance, economy and currency, borderlands and mobility, and the stories that connect communities across the region.",
+            "تتابع تغطيتنا محاور تمتد على مستوى الممر، بما في ذلك الحوكمة المحلية والاقتصاد والعملة والمناطق الحدودية والتنقل، والقصص التي تربط المجتمعات عبر المنطقة.",
+          )}
+        </p>
+      </section>
 
-            <div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                {t(
-                  "service_features_title",
-                  "The service features:",
-                  ":ميزات الخدمة"
-                )}
-              </h3>
-              <ul className="space-y-2 list-disc list-inside">
-                <li>
-                  {t(
-                    "feature_business_news",
-                    "Business news and analysis",
-                    "أخبار وتحليلات الأعمال"
-                  )}
-                </li>
-                <li>{t("feature_tenders", "Tenders", "المناقصات")}</li>
-                <li>
-                  {t(
-                    "feature_profiles",
-                    "Profiles of around 600 Libyan companies and government entities, with management and contact details",
-                    "ملفات تعريف لحوالي 600 شركة وهيئة حكومية ليبية، مع تفاصيل الإدارة ووسائل الاتصال"
-                  )}
-                </li>
-                <li>
-                  {t(
-                    "feature_events",
-                    "Listings of local and international events on Libya",
-                    "قوائم الفعاليات المحلية والدولية حول ليبيا"
-                  )}
-                </li>
-                <li>
-                  {t(
-                    "feature_stock_market",
-                    "Stock market data",
-                    "بيانات سوق الأسهم"
-                  )}
-                </li>
-                <li>
-                  {t(
-                    "feature_economic_data",
-                    "Economic and financial data from local and international sources",
-                    "بيانات اقتصادية ومالية من مصادر محلية ودولية"
-                  )}
-                </li>
-                <li>
-                  {t(
-                    "feature_sector_profiles",
-                    "Periodic sector profiles, factsheets, reference documents and other analysis",
-                    "ملفات قطاعية دورية، ونشرات معلومات، ووثائق مرجعية وتحليلات أخرى"
-                  )}
-                </li>
-              </ul>
-            </div>
-
-            <p>
-              {t(
-                "about_independent",
-                "The Maghreb Corridor is published by an independent editorial team. We strive to meet the highest standards of editorial quality and are fully independent, with no links to any political or religious organisations.",
-                "يتم نشر أخبارنا بواسطة فريق تحريري مستقل. نسعى لتحقيق أعلى معايير الجودة التحريرية ونتمتع باستقلالية تامة دون أي صلات سياسية أو دينية."
-              )}
-            </p>
-            <p>
-              {t(
-                "about_free_content",
-                "The content on our site is freely accessible to all readers, with additional features available for registered users.",
-                "المحتوى على موقعنا متاح مجانًا لجميع القراء، مع ميزات إضافية متاحة للمستخدمين المسجلين."
-              )}
-            </p>
-
-            <div>
-              <h3 className="text-xl font-semibold text-gray-900 mb-4">
-                {t(
-                  "content_access_title",
-                  "Content Access:",
-                  ":إمكانية الوصول إلى المحتوى"
-                )}
-              </h3>
-              <div className="bg-gray-50 rounded-lg p-6 space-y-3">
-                <div className="flex justify-between items-center border-b pb-2">
-                  <span>
-                    {t(
-                      "content_access_free_articles",
-                      "Free Articles",
-                      "مقالات مجانية"
-                    )}
-                  </span>
-                  <span className="font-semibold text-green-600">
-                    {t("content_access_unlimited", "Unlimited", "غير محدود")}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center border-b pb-2">
-                  <span>
-                    {t(
-                      "content_access_premium",
-                      "Premium Features",
-                      "ميزات مميزة"
-                    )}
-                  </span>
-                  <span className="font-semibold text-blue-600">
-                    {t("content_access_available", "Available", "متاح")}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center border-b pb-2">
-                  <span>
-                    {t(
-                      "content_access_newsletter",
-                      "Newsletter Subscription (with Annual Plan)",
-                      "الاشتراك في النشرة الإخبارية (مع الخطة السنوية)"
-                    )}
-                  </span>
-                  <span className="font-semibold text-blue-600">
-                    {t(
-                      "content_access_with_subscription",
-                      "With Subscription",
-                      "مع الاشتراك"
-                    )}
-                  </span>
-                </div>
-                <div className="flex justify-between items-center">
-                  <span>
-                    {t(
-                      "content_access_advanced",
-                      "Advanced Search & Archive",
-                      "بحث متقدم وأرشيف"
-                    )}
-                  </span>
-                  <span className="font-semibold text-red-600">
-                    {t("content_access_contact", "Contact us", "اتصل بنا")}
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-              <h3 className="text-lg font-semibold text-red-800 mb-3">
-                {t(
-                  "contact_info_title",
-                  "Contact Information",
-                  "معلومات الاتصال"
-                )}
-              </h3>
-              <div className="space-y-3">
-                <p className="text-red-700">
-                  {language === "ar" ? (
-                    <>
-                      راسلنا عبر البريد الإلكتروني{" "}
-                      <a
-                        href="mailto:contact@maghreborbit.com"
-                        className="underline hover:no-underline"
-                      >
-                        contact@maghreborbit.com
-                      </a>
-                    </>
-                  ) : (
-                    <>
-                      Email us at{" "}
-                      <a
-                        href="mailto:contact@maghreborbit.com"
-                        className="underline hover:no-underline"
-                      >
-                        contact@maghreborbit.com
-                      </a>
-                    </>
-                  )}
-                </p>
-                <p className="text-red-700">
-                  {language === "ar" ? (
-                    <>
-                      {t(
-                        "contact_newsletter_text_ar_new",
-                        "",
-                        "للاستفادة من نشرتنا الأسبوعية الحصرية، يرجى "
-                      )}
-                      <a
-                        href="/payment"
-                        className="underline hover:no-underline"
-                      >
-                        الاشتراك في الخدمة
-                      </a>
-                      {t("contact_newsletter_text2_ar_new", "", ".")}
-                    </>
-                  ) : (
-                    <>
-                      {t(
-                        "contact_newsletter_text_en_new",
-                        "Enjoy our exclusive weekly newsletter by ",
-                        ""
-                      )}
-                      <a
-                        href="/payment"
-                        className="underline hover:no-underline"
-                      >
-                        subscribing to our service
-                      </a>
-                      {t("contact_newsletter_text2_en_new", ".", "")}
-                    </>
-                  )}
-                </p>
-                <p className="text-red-700">
-                  {language === "ar" ? (
-                    <>
-                      {t(
-                        "contact_editorial_text_ar",
-                        "",
-                        "للاستفسارات التحريرية، "
-                      )}
-                      <a
-                        href="/contact"
-                        className="underline hover:no-underline"
-                      >
-                        قم بزيارة صفحة الاتصال الخاصة بنا
-                      </a>
-                      {t("contact_editorial_text2_ar", "", ".")}
-                    </>
-                  ) : (
-                    <>
-                      {t(
-                        "contact_editorial_text_en",
-                        "For editorial inquiries, ",
-                        ""
-                      )}
-                      <a
-                        href="/contact"
-                        className="underline hover:no-underline"
-                      >
-                        visit our contact page
-                      </a>
-                      {t("contact_editorial_text2_en", ".", "")}
-                    </>
-                  )}
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Newsletter Section */}
       <NewsletterSection />
     </div>
   );

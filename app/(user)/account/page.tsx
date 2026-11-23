@@ -1,165 +1,100 @@
-import { Metadata } from "next";
+"use client";
+
+import { useEffect, useState } from "react";
 import Header from "@/components/layout/header";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
+import { Footer } from "@/components/layout/footer";
 import Link from "next/link";
-import { User, Settings, Key, Shield, Edit, Mail } from "lucide-react";
-
-export const metadata: Metadata = {
-  title: "Account - The Maghreb Corridor",
-  description: "Manage your account settings and preferences",
-};
+import { User, Settings, Key, Mail } from "lucide-react";
+import { useLanguage } from "@/lib/context/language-context";
+import { getCategoriesCached, type CategoryInterface } from "@/lib/services/category-service";
 
 export default function AccountPage() {
-  const breadcrumbItems = [{ label: "Home", href: "/" }, { label: "Account" }];
+  const { t } = useLanguage();
+  const [categories, setCategories] = useState<CategoryInterface[]>([]);
+
+  useEffect(() => {
+    getCategoriesCached().then(setCategories).catch(() => setCategories([]));
+  }, []);
+
+  const breadcrumbItems = [
+    { label: t("home", "Home", "الرئيسية"), href: "/" },
+    { label: t("account", "Account", "الحساب") },
+  ];
 
   return (
-    <>
-      <Header categories={[]} />
+    <div className="min-h-screen bg-[#f8f7f4] text-slate-900">
+      <Header categories={categories} />
       <Breadcrumb items={breadcrumbItems} />
-      <div className="min-h-screen bg-gray-50 py-12">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="text-center mb-12">
-            <div className="w-24 h-24 bg-gradient-to-br from-red-600 to-red-700 rounded-full flex items-center justify-center mx-auto mb-6 shadow-2xl">
-              <User className="w-12 h-12 text-white" />
+      <main className="container mx-auto px-4 lg:px-6 py-10 md:py-14">
+        <div className="max-w-4xl mx-auto">
+          <div className="text-center mb-10">
+            <div className="w-16 h-16 bg-white border border-stone-200 rounded-full flex items-center justify-center mx-auto mb-5">
+              <User className="w-7 h-7 text-[#7a3030]" />
             </div>
-            <h1 className="text-4xl font-bold text-gray-900 mb-4">
-              Account Management
+            <p className="text-[11px] md:text-xs tracking-[0.18em] uppercase text-[#7a3030] font-semibold mb-2">
+              {t("account_kicker", "Account", "الحساب")}
+            </p>
+            <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-slate-950 mb-3">
+              {t("account_title", "Account management", "إدارة الحساب")}
             </h1>
-            <p className="text-lg text-gray-600 max-w-2xl mx-auto">
-              Manage your account settings, profile information, and security
-              preferences
+            <p className="text-slate-600 max-w-2xl mx-auto leading-relaxed">
+              {t(
+                "account_intro",
+                "Manage your profile, preferences, and security settings.",
+                "قم بإدارة ملفك الشخصي وتفضيلاتك وإعدادات الأمان.",
+              )}
             </p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-            {/* Profile Settings Card */}
-            <Link href="/profile">
-              <div className="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 border border-gray-200 hover:border-red-300 group cursor-pointer">
-                <div className="flex items-center mb-6">
-                  <div className="w-12 h-12 bg-red-100 rounded-lg flex items-center justify-center mr-4 group-hover:bg-red-200 transition-colors">
-                    <Settings className="w-6 h-6 text-red-600" />
-                  </div>
-                  <h2 className="text-2xl font-bold text-gray-900">
-                    Profile Settings
-                  </h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-8">
+            <Link href="/profile" className="bg-white/80 rounded-md border border-stone-200 p-6 hover:border-stone-300 transition-colors">
+              <div className="flex items-center mb-4">
+                <div className="w-10 h-10 rounded-md bg-[#f8f7f4] border border-stone-200 flex items-center justify-center me-3">
+                  <Settings className="w-5 h-5 text-[#7a3030]" />
                 </div>
-                <p className="text-gray-600 mb-4">
-                  Update your personal information, bio, social links, and
-                  display preferences
-                </p>
-                <ul className="text-sm text-gray-500 space-y-2">
-                  <li>• Personal Information</li>
-                  <li>• Bio & Display Name</li>
-                  <li>• Social Media Links</li>
-                  <li>• Contact Information</li>
-                </ul>
-                <div className="mt-6 text-red-600 font-semibold flex items-center">
-                  Manage Profile
-                  <svg
-                    className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </div>
+                <h2 className="text-xl font-semibold text-slate-950">{t("profile_settings", "Profile settings", "إعدادات الملف الشخصي")}</h2>
               </div>
+              <p className="text-sm text-slate-600 leading-relaxed mb-3">
+                {t("profile_settings_body", "Update your personal information and account details.", "حدّث معلوماتك الشخصية وتفاصيل حسابك.")}
+              </p>
+              <span className="text-sm font-medium text-[#7a3030]">{t("manage_profile", "Manage profile", "إدارة الملف الشخصي")}</span>
             </Link>
 
-            {/* Security Settings Card */}
-            <Link href="/profile">
-              <div className="bg-white rounded-2xl shadow-lg p-8 hover:shadow-xl transition-all duration-300 border border-gray-200 hover:border-blue-300 group cursor-pointer">
-                <div className="flex items-center mb-6">
-                  <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center mr-4 group-hover:bg-blue-200 transition-colors">
-                    <Key className="w-6 h-6 text-blue-600" />
-                  </div>
-                  <h2 className="text-2xl font-bold text-gray-900">
-                    Security Settings
-                  </h2>
+            <Link href="/profile" className="bg-white/80 rounded-md border border-stone-200 p-6 hover:border-stone-300 transition-colors">
+              <div className="flex items-center mb-4">
+                <div className="w-10 h-10 rounded-md bg-[#f8f7f4] border border-stone-200 flex items-center justify-center me-3">
+                  <Key className="w-5 h-5 text-[#7a3030]" />
                 </div>
-                <p className="text-gray-600 mb-4">
-                  Manage your password, security preferences, and account
-                  protection
-                </p>
-                <ul className="text-sm text-gray-500 space-y-2">
-                  <li>• Change Password</li>
-                  <li>• Account Security</li>
-                  <li>• Login Activity</li>
-                  <li>• Privacy Controls</li>
-                </ul>
-                <div className="mt-6 text-blue-600 font-semibold flex items-center">
-                  Security Options
-                  <svg
-                    className="w-4 h-4 ml-2 group-hover:translate-x-1 transition-transform"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M9 5l7 7-7 7"
-                    />
-                  </svg>
-                </div>
+                <h2 className="text-xl font-semibold text-slate-950">{t("security_settings", "Security settings", "إعدادات الأمان")}</h2>
               </div>
+              <p className="text-sm text-slate-600 leading-relaxed mb-3">
+                {t("security_settings_body", "Manage your password and account security options.", "أدِر كلمة المرور وخيارات أمان الحساب.")}
+              </p>
+              <span className="text-sm font-medium text-[#7a3030]">{t("security_options", "Security options", "خيارات الأمان")}</span>
             </Link>
           </div>
 
-          {/* Quick Actions */}
-          <div className="mt-12 bg-white rounded-2xl shadow-lg p-8">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">
-              Quick Actions
-            </h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <Link
-                href="/profile"
-                className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg hover:bg-red-50 transition-colors group"
-              >
-                <Settings className="w-5 h-5 text-red-600" />
-                <span className="font-medium text-gray-700 group-hover:text-red-700">
-                  Edit Profile
-                </span>
+          <div className="bg-white/80 rounded-md border border-stone-200 p-6">
+            <h3 className="text-lg font-semibold text-slate-950 mb-4">{t("quick_actions", "Quick actions", "إجراءات سريعة")}</h3>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+              <Link href="/profile" className="flex items-center gap-3 p-3 rounded-md border border-stone-200 hover:bg-stone-50 transition-colors">
+                <Settings className="w-4 h-4 text-[#7a3030]" />
+                <span className="text-sm text-slate-700">{t("edit_profile", "Edit profile", "تعديل الملف الشخصي")}</span>
               </Link>
-              <Link
-                href="/profile"
-                className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg hover:bg-blue-50 transition-colors group"
-              >
-                <Key className="w-5 h-5 text-blue-600" />
-                <span className="font-medium text-gray-700 group-hover:text-blue-700">
-                  Change Password
-                </span>
+              <Link href="/profile" className="flex items-center gap-3 p-3 rounded-md border border-stone-200 hover:bg-stone-50 transition-colors">
+                <Key className="w-4 h-4 text-[#7a3030]" />
+                <span className="text-sm text-slate-700">{t("change_password", "Change password", "تغيير كلمة المرور")}</span>
               </Link>
-              <Link
-                href="/contact"
-                className="flex items-center gap-3 p-4 bg-gray-50 rounded-lg hover:bg-green-50 transition-colors group"
-              >
-                <Mail className="w-5 h-5 text-green-600" />
-                <span className="font-medium text-gray-700 group-hover:text-green-700">
-                  Contact Support
-                </span>
+              <Link href="/contact" className="flex items-center gap-3 p-3 rounded-md border border-stone-200 hover:bg-stone-50 transition-colors">
+                <Mail className="w-4 h-4 text-[#7a3030]" />
+                <span className="text-sm text-slate-700">{t("contact_support", "Contact support", "التواصل مع الدعم")}</span>
               </Link>
             </div>
           </div>
-
-          {/* Back to Home */}
-          <div className="text-center mt-12">
-            <Link
-              href="/"
-              className="inline-flex items-center gap-2 px-6 py-3 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition-colors"
-            >
-              ← Back to Home
-            </Link>
-          </div>
         </div>
-      </div>
-    </>
+      </main>
+      <Footer categories={categories} />
+    </div>
   );
 }

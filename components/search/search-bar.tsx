@@ -10,10 +10,7 @@ interface SearchBarProps {
   popularSearches: Array<{ text: string; count?: number }>;
 }
 
-export function SearchBar({
-  initialQuery = "",
-  popularSearches,
-}: SearchBarProps) {
+export function SearchBar({ initialQuery = "", popularSearches }: SearchBarProps) {
   const [query, setQuery] = useState(initialQuery);
   const [isFocused, setIsFocused] = useState(false);
   const router = useRouter();
@@ -26,85 +23,59 @@ export function SearchBar({
     }
   };
 
-  const clearSearch = () => {
-    setQuery("");
-  };
-
   return (
-    <div className="max-w-5xl mx-auto search-container">
+    <div className="max-w-4xl mx-auto">
       <form onSubmit={handleSubmit}>
-        <div className="relative group">
-          {/* Search Container */}
-          <div
-            className={`flex items-center bg-white border border-gray-400 rounded-lg shadow-xl transition-all duration-300 ${
-              isFocused
-                ? "border-red-500 shadow-2xl"
-                : "border-gray-400 hover:border-gray-500"
+        <div
+          className={`flex items-center bg-white border rounded-md transition-colors ${
+            isFocused ? "border-[#7a3030] ring-2 ring-[#7a3030]/10" : "border-stone-300 hover:border-stone-400"
+          }`}
+        >
+          <div className="ps-4 pe-2">
+            <Search className={`w-5 h-5 ${isFocused ? "text-[#7a3030]" : "text-slate-400"}`} />
+          </div>
+          <input
+            type="text"
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
+            placeholder={t("search_placeholder", "Search dispatches and articles", "ابحث في التقارير والمقالات")}
+            className="flex-1 py-3.5 px-2 text-sm md:text-base text-slate-900 placeholder-slate-500 bg-transparent border-none outline-none"
+            autoComplete="off"
+            dir={language === "ar" ? "rtl" : "ltr"}
+          />
+          {query && (
+            <button type="button" onClick={() => setQuery("")} className="p-2 text-slate-400 hover:text-slate-600" aria-label={t("clear", "Clear", "مسح")}> 
+              <X className="w-4 h-4" />
+            </button>
+          )}
+          <button
+            type="submit"
+            disabled={!query.trim()}
+            className={`px-5 md:px-7 py-3.5 text-sm font-medium tracking-wide transition-colors border-s border-stone-200 ${
+              query.trim() ? "bg-slate-900 text-white hover:bg-slate-800" : "bg-stone-100 text-stone-400 cursor-not-allowed"
             }`}
           >
-            {/* Search Icon */}
-            <div className="pl-3 md:pl-6 pr-2 md:pr-4">
-              <Search
-                className={`w-5 h-5 md:w-6 md:h-6 transition-colors duration-300 ${
-                  isFocused ? "text-red-500" : "text-gray-400"
-                }`}
-              />
-            </div>
-
-            {/* Search Input */}
-            <input
-              type="text"
-              value={query}
-              onChange={(e) => {
-                setQuery(e.target.value);
-              }}
-              onFocus={() => {
-                setIsFocused(true);
-              }}
-              onBlur={() => setIsFocused(false)}
-              placeholder={t(
-                "search_placeholder",
-                "Enter Search Terms",
-                "أدخل مصطلحات البحث"
-              )}
-              className="flex-1 py-3 md:py-5 px-2 text-sm md:text-lg text-gray-900 placeholder-gray-500 bg-transparent border-none outline-none"
-              autoComplete="off"
-              dir={language === "ar" ? "rtl" : "ltr"}
-            />
-
-            {/* Clear Button */}
-            {query && (
-              <button
-                type="button"
-                onClick={clearSearch}
-                className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            )}
-
-            {/* Search Button */}
-            <button
-              type="submit"
-              disabled={!query.trim()}
-              className={`px-4 md:px-10 py-3 md:py-5 text-sm md:text-lg font-bold tracking-wider transition-all duration-300 ${
-                query.trim()
-                  ? "bg-black text-white hover:bg-gray-800 hover:scale-105 active:scale-95"
-                  : "bg-gray-300 text-gray-500 cursor-not-allowed"
-              }`}
-            >
-              {t("search_button", "SEARCH", "بحث")}
-            </button>
-          </div>
-
-          {/* Floating Animation */}
-          <div
-            className={`absolute inset-0 -z-10 bg-gradient-to-r from-red-100 to-red-200 rounded-lg transition-all duration-500 scale-105 ${
-              isFocused ? "opacity-20" : "opacity-0"
-            }`}
-          ></div>
+            {t("search_button", "Search", "بحث")}
+          </button>
         </div>
       </form>
+      {popularSearches?.length > 0 && (
+        <div className="mt-4 flex flex-wrap items-center gap-2 justify-center text-sm">
+          <span className="text-slate-500">{t("popular", "Popular:", "شائع:")}</span>
+          {popularSearches.slice(0, 5).map((item) => (
+            <button
+              key={item.text}
+              type="button"
+              onClick={() => router.push(`/search?q=${encodeURIComponent(item.text)}`)}
+              className="px-2.5 py-1 rounded-full border border-stone-200 bg-white hover:bg-stone-50 text-slate-700"
+            >
+              {item.text}
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

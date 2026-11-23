@@ -1,47 +1,33 @@
-import { getCategoriesCached } from "@/lib/services/category-service";
-import { getFeaturedArticlesCached } from "@/lib/content/article-service";
+"use client";
+
+import { useEffect, useState } from "react";
+type CategoryInterface = { _id?: string; id?: string; name_en: string; name_ar: string; slug: string; };
 import Header from "@/components/layout/header";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
 import { Footer } from "@/components/layout/footer";
 import { AboutContent } from "@/components/shared/about-content";
-import { Metadata } from "next";
+import { useLanguage } from "@/lib/context/language-context";
 
-export const metadata: Metadata = {
-  title: "About Us | Digital Journal",
-  description:
-    "Learn more about our mission, vision, and commitment to delivering quality journalism in the digital age.",
-  keywords: "about us, digital journalism, news, media, mission, vision",
-  openGraph: {
-    title: "About Us | Digital Journal",
-    description:
-      "Learn more about our mission, vision, and commitment to delivering quality journalism in the digital age.",
-    type: "website",
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "About Us | Digital Journal",
-    description:
-      "Learn more about our mission, vision, and commitment to delivering quality journalism in the digital age.",
-  },
-};
+export default function AboutPage() {
+  const { t } = useLanguage();
+  const [categories, setCategories] = useState<CategoryInterface[]>([]);
 
-export default async function AboutPage() {
-  const [categories, featuredArticles] = await Promise.all([
-    getCategoriesCached(),
-    getFeaturedArticlesCached(5),
-  ]);
+  useEffect(() => {
+    fetch('/api/categories').then(r => r.ok ? r.json() : []).then(setCategories).catch(() => setCategories([]));
+  }, []);
 
-  const breadcrumbItems = [{ label: "Home", href: "/" }, { label: "About Us" }];
+  const breadcrumbItems = [
+    { label: t("home", "Home", "الرئيسية"), href: "/" },
+    { label: t("about", "About", "من نحن") },
+  ];
 
   return (
-    <div className="min-h-screen bg-stone-100">
+    <div className="min-h-screen bg-[#f8f7f4] text-slate-900">
       <Header categories={categories} />
       <Breadcrumb items={breadcrumbItems} />
-
-      <main className="container mx-auto px-4 lg:px-6 py-12">
+      <main className="container mx-auto px-4 lg:px-6 py-10 md:py-14">
         <AboutContent />
       </main>
-
       <Footer categories={categories} />
     </div>
   );

@@ -1,163 +1,98 @@
-import { Metadata } from "next";
+"use client";
+
+import { useEffect, useState } from "react";
+type CategoryInterface = { _id?: string; id?: string; name_en: string; name_ar: string; slug: string; };
 import Header from "@/components/layout/header";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
-
-export const metadata: Metadata = {
-  title: "Terms of Service - The Maghreb Corridor",
-  description: "Terms of service for The Maghreb Corridor website",
-};
+import { Footer } from "@/components/layout/footer";
+import { useLanguage } from "@/lib/context/language-context";
 
 export default function TermsPage() {
+  const { t } = useLanguage();
+  const [categories, setCategories] = useState<CategoryInterface[]>([]);
+
+  useEffect(() => {
+    fetch('/api/categories').then(r => r.ok ? r.json() : []).then(setCategories).catch(() => setCategories([]));
+  }, []);
+
   const breadcrumbItems = [
-    { label: "Home", href: "/" },
-    { label: "Terms of Service" },
+    { label: t("home", "Home", "Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠة"), href: "/" },
+    { label: t("terms", "Terms of Service", "Ø´Ø±Ùˆط Ø§Ù„Ø®Ø¯Ù…ة") },
+  ];
+
+  const sections = [
+    {
+      title: t("acceptance", "Acceptance of terms", "Ù‚Ø¨ÙˆÙ„ Ø§Ù„Ø´Ø±Ùˆط"),
+      body: t(
+        "acceptance_body",
+        "By accessing or using The Maghreb Corridor, you agree to these Terms of Service and applicable laws. If you do not agree, please do not use the service.",
+        "Ø¨Ø§Ø³ØªØ®Ø¯Ø§Ù…Ùƒ Ù„Ù†شرة Ø§Ù„Ù…Ù…ر Ø§Ù„Ù…ØºØ§Ø±Ø¨ÙŠ Ø£Ùˆ Ø§Ù„ÙˆØµÙˆÙ„ Ø¥Ù„ÙŠÙ‡Ø§ØŒ ÙØ¥Ù†Ùƒ ØªÙˆØ§ÙÙ‚ Ø¹Ù„Ù‰ Ø´Ø±Ùˆط Ø§Ù„Ø®Ø¯Ù…ة Ù‡Ø°Ù‡ ÙˆØ§Ù„Ù‚ÙˆØ§Ù†ÙŠÙ† Ø§Ù„Ù…Ø¹Ù…ÙˆÙ„ Ø¨Ù‡ا. إذا ÙƒÙ†ت Ù„ا ØªÙˆØ§ÙÙ‚ØŒ ÙŠØ±Ø¬Ù‰ Ø¹Ø¯Ù… Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø§Ù„Ø®Ø¯Ù…ة.",
+      ),
+    },
+    {
+      title: t("use_service", "Use of the service", "Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø§Ù„Ø®Ø¯Ù…ة"),
+      body: t(
+        "use_service_body",
+        "You agree to use the website lawfully and not to interfere with its operation, attempt unauthorized access, or misuse content, accounts, or subscription features.",
+        "ØªÙˆØ§ÙÙ‚ Ø¹Ù„Ù‰ Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø§Ù„Ù…ÙˆÙ‚ع Ø¨Ø´ÙƒÙ„ Ù‚Ø§Ù†ÙˆÙ†ÙŠ ÙˆØ¹Ø¯Ù… ØªØ¹Ø·ÙŠÙ„ ØªØ´ØºÙŠÙ„Ù‡ Ø£Ùˆ Ù…Ø­Ø§ÙˆÙ„ة Ø§Ù„ÙˆØµÙˆÙ„ ØºÙŠر Ø§Ù„Ù…صرح Ø¨Ù‡ Ø£Ùˆ إساءة Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø§Ù„Ù…Ø­ØªÙˆÙ‰ Ø£Ùˆ Ø§Ù„حسابات Ø£Ùˆ Ù…ÙŠزات Ø§Ù„Ø§Ø´ØªØ±Ø§Ùƒ.",
+      ),
+    },
+    {
+      title: t("content_ip", "Content and intellectual property", "Ø§Ù„Ù…Ø­ØªÙˆÙ‰ ÙˆØ§Ù„Ù…Ù„ÙƒÙŠة Ø§Ù„ÙÙƒØ±ÙŠة"),
+      body: t(
+        "content_ip_body",
+        "Unless otherwise stated, site content is owned by or licensed to The Maghreb Corridor and protected by applicable intellectual property laws. You may not reproduce or distribute content without permission except as permitted by law.",
+        "Ù…ا Ù„Ù… ÙŠÙØ°Ùƒر Ø®Ù„اف Ø°Ù„ÙƒØŒ ÙØ¥Ù† Ù…Ø­ØªÙˆÙ‰ Ø§Ù„Ù…ÙˆÙ‚ع Ù…Ù…Ù„ÙˆÙƒ Ø£Ùˆ Ù…Ø±Ø®Ù‘ص Ù„Ù†شرة Ø§Ù„Ù…Ù…ر Ø§Ù„Ù…ØºØ§Ø±Ø¨ÙŠ ÙˆÙ…Ø­Ù…ÙŠ Ø¨Ù…Ùˆجب Ù‚ÙˆØ§Ù†ÙŠÙ† Ø§Ù„Ù…Ù„ÙƒÙŠة Ø§Ù„ÙÙƒØ±ÙŠة Ø§Ù„Ù…Ø¹Ù…ÙˆÙ„ Ø¨Ù‡ا. Ù„ا ÙŠØ¬Ùˆز إعادة Ø¥Ù†تاج Ø§Ù„Ù…Ø­ØªÙˆÙ‰ Ø£Ùˆ ØªÙˆØ²ÙŠØ¹Ù‡ Ø¯ÙˆÙ† Ø¥Ø°Ù† Ø¥Ù„ا ÙÙŠ Ø§Ù„Ø­Ø¯Ùˆد Ø§Ù„ØªÙŠ ÙŠØ³Ù…ح Ø¨Ù‡ا Ø§Ù„Ù‚Ø§Ù†ÙˆÙ†.",
+      ),
+    },
+    {
+      title: t("subscriptions", "Subscriptions and payments", "Ø§Ù„Ø§Ø´ØªØ±Ø§Ùƒات ÙˆØ§Ù„Ù…Ø¯ÙÙˆعات"),
+      body: t(
+        "subscriptions_body",
+        "Subscription terms, pricing, renewals, and cancellations are presented at the time of purchase and may be subject to additional payment-provider terms.",
+        "تُعرض Ø´Ø±Ùˆط Ø§Ù„Ø§Ø´ØªØ±Ø§Ùƒ ÙˆØ§Ù„أسعار ÙˆØ§Ù„ØªØ¬Ø¯ÙŠد ÙˆØ§Ù„Ø¥Ù„غاء ÙˆÙ‚ت Ø§Ù„شراء ÙˆÙ‚د تخضع Ù„Ø´Ø±Ùˆط Ø¥Ø¶Ø§ÙÙŠة خاصة Ø¨Ù…Ø²Ùˆد Ø§Ù„دفع.",
+      ),
+    },
+    {
+      title: t("changes", "Changes to terms", "ØªØºÙŠÙŠرات Ø§Ù„Ø´Ø±Ùˆط"),
+      body: t(
+        "changes_body",
+        "We may update these terms from time to time. Continued use of the service after changes take effect constitutes acceptance of the updated terms.",
+        "Ù‚د Ù†Ù‚ÙˆÙ… Ø¨ØªØ­Ø¯ÙŠث Ù‡Ø°Ù‡ Ø§Ù„Ø´Ø±Ùˆط Ù…Ù† ÙˆÙ‚ت Ù„آخر. ÙˆÙŠُعد Ø§Ø³ØªÙ…رار Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø§Ù„Ø®Ø¯Ù…ة بعد Ø³Ø±ÙŠØ§Ù† Ø§Ù„ØªØºÙŠÙŠرات Ù‚Ø¨ÙˆÙ„Ù‹ا Ù„Ù„Ø´Ø±Ùˆط Ø§Ù„Ù…Ø­Ø¯Ù‘ثة.",
+      ),
+    },
   ];
 
   return (
-    <>
-      <Header categories={[]} />
+    <div className="min-h-screen bg-[#f8f7f4] text-slate-900">
+      <Header categories={categories} />
       <Breadcrumb items={breadcrumbItems} />
-      <div className="min-h-screen bg-gray-50 py-12">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
-            <h1 className="text-4xl font-bold text-gray-900 mb-8">
-              Terms of Service
-            </h1>
-
-            <div className="prose prose-lg max-w-none space-y-8">
-              <div>
-                <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                  Acceptance of Terms
-                </h2>
-                <p className="text-gray-600 leading-relaxed">
-                  By accessing and using The Maghreb Corridor, you accept and agree
-                  to be bound by the terms and provision of this agreement. If
-                  you do not agree to abide by the above, please do not use this
-                  service.
-                </p>
-              </div>
-
-              <div>
-                <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                  Use License
-                </h2>
-                <p className="text-gray-600 leading-relaxed">
-                  Permission is granted to temporarily download one copy of the
-                  materials on The Maghreb Corridor for personal, non-commercial
-                  transitory viewing only. This is the grant of a license, not a
-                  transfer of title.
-                </p>
-              </div>
-
-              <div>
-                <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                  Disclaimer
-                </h2>
-                <p className="text-gray-600 leading-relaxed">
-                  The materials on The Maghreb Corridor are provided on an 'as is'
-                  basis. The Maghreb Corridor makes no warranties, expressed or
-                  implied, and hereby disclaims and negates all other warranties
-                  including, without limitation, implied warranties or
-                  conditions of merchantability, fitness for a particular
-                  purpose, or non-infringement of intellectual property or other
-                  violation of rights.
-                </p>
-              </div>
-
-              <div>
-                <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                  Limitations
-                </h2>
-                <p className="text-gray-600 leading-relaxed">
-                  In no event shall The Maghreb Corridor or its suppliers be liable
-                  for any damages (including, without limitation, damages for
-                  loss of data or profit, or due to business interruption)
-                  arising out of the use or inability to use the materials on
-                  The Maghreb Corridor, even if The Maghreb Corridor or an authorized
-                  representative has been notified orally or in writing of the
-                  possibility of such damage.
-                </p>
-              </div>
-
-              <div>
-                <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                  Accuracy of Materials
-                </h2>
-                <p className="text-gray-600 leading-relaxed">
-                  The materials appearing on The Maghreb Corridor could include
-                  technical, typographical, or photographic errors. The Maghreb
-                  Orbit does not warrant that any of the materials on its
-                  website are accurate, complete, or current.
-                </p>
-              </div>
-
-              <div>
-                <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                  Subscription and Refund Policy
-                </h2>
-                <p className="text-gray-600 leading-relaxed mb-4">
-                  Akhbarna offers subscription-based premium content with a free
-                  trial period. By subscribing, you agree to the following
-                  terms:
-                </p>
-                <ul className="list-disc list-inside text-gray-600 space-y-2 ml-4">
-                  <li>
-                    After your free trial ends, your subscription will
-                    automatically renew and you will be charged the applicable
-                    subscription rate.
-                  </li>
-                  <li>
-                    You may cancel your subscription at any time through your
-                    account settings or by contacting customer support.
-                  </li>
-                  <li>
-                    <strong>Refund Policy:</strong> Payments are generally
-                    non-refundable. However, you may request a refund within 14
-                    days of being charged. Refunds will be issued at our
-                    discretion on a case-by-case basis.
-                  </li>
-                  <li>
-                    To cancel before your trial ends and avoid being charged,
-                    you must cancel at least 24 hours before the trial
-                    expiration date.
-                  </li>
-                  <li>
-                    Subscription fees are subject to change with advance notice.
-                  </li>
-                </ul>
-              </div>
-
-              <div>
-                <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                  Modifications
-                </h2>
-                <p className="text-gray-600 leading-relaxed">
-                  Akhbarna may revise these terms of service at any time without
-                  notice. By using this website, you are agreeing to be bound by
-                  the then current version of these terms of service.
-                </p>
-              </div>
-
-              <div>
-                <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                  Contact Information
-                </h2>
-                <p className="text-gray-600 leading-relaxed">
-                  If you have any questions about these Terms of Service, please
-                  contact us at{" "}
-                  <a
-                    href="mailto:contact@maghreborbit.com"
-                    className="text-blue-600 hover:underline"
-                  >
-                    contact@maghreborbit.com
-                  </a>
-                  .
-                </p>
-              </div>
-            </div>
+      <main className="container mx-auto px-4 lg:px-6 py-10 md:py-14">
+        <article className="max-w-3xl">
+          <p className="text-[11px] md:text-xs tracking-[0.18em] uppercase text-[#7a3030] font-semibold mb-3">
+            {t("legal", "Legal", "Ù‚Ø§Ù†ÙˆÙ†ÙŠ")}
+          </p>
+          <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-slate-950 mb-4">
+            {t("terms_title", "Terms of Service", "Ø´Ø±Ùˆط Ø§Ù„Ø®Ø¯Ù…ة")}
+          </h1>
+          <p className="text-slate-600 leading-relaxed mb-8">
+            {t(
+              "terms_intro",
+              "These terms govern your access to and use of The Maghreb Corridor website, content, and related services.",
+              "ØªÙ†Ø¸Ù… Ù‡Ø°Ù‡ Ø§Ù„Ø´Ø±Ùˆط ÙˆØµÙˆÙ„Ùƒ Ø¥Ù„Ù‰ Ù…ÙˆÙ‚ع Ù†شرة Ø§Ù„Ù…Ù…ر Ø§Ù„Ù…ØºØ§Ø±Ø¨ÙŠ ÙˆÙ…Ø­ØªÙˆØ§Ù‡ ÙˆØ§Ù„Ø®Ø¯Ù…ات Ø§Ù„Ù…رتبطة Ø¨Ù‡ ÙˆØ§Ø³ØªØ®Ø¯Ø§Ù…Ùƒ Ù„Ù‡ا.",
+            )}
+          </p>
+          <div className="space-y-8">
+            {sections.map((section) => (
+              <section key={section.title}>
+                <h2 className="text-xl font-semibold text-slate-950 mb-2">{section.title}</h2>
+                <p className="text-slate-600 leading-relaxed">{section.body}</p>
+              </section>
+            ))}
           </div>
-        </div>
-      </div>
-    </>
+        </article>
+      </main>
+      <Footer categories={categories} />
+    </div>
   );
 }

@@ -5,103 +5,75 @@ import { useLanguage } from "@/lib/context/language-context";
 const features = [
   {
     key: "unlimited_access",
-    title_en: "Unlimited Digital Access",
+    title_en: "Unlimited digital access",
     title_ar: "وصول رقمي غير محدود",
-    desc_en: "Fearless reporting on tech, power, and culture.",
-    desc_ar: "تغطية جريئة للتقنية والسلطة والثقافة.",
+    desc_en: "Read briefings, dispatches, and coverage across topics.",
+    desc_ar: "اطلع على الإحاطات والتقارير والتغطيات عبر مختلف المواضيع.",
   },
   {
     key: "livestream_qas",
-    title_en: "Subscriber-Only Livestream Q&As",
-    title_ar: "جلسات أسئلة وأجوبة حصرية للمشتركين",
-    desc_en: "Engage directly with our editors and reporters.",
-    desc_ar: "تفاعل مباشر مع المحررين والمراسلين.",
+    title_en: "Subscriber updates",
+    title_ar: "تحديثات للمشتركين",
+    desc_en: "Receive curated updates and subscriber-focused communications.",
+    desc_ar: "احصل على تحديثات منتقاة ورسائل مخصصة للمشتركين.",
   },
   {
     key: "limited_tote",
-    title_en: "Limited-Edition Tote",
-    title_ar: "حقيبة إصدار محدود",
-    desc_en: "Take us with you everywhere.",
-    desc_ar: "خذنا معك أينما ذهبت.",
+    title_en: "Flexible plans",
+    title_ar: "خطط مرنة",
+    desc_en: "Choose monthly or annual access based on your needs.",
+    desc_ar: "اختر بين الخطة الشهرية أو السنوية وفق احتياجاتك.",
   },
 ];
 
 export function AnnualDigitalFeatures() {
   const [active, setActive] = useState(0);
-  const { language } = useLanguage();
+  const { language, t } = useLanguage();
+
   return (
-    <section className="max-w-5xl mx-auto mt-0 mb-12 px-4">
-      <h3 className="text-3xl md:text-4xl font-bold mb-8 border-b border-gray-200 pb-4">
-        {language === "ar"
-          ? "ما الذي يتضمنه الاشتراك السنوي الرقمي"
-          : "What's Included in Annual Digital"}
-      </h3>
-      <div className="flex flex-col md:flex-row gap-8 items-center">
-        {/* Left: Graphic */}
-        <div className="flex-1 w-full max-w-lg">
-          <div className="aspect-square w-full bg-gradient-to-br from-red-50 via-white to-red-50 rounded-xl overflow-hidden flex items-center justify-center border-2 border-red-100">
-            <div className="text-center p-8">
-              <svg
-                className="w-48 h-48 mx-auto mb-4 text-red-600"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={1.5}
-                  d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"
-                />
+    <section className="max-w-5xl mx-auto mb-12 px-4 lg:px-6">
+      <div className="border-t border-stone-200 pt-10">
+        <p className="text-[11px] md:text-xs tracking-[0.18em] uppercase text-[#7a3030] font-semibold mb-2">
+          {t("included_kicker", "What’s included", "ما الذي يشمله الاشتراك")}
+        </p>
+        <h3 className="text-2xl md:text-3xl font-semibold text-slate-950 mb-8">
+          {language === "ar" ? "مزايا الاشتراك الرقمي" : "Digital subscription benefits"}
+        </h3>
+        <div className="grid grid-cols-1 md:grid-cols-[minmax(0,1fr)_minmax(0,1fr)] gap-8 items-start">
+          <div className="w-full bg-white/80 border border-stone-200 rounded-md p-8 flex items-center justify-center min-h-[280px]">
+            <div className="text-center">
+              <svg className="w-28 h-28 mx-auto mb-4 text-[#7a3030]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" />
               </svg>
-              <h4 className="text-2xl font-bold text-red-900 mb-2">
-                {language === "ar"
-                  ? "الوصول الرقمي السنوي"
-                  : "Annual Digital Access"}
+              <h4 className="text-xl font-semibold text-slate-900 mb-2">
+                {language === "ar" ? "وصول رقمي للمشتركين" : "Subscriber digital access"}
               </h4>
-              <p className="text-gray-600">
+              <p className="text-slate-600 text-sm leading-relaxed">
                 {language === "ar"
-                  ? "وصول غير محدود إلى جميع المحتوى"
-                  : "Unlimited access to all content"}
+                  ? "إحاطات وتحديثات منتقاة ضمن تجربة قراءة واضحة وبسيطة."
+                  : "Briefings and curated updates in a clear, focused reading experience."}
               </p>
             </div>
           </div>
-        </div>
-        {/* Right: Features */}
-        <div className="flex-1 w-full max-w-xl flex flex-col gap-4">
-          {features.map((feature, idx) => (
-            <button
-              key={feature.key}
-              onClick={() => setActive(idx)}
-              className={`text-left group focus:outline-none focus:ring-0 transition-all duration-200 ${
-                active === idx ? "" : "opacity-80"
-              }`}
-            >
-              <div className="flex items-start">
-                <span
-                  className={`h-8 w-1 rounded bg-red-600 mr-4 mt-1 transition-all duration-200 ${
-                    active === idx ? "opacity-100" : "opacity-0"
-                  }`}
-                ></span>
-                <div>
-                  <div
-                    className={`text-lg md:text-xl font-semibold ${
-                      active === idx ? "text-gray-900" : "text-gray-700"
-                    }`}
-                  >
-                    {language === "ar" ? feature.title_ar : feature.title_en}
-                  </div>
-                  <div
-                    className={`text-sm md:text-base ${
-                      active === idx ? "text-red-700" : "text-gray-500"
-                    }`}
-                  >
-                    {language === "ar" ? feature.desc_ar : feature.desc_en}
-                  </div>
+
+          <div className="w-full flex flex-col gap-3">
+            {features.map((feature, idx) => (
+              <button
+                key={feature.key}
+                onClick={() => setActive(idx)}
+                className={`text-start border rounded-md p-4 transition-colors ${
+                  active === idx ? "border-[#7a3030]/40 bg-white" : "border-stone-200 bg-white/60 hover:bg-white"
+                }`}
+              >
+                <div className={`text-base font-semibold ${active === idx ? "text-slate-950" : "text-slate-800"}`}>
+                  {language === "ar" ? feature.title_ar : feature.title_en}
                 </div>
-              </div>
-            </button>
-          ))}
+                <div className={`text-sm mt-1 leading-relaxed ${active === idx ? "text-slate-700" : "text-slate-600"}`}>
+                  {language === "ar" ? feature.desc_ar : feature.desc_en}
+                </div>
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </section>

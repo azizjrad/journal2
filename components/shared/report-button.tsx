@@ -23,6 +23,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Flag, Send, AlertTriangle } from "lucide-react";
 import { toast } from "@/lib/context/use-toast";
+import { useLanguage } from "@/lib/context/language-context";
 
 interface ReportButtonProps {
   articleId: string;
@@ -37,6 +38,7 @@ export function ReportButton({
   variant = "icon",
   size = "sm",
 }: ReportButtonProps) {
+  const { t } = useLanguage();
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
   const [reportData, setReportData] = useState({
@@ -49,45 +51,42 @@ export function ReportButton({
   const reportTypes = [
     {
       value: "spam",
-      label: "Spam or Misleading",
-      description: "Content appears to be spam or misleading",
+      label: t("report_type_spam", "Spam or misleading", "محتوى مزعج أو مضلل"),
+      description: t("report_type_spam_desc", "Content appears to be spam or misleading", "يبدو المحتوى مزعجًا أو مضللًا"),
     },
     {
       value: "inappropriate",
-      label: "Inappropriate Content",
-      description: "Offensive, hateful, or inappropriate content",
+      label: t("report_type_inappropriate", "Inappropriate content", "محتوى غير لائق"),
+      description: t("report_type_inappropriate_desc", "Offensive, hateful, or inappropriate content", "محتوى مسيء أو كراهية أو غير لائق"),
     },
     {
       value: "copyright",
-      label: "Copyright Violation",
-      description: "Content violates copyright or intellectual property",
+      label: t("report_type_copyright", "Copyright violation", "انتهاك حقوق النشر"),
+      description: t("report_type_copyright_desc", "Content violates copyright or intellectual property", "ينتهك المحتوى حقوق النشر أو الملكية الفكرية"),
     },
     {
       value: "misinformation",
-      label: "Misinformation",
-      description: "False or misleading information",
+      label: t("report_type_misinformation", "Misinformation", "معلومات مضللة"),
+      description: t("report_type_misinformation_desc", "False or misleading information", "معلومات خاطئة أو مضللة"),
     },
     {
       value: "other",
-      label: "Other",
-      description: "Other issues not listed above",
+      label: t("report_type_other", "Other", "أخرى"),
+      description: t("report_type_other_desc", "Other issues not listed above", "مشكلات أخرى غير مذكورة أعلاه"),
     },
   ];
 
   const handleSubmit = async () => {
     if (!reportData.report_type || !reportData.reason.trim()) {
-      toast.error("Please select a report type and provide a reason");
+      toast.error(t("report_validation", "Please select a report type and provide a reason.", "يرجى اختيار نوع البلاغ وذكر السبب."));
       return;
     }
 
     setLoading(true);
-
     try {
       const response = await fetch("/api/reports", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           article_id: articleId,
           article_title: articleTitle,
@@ -100,32 +99,20 @@ export function ReportButton({
       });
 
       const data = await response.json();
-
       if (response.ok && data.success) {
-        toast.success(
-          "Report submitted successfully. Thank you for helping us maintain quality content."
-        );
+        toast.success(t("report_success", "Report submitted. Thank you for helping us maintain quality content.", "تم إرسال البلاغ. شكرًا لمساعدتك في الحفاظ على جودة المحتوى."));
         setOpen(false);
-        setReportData({
-          report_type: "",
-          reason: "",
-          reporter_name: "",
-          reporter_email: "",
-        });
+        setReportData({ report_type: "", reason: "", reporter_name: "", reporter_email: "" });
       } else {
-        toast.error(data.error || "Failed to submit report. Please try again.");
+        toast.error(data.error || t("report_failed", "Failed to submit report. Please try again.", "تعذر إرسال البلاغ. يرجى المحاولة مرة أخرى."));
       }
     } catch (error) {
       console.error("Error submitting report:", error);
-      toast.error("Failed to submit report. Please try again.");
+      toast.error(t("report_failed", "Failed to submit report. Please try again.", "تعذر إرسال البلاغ. يرجى المحاولة مرة أخرى."));
     } finally {
       setLoading(false);
     }
   };
-
-  const selectedType = reportTypes.find(
-    (type) => type.value === reportData.report_type
-  );
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
@@ -134,7 +121,8 @@ export function ReportButton({
           <Button
             variant="ghost"
             size={size}
-            className="h-8 w-8 p-0 text-gray-500 hover:text-red-600 hover:bg-red-50"
+            className="h-8 w-8 p-0 text-slate-500 hover:text-[#7a3030] hover:bg-stone-100 rounded-md"
+            aria-label={t("report_article", "Report article", "الإبلاغ عن المقال")}
           >
             <Flag className="h-4 w-4" />
           </Button>
@@ -142,63 +130,52 @@ export function ReportButton({
           <Button
             variant="outline"
             size={size}
-            className="text-gray-600 border-gray-300 hover:border-red-300 hover:text-red-600 hover:bg-red-50"
+            className="text-slate-700 border-stone-300 hover:border-[#7a3030]/40 hover:text-[#7a3030] hover:bg-stone-50 rounded-md"
           >
-            <Flag className="h-4 w-4 mr-2" />
-            Report Article
+            <Flag className="h-4 w-4 me-2" />
+            {t("report_article", "Report article", "الإبلاغ عن المقال")}
           </Button>
         )}
       </DialogTrigger>
 
-      <DialogContent className="sm:max-w-md max-h-[85vh] overflow-hidden flex flex-col">
+      <DialogContent className="sm:max-w-md max-h-[85vh] overflow-hidden flex flex-col border-stone-200 bg-[#fbfaf7]">
         <DialogHeader className="flex-shrink-0">
-          <DialogTitle className="flex items-center gap-2 text-lg">
-            <AlertTriangle className="h-5 w-5 text-orange-500" />
-            Report Article
+          <DialogTitle className="flex items-center gap-2 text-lg text-slate-950">
+            <AlertTriangle className="h-5 w-5 text-[#7a3030]" />
+            {t("report_article", "Report article", "الإبلاغ عن المقال")}
           </DialogTitle>
-          <DialogDescription className="text-sm text-gray-600">
-            Help us maintain quality content by reporting issues with this
-            article.
+          <DialogDescription className="text-sm text-slate-600">
+            {t(
+              "report_help",
+              "Help us maintain quality by reporting an issue with this article.",
+              "ساعدنا في الحفاظ على الجودة بالإبلاغ عن مشكلة في هذا المقال.",
+            )}
           </DialogDescription>
         </DialogHeader>
 
-        <div className="flex-1 overflow-y-auto space-y-4 py-4 pr-2">
-          {/* Article Info */}
-          <div className="p-3 bg-gray-50 rounded-lg border">
-            <p className="text-sm font-medium text-gray-900 truncate">
-              {articleTitle}
-            </p>
-            <p className="text-xs text-gray-500 mt-1">
-              Article ID: {articleId}
-            </p>
+        <div className="flex-1 overflow-y-auto space-y-4 py-4 pe-2">
+          <div className="p-3 bg-white rounded-md border border-stone-200">
+            <p className="text-sm font-medium text-slate-900 line-clamp-2">{articleTitle}</p>
+            <p className="text-xs text-slate-500 mt-1">ID: {articleId}</p>
           </div>
 
-          {/* Report Type */}
           <div className="space-y-2">
-            <Label htmlFor="report-type" className="text-sm font-medium">
-              Report Type *
+            <Label htmlFor="report-type" className="text-sm font-medium text-slate-800">
+              {t("report_type_label", "Report type", "نوع البلاغ")} *
             </Label>
             <Select
               value={reportData.report_type}
-              onValueChange={(value) =>
-                setReportData((prev) => ({ ...prev, report_type: value }))
-              }
+              onValueChange={(value) => setReportData((prev) => ({ ...prev, report_type: value }))}
             >
-              <SelectTrigger className="w-full">
-                <SelectValue placeholder="Select a report type" />
+              <SelectTrigger className="w-full bg-white border-stone-300 focus:ring-[#7a3030]/20">
+                <SelectValue placeholder={t("select_report_type", "Select a report type", "اختر نوع البلاغ")} />
               </SelectTrigger>
-              <SelectContent className="max-h-48">
+              <SelectContent className="max-h-56 border-stone-200">
                 {reportTypes.map((type) => (
-                  <SelectItem
-                    key={type.value}
-                    value={type.value}
-                    className="py-2"
-                  >
+                  <SelectItem key={type.value} value={type.value} className="py-2">
                     <div>
-                      <div className="font-medium text-sm">{type.label}</div>
-                      <div className="text-xs text-gray-500">
-                        {type.description}
-                      </div>
+                      <div className="font-medium text-sm text-slate-900">{type.label}</div>
+                      <div className="text-xs text-slate-500">{type.description}</div>
                     </div>
                   </SelectItem>
                 ))}
@@ -206,89 +183,71 @@ export function ReportButton({
             </Select>
           </div>
 
-          {/* Reason */}
           <div className="space-y-2">
-            <Label htmlFor="reason" className="text-sm font-medium">
-              Reason for Report *
+            <Label htmlFor="reason" className="text-sm font-medium text-slate-800">
+              {t("report_reason", "Reason", "السبب")} *
             </Label>
             <Textarea
               id="reason"
-              placeholder="Please provide detailed information about the issue..."
+              placeholder={t("report_reason_placeholder", "Provide details about the issue...", "اذكر تفاصيل المشكلة...")}
               value={reportData.reason}
-              onChange={(e) =>
-                setReportData((prev) => ({ ...prev, reason: e.target.value }))
-              }
-              className="min-h-[80px] resize-none text-sm"
+              onChange={(e) => setReportData((prev) => ({ ...prev, reason: e.target.value }))}
+              className="min-h-[90px] resize-none text-sm bg-white border-stone-300 focus-visible:ring-[#7a3030]/20"
               maxLength={1000}
             />
-            <p className="text-xs text-gray-500">
-              {reportData.reason.length}/1000 characters
-            </p>
+            <p className="text-xs text-slate-500">{reportData.reason.length}/1000</p>
           </div>
 
-          {/* Contact Info (Optional) */}
           <div className="space-y-3">
-            <Label className="text-sm font-medium text-gray-700">
-              Contact Information (Optional)
+            <Label className="text-sm font-medium text-slate-800">
+              {t("contact_optional", "Contact information (optional)", "معلومات التواصل (اختياري)")}
             </Label>
             <div className="space-y-2">
               <Input
-                placeholder="Your name (optional)"
+                placeholder={t("your_name_optional", "Your name (optional)", "اسمك (اختياري)")}
                 value={reportData.reporter_name}
-                onChange={(e) =>
-                  setReportData((prev) => ({
-                    ...prev,
-                    reporter_name: e.target.value,
-                  }))
-                }
-                className="w-full text-sm"
+                onChange={(e) => setReportData((prev) => ({ ...prev, reporter_name: e.target.value }))}
+                className="w-full text-sm bg-white border-stone-300 focus-visible:ring-[#7a3030]/20"
                 maxLength={100}
               />
               <Input
                 type="email"
-                placeholder="Your email (optional)"
+                placeholder={t("your_email_optional", "Your email (optional)", "بريدك الإلكتروني (اختياري)")}
                 value={reportData.reporter_email}
-                onChange={(e) =>
-                  setReportData((prev) => ({
-                    ...prev,
-                    reporter_email: e.target.value,
-                  }))
-                }
-                className="w-full text-sm"
+                onChange={(e) => setReportData((prev) => ({ ...prev, reporter_email: e.target.value }))}
+                className="w-full text-sm bg-white border-stone-300 focus-visible:ring-[#7a3030]/20"
                 maxLength={255}
               />
             </div>
-            <p className="text-xs text-gray-500 leading-relaxed">
-              Providing contact information helps us follow up if needed.
+            <p className="text-xs text-slate-500 leading-relaxed">
+              {t("contact_followup", "Providing contact information helps us follow up if needed.", "تزويدنا بمعلومات التواصل يساعدنا على المتابعة عند الحاجة.")}
             </p>
           </div>
         </div>
 
-        <DialogFooter className="flex-shrink-0 gap-2 pt-4 border-t bg-white">
+        <DialogFooter className="flex-shrink-0 gap-2 pt-4 border-t border-stone-200 bg-[#fbfaf7]">
           <Button
             variant="outline"
             onClick={() => setOpen(false)}
             disabled={loading}
-            className="flex-1 sm:flex-none"
+            className="flex-1 sm:flex-none border-stone-300 text-slate-700 hover:bg-stone-100"
           >
-            Cancel
+            {t("cancel", "Cancel", "إلغاء")}
           </Button>
           <Button
             onClick={handleSubmit}
-            disabled={
-              loading || !reportData.report_type || !reportData.reason.trim()
-            }
-            className="bg-red-600 hover:bg-red-700 text-white flex-1 sm:flex-none"
+            disabled={loading || !reportData.report_type || !reportData.reason.trim()}
+            className="bg-[#7a3030] hover:bg-[#632626] text-white flex-1 sm:flex-none"
           >
             {loading ? (
               <div className="flex items-center gap-2">
                 <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                Submitting...
+                {t("submitting", "Submitting...", "جارٍ الإرسال...")}
               </div>
             ) : (
               <div className="flex items-center gap-2">
                 <Send className="h-4 w-4" />
-                Submit Report
+                {t("submit_report", "Submit report", "إرسال البلاغ")}
               </div>
             )}
           </Button>

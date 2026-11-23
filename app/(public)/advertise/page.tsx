@@ -1,128 +1,99 @@
-import { Metadata } from "next";
+"use client";
+
+import { useEffect, useState } from "react";
+type CategoryInterface = { _id?: string; id?: string; name_en: string; name_ar: string; slug: string; };
 import Header from "@/components/layout/header";
 import { Breadcrumb } from "@/components/layout/breadcrumb";
-
-export const metadata: Metadata = {
-  title: "Advertise with The Maghreb Corridor",
-  description:
-    "Advertising opportunities with The Maghreb Corridor - reach a targeted Maghreb business readership",
-};
+import { Footer } from "@/components/layout/footer";
+import { useLanguage } from "@/lib/context/language-context";
 
 export default function AdvertisePage() {
+  const { t } = useLanguage();
+  const [categories, setCategories] = useState<CategoryInterface[]>([]);
+
+  useEffect(() => {
+    fetch('/api/categories').then(r => r.ok ? r.json() : []).then(setCategories).catch(() => setCategories([]));
+  }, []);
+
   const breadcrumbItems = [
-    { label: "Home", href: "/" },
-    { label: "Advertise with us" },
+    { label: t("home", "Home", "Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠة"), href: "/" },
+    { label: t("advertise", "Advertise", "Ø£Ø¹Ù„Ù† Ù…Ø¹Ù†ا") },
+  ];
+
+  const options = [
+    {
+      title: t("display_ads", "Display placements", "Ù…ساحات Ø¥Ø¹Ù„Ø§Ù†ÙŠة"),
+      body: t(
+        "display_ads_body",
+        "Brand visibility across selected pages and editorial sections, designed to fit the reading experience.",
+        "Ø¸Ù‡Ùˆر Ù„Ù„Ø¹Ù„Ø§Ù…ة Ø§Ù„ØªØ¬Ø§Ø±ÙŠة ÙÙŠ صفحات ÙˆØ£Ù‚Ø³Ø§Ù… ØªØ­Ø±ÙŠØ±ÙŠة Ù…ختارة Ø¨Ù…ا ÙŠÙ†Ø³Ø¬Ù… Ù…ع تجربة Ø§Ù„Ù‚راءة.",
+      ),
+    },
+    {
+      title: t("sponsored", "Sponsored content", "Ù…Ø­ØªÙˆÙ‰ Ø¨Ø±Ø¹Ø§ÙŠة"),
+      body: t(
+        "sponsored_body",
+        "Clearly labeled sponsored storytelling opportunities aligned with our audience and editorial standards.",
+        "فرص Ù„Ù…Ø­ØªÙˆÙ‰ Ø¨Ø±Ø¹Ø§ÙŠة Ù…Ùˆضح Ø¨ÙˆØ¶Ùˆح ÙˆÙ…ØªÙˆØ§ÙÙ‚ Ù…ع Ø¬Ù…Ù‡ÙˆØ±Ù†ا ÙˆÙ…Ø¹Ø§ÙŠÙŠØ±Ù†ا Ø§Ù„ØªØ­Ø±ÙŠØ±ÙŠة.",
+      ),
+    },
+    {
+      title: t("partnerships", "Partnerships", "Ø´Ø±Ø§Ùƒات"),
+      body: t(
+        "partnerships_body",
+        "Custom collaborations for campaigns, events, or thematic initiatives relevant to the Maghreb corridor.",
+        "ØªØ¹Ø§ÙˆÙ†ات Ù…خصصة Ù„Ù„Ø­Ù…Ù„ات Ø£Ùˆ Ø§Ù„ÙØ¹Ø§Ù„ÙŠات Ø£Ùˆ Ø§Ù„Ù…بادرات Ø§Ù„Ù…ÙˆØ¶ÙˆØ¹ÙŠة ذات Ø§Ù„ØµÙ„ة Ø¨Ø§Ù„Ù…Ù…ر Ø§Ù„Ù…ØºØ§Ø±Ø¨ÙŠ.",
+      ),
+    },
   ];
 
   return (
-    <>
-      <Header categories={[]} />
+    <div className="min-h-screen bg-[#f8f7f4] text-slate-900">
+      <Header categories={categories} />
       <Breadcrumb items={breadcrumbItems} />
-      <div className="min-h-screen bg-gray-50 py-12">
-        <div className="max-w-4xl mx-auto px-4">
-          <div className="bg-white rounded-2xl shadow-lg p-8 md:p-12">
-            <h1 className="text-4xl font-bold text-gray-900 mb-8">
-              Advertise with The Maghreb Corridor
-            </h1>
+      <main className="container mx-auto px-4 lg:px-6 py-10 md:py-14 space-y-10 md:space-y-12">
+        <section className="max-w-3xl">
+          <p className="text-[11px] md:text-xs tracking-[0.18em] uppercase text-[#7a3030] font-semibold mb-3">
+            {t("advertise_kicker", "Advertise", "Ø£Ø¹Ù„Ù† Ù…Ø¹Ù†ا")}
+          </p>
+          <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-slate-950 mb-4">
+            {t("advertise_title", "Work with The Maghreb Corridor", "ØªØ¹Ø§ÙˆÙ† Ù…ع Ù†شرة Ø§Ù„Ù…Ù…ر Ø§Ù„Ù…ØºØ§Ø±Ø¨ÙŠ")}
+          </h1>
+          <p className="text-slate-600 leading-relaxed">
+            {t(
+              "advertise_intro",
+              "Reach readers interested in regional developments through clear, well-integrated advertising and partnership options.",
+              "ØµÙ„ Ø¥Ù„Ù‰ Ø§Ù„Ù‚راء Ø§Ù„Ù…Ù‡ØªÙ…ÙŠÙ† Ø¨Ø§Ù„ØªØ·Ùˆرات Ø§Ù„Ø¥Ù‚Ù„ÙŠÙ…ÙŠة Ù…Ù† Ø®Ù„Ø§Ù„ Ø®ÙŠارات Ø¥Ø¹Ù„Ø§Ù†ÙŠة ÙˆØ´Ø±Ø§Ùƒات Ùˆاضحة ÙˆÙ…ØªÙƒØ§Ù…Ù„ة.",
+            )}
+          </p>
+        </section>
 
-            <div className="prose prose-lg max-w-none space-y-8">
-              <div>
-                <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                  Reach a targeted Libya readership
-                </h2>
-                <p className="text-gray-600 leading-relaxed">
-                  We offer two attractive ways for advertisers to reach a
-                  targeted Libya business readership, both local and
-                  international.
-                </p>
-              </div>
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-5">
+          {options.map((item) => (
+            <article key={item.title} className="border border-stone-200 bg-white/70 rounded-md p-5">
+              <h2 className="text-lg font-semibold text-slate-950 mb-2">{item.title}</h2>
+              <p className="text-sm text-slate-600 leading-relaxed">{item.body}</p>
+            </article>
+          ))}
+        </section>
 
-              <div>
-                <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                  Weekly Email Newsletter
-                </h2>
-                <p className="text-gray-600 leading-relaxed">
-                  Our free weekly email newsletter offers several advertising
-                  opportunities. Containing news headlines, new events and
-                  company listings, tenders and our blog posts, the newsletter
-                  is sent out every Monday to foreign and local businesspeople,
-                  government officials, consultants, researchers and other
-                  institutions involved in Libya.
-                </p>
-              </div>
-
-              <div>
-                <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                  Website Advertising
-                </h2>
-                <p className="text-gray-600 leading-relaxed">
-                  In addition, our website itself also contains a number of
-                  locations for advertising banners.
-                </p>
-              </div>
-
-              <div>
-                <h2 className="text-2xl font-semibold text-gray-900 mb-4">
-                  Flexible Advertising Options
-                </h2>
-                <p className="text-gray-600 leading-relaxed">
-                  Advertising opportunities are available on a weekly, monthly,
-                  or longer-term basis. For more information, please email us on{" "}
-                  <a
-                    href="mailto:contact@maghreborbit.com"
-                    className="text-red-600 hover:text-red-700 underline"
-                  >
-                    contact@maghreborbit.com
-                  </a>
-                </p>
-              </div>
-
-              {/* Call to Action Section */}
-              <div className="bg-red-50 border border-red-200 rounded-lg p-6 mt-8">
-                <h3 className="text-lg font-semibold text-red-800 mb-3">
-                  Ready to Advertise?
-                </h3>
-                <p className="text-red-700 mb-4">
-                  Contact us today to discuss your advertising needs and learn
-                  more about our competitive rates and packages.
-                </p>
-                <a
-                  href="mailto:contact@maghreborbit.com"
-                  className="inline-flex items-center px-6 py-3 bg-red-600 text-white font-medium rounded-lg hover:bg-red-700 transition-colors duration-200"
-                >
-                  Contact Us
-                </a>
-              </div>
-
-              {/* Additional Information */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h4 className="font-semibold text-gray-900 mb-3">
-                    Newsletter Reach
-                  </h4>
-                  <ul className="text-sm text-gray-600 space-y-2">
-                    <li>• Foreign and local businesspeople</li>
-                    <li>• Government officials</li>
-                    <li>• Consultants and researchers</li>
-                    <li>• International institutions</li>
-                  </ul>
-                </div>
-                <div className="bg-gray-50 rounded-lg p-6">
-                  <h4 className="font-semibold text-gray-900 mb-3">
-                    Content Includes
-                  </h4>
-                  <ul className="text-sm text-gray-600 space-y-2">
-                    <li>• Breaking news headlines</li>
-                    <li>• Company listings and profiles</li>
-                    <li>• Tender announcements</li>
-                    <li>• Industry analysis and insights</li>
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </>
+        <section className="border-t border-stone-200 pt-8 max-w-3xl">
+          <h2 className="text-xl font-semibold text-slate-950 mb-3">
+            {t("get_in_touch", "Get in touch", "ØªÙˆØ§ØµÙ„ Ù…Ø¹Ù†ا")}
+          </h2>
+          <p className="text-slate-600 leading-relaxed">
+            {t(
+              "advertise_contact",
+              "To discuss advertising or partnership opportunities, please contact us and include your organization, objectives, and timeline.",
+              "Ù„Ù…Ù†Ø§Ù‚شة فرص Ø§Ù„Ø¥Ø¹Ù„Ø§Ù† Ø£Ùˆ Ø§Ù„Ø´Ø±Ø§ÙƒØ©ØŒ ÙŠØ±Ø¬Ù‰ Ø§Ù„ØªÙˆØ§ØµÙ„ Ù…Ø¹Ù†ا Ù…ع Ø°Ùƒر Ø§Ù„Ø¬Ù‡ة ÙˆØ§Ù„Ø£Ù‡داف ÙˆØ§Ù„إطار Ø§Ù„Ø²Ù…Ù†ÙŠ.",
+            )}{" "}
+            <a href="/contact" className="text-[#7a3030] underline underline-offset-2 hover:text-[#632626]">
+              {t("contact_page", "Contact page", "صفحة Ø§Ù„ØªÙˆØ§ØµÙ„")}
+            </a>.
+          </p>
+        </section>
+      </main>
+      <Footer categories={categories} />
+    </div>
   );
 }
