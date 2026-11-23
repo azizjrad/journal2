@@ -230,7 +230,7 @@ export function ReportButton({
             variant="outline"
             onClick={() => setOpen(false)}
             disabled={loading}
-            className="flex-1 sm:flex-none border-stone-300 text-slate-700 hover:bg-stone-100"
+            className="flex-1 sm:flex-none border-stone-300 bg-white text-slate-700 hover:bg-stone-100 hover:text-slate-900 hover:border-stone-400"
           >
             {t("cancel", "Cancel", "إلغاء")}
           </Button>

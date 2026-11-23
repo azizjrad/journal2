@@ -181,10 +181,10 @@ export default function Header({
             <div className="pt-4 border-t border-stone-200 space-y-2">
               <Link
                 href="/auth"
-                className="flex items-center justify-center gap-2 p-3 text-sm border border-stone-300 text-slate-700 hover:border-slate-400 hover:text-slate-900 hover:bg-stone-100 rounded-md transition-colors w-full"
+                className="group flex items-center justify-center gap-2 p-3 text-sm border border-[#7a3030]/30 text-[#7a3030] hover:border-[#7a3030] hover:text-[#632626] hover:bg-[#7a3030]/10 focus-visible:text-[#632626] focus-visible:bg-[#7a3030]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7a3030]/30 rounded-md transition-colors w-full"
                 onClick={handleCloseSidebar}
               >
-                <User className="h-4 w-4 text-slate-400" />
+                <User className="h-4 w-4 text-[#7a3030] group-hover:text-[#632626]" />
                 <span className="text-xs font-medium">
                   {t("sign_in", "Sign In", "تسجيل الدخول")}
                 </span>
@@ -193,9 +193,9 @@ export default function Header({
               <Link
                 href="/newsletter"
                 onClick={handleCloseSidebar}
-                className="flex items-center justify-center gap-2 p-3 text-sm text-slate-600 hover:text-slate-900 hover:bg-stone-100 rounded-md transition-colors w-full"
+                className="group flex items-center justify-center gap-2 p-3 text-sm text-slate-700 hover:text-[#7a3030] hover:bg-[#7a3030]/10 focus-visible:text-[#7a3030] focus-visible:bg-[#7a3030]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7a3030]/30 rounded-md transition-colors w-full"
               >
-                <Mail className="h-4 w-4 text-slate-400" />
+                <Mail className="h-4 w-4 text-slate-400 group-hover:text-[#7a3030]" />
                 <span className="text-xs font-medium">
                   {t("newsletter", "Newsletter", "النشرة")}
                 </span>
@@ -203,7 +203,7 @@ export default function Header({
 
               <Link
                 href="/about"
-                className="flex items-center justify-center gap-2 p-3 text-sm text-slate-600 hover:text-slate-900 hover:bg-stone-100 rounded-md transition-colors w-full"
+                className="flex items-center justify-center gap-2 p-3 text-sm text-slate-700 hover:text-[#7a3030] hover:bg-[#7a3030]/10 focus-visible:text-[#7a3030] focus-visible:bg-[#7a3030]/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#7a3030]/30 rounded-md transition-colors w-full"
                 onClick={handleCloseSidebar}
               >
                 <span className="text-xs font-medium">

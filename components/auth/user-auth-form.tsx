@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import { useState, useEffect } from "react";
 import { getCookie } from "@/lib/auth/cookie-util";
@@ -246,22 +246,22 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
               onValueChange={setActiveTab}
               className="w-full"
             >
-              <TabsList className="grid w-full grid-cols-3 mb-6 bg-stone-100 p-1 rounded-md h-auto">
+              <TabsList className="grid w-full grid-cols-3 mb-6 bg-[#7a3030]/5 p-1 rounded-md h-auto border border-[#7a3030]/10">
                 <TabsTrigger
                   value="login"
-                  className="text-slate-600 data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm rounded-sm py-1.5"
+                  className="text-slate-600 hover:text-[#7a3030] data-[state=active]:bg-white data-[state=active]:text-[#7a3030] data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-[#7a3030]/20 focus-visible:ring-[#7a3030]/30 rounded-sm py-1.5"
                 >
                   Sign In
                 </TabsTrigger>
                 <TabsTrigger
                   value="register"
-                  className="text-slate-600 data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm rounded-sm py-1.5"
+                  className="text-slate-600 hover:text-[#7a3030] data-[state=active]:bg-white data-[state=active]:text-[#7a3030] data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-[#7a3030]/20 focus-visible:ring-[#7a3030]/30 rounded-sm py-1.5"
                 >
                   Sign Up
                 </TabsTrigger>
                 <TabsTrigger
                   value="forgot"
-                  className="text-slate-600 data-[state=active]:bg-white data-[state=active]:text-slate-900 data-[state=active]:shadow-sm rounded-sm py-1.5"
+                  className="text-slate-600 hover:text-[#7a3030] data-[state=active]:bg-white data-[state=active]:text-[#7a3030] data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-[#7a3030]/20 focus-visible:ring-[#7a3030]/30 rounded-sm py-1.5"
                 >
                   Reset
                 </TabsTrigger>
@@ -291,7 +291,7 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
                           setLoginError("");
                         }}
                         required
-                        className="pl-10 bg-white border-stone-300 text-slate-900 placeholder:text-slate-400"
+                        className="pl-10 bg-white border-stone-300 text-slate-900 placeholder:text-slate-400 focus-visible:border-[#7a3030] focus-visible:ring-[#7a3030]/30"
                       />
                     </div>
                   </div>
@@ -309,13 +309,13 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
                           setLoginError("");
                         }}
                         required
-                        className="pl-10 pr-10 bg-white border-stone-300 text-slate-900 placeholder:text-slate-400"
+                        className="pl-10 pr-10 bg-white border-stone-300 text-slate-900 placeholder:text-slate-400 focus-visible:border-[#7a3030] focus-visible:ring-[#7a3030]/30"
                       />
                       <Button
                         type="button"
                         variant="ghost"
                         size="sm"
-                        className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 text-slate-400 hover:text-slate-700 hover:bg-stone-100 transition-colors duration-200"
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 text-slate-400 hover:text-[#7a3030] hover:bg-[#7a3030]/10 transition-colors duration-200"
                         onClick={() => setShowLoginPassword(!showLoginPassword)}
                       >
                         {showLoginPassword ? (
@@ -329,7 +329,7 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
 
                   <Button
                     type="submit"
-                    className="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium"
+                    className="w-full bg-[#7a3030] hover:bg-[#632626] text-white font-medium focus-visible:ring-[#7a3030]/40"
                     disabled={loginLoading}
                   >
                     {loginLoading ? "Signing In..." : "Sign In"}
@@ -340,7 +340,7 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
                       type="button"
                       variant="link"
                       onClick={handleForgotPasswordClick}
-                      className="text-slate-600 hover:text-slate-900 font-medium text-sm p-0 h-auto"
+                      className="text-[#7a3030] hover:text-[#632626] font-medium text-sm p-0 h-auto focus-visible:ring-[#7a3030]/30"
                     >
                       Forgot Password?
                     </Button>
@@ -377,7 +377,7 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
                         placeholder="First name"
                         value={regFirstName}
                         onChange={(e) => setRegFirstName(e.target.value)}
-                        className="bg-white border-stone-300 text-slate-900 placeholder:text-slate-400"
+                        className="bg-white border-stone-300 text-slate-900 placeholder:text-slate-400 focus-visible:border-[#7a3030] focus-visible:ring-[#7a3030]/30"
                       />
                     </div>
                     <div className="space-y-2">
@@ -387,7 +387,7 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
                         placeholder="Last name"
                         value={regLastName}
                         onChange={(e) => setRegLastName(e.target.value)}
-                        className="bg-white border-stone-300 text-slate-900 placeholder:text-slate-400"
+                        className="bg-white border-stone-300 text-slate-900 placeholder:text-slate-400 focus-visible:border-[#7a3030] focus-visible:ring-[#7a3030]/30"
                       />
                     </div>
                   </div>
@@ -402,7 +402,7 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
                         value={regUsername}
                         onChange={(e) => setRegUsername(e.target.value)}
                         required
-                        className="pl-10 bg-white border-stone-300 text-slate-900 placeholder:text-slate-400"
+                        className="pl-10 bg-white border-stone-300 text-slate-900 placeholder:text-slate-400 focus-visible:border-[#7a3030] focus-visible:ring-[#7a3030]/30"
                       />
                     </div>
                   </div>
@@ -417,7 +417,7 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
                         value={regEmail}
                         onChange={(e) => setRegEmail(e.target.value)}
                         required
-                        className="pl-10 bg-white border-stone-300 text-slate-900 placeholder:text-slate-400"
+                        className="pl-10 bg-white border-stone-300 text-slate-900 placeholder:text-slate-400 focus-visible:border-[#7a3030] focus-visible:ring-[#7a3030]/30"
                       />
                     </div>
                   </div>
@@ -432,13 +432,13 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
                         value={regPassword}
                         onChange={(e) => setRegPassword(e.target.value)}
                         required
-                        className="pl-10 pr-10 bg-white border-stone-300 text-slate-900 placeholder:text-slate-400"
+                        className="pl-10 pr-10 bg-white border-stone-300 text-slate-900 placeholder:text-slate-400 focus-visible:border-[#7a3030] focus-visible:ring-[#7a3030]/30"
                       />
                       <Button
                         type="button"
                         variant="ghost"
                         size="sm"
-                        className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 text-slate-400 hover:text-slate-700 hover:bg-stone-100 transition-colors duration-200"
+                        className="absolute right-2 top-1/2 transform -translate-y-1/2 h-8 w-8 p-0 text-slate-400 hover:text-[#7a3030] hover:bg-[#7a3030]/10 transition-colors duration-200"
                         onClick={() => setShowRegPassword(!showRegPassword)}
                       >
                         {showRegPassword ? (
@@ -456,13 +456,13 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
                       value={regAccountType}
                       onValueChange={setRegAccountType}
                     >
-                      <SelectTrigger className="bg-white border-stone-300 text-slate-900">
+                      <SelectTrigger className="bg-white border-stone-300 text-slate-900 focus:border-[#7a3030] focus:ring-[#7a3030]/30 data-[state=open]:border-[#7a3030] data-[state=open]:ring-[#7a3030]/30">
                         <SelectValue placeholder="Select account type" />
                       </SelectTrigger>
                       <SelectContent className="bg-white border-stone-200 text-slate-900">
                         <SelectItem
                           value="user"
-                          className="text-slate-700 hover:text-slate-900 hover:bg-stone-100 focus:text-slate-900 focus:bg-stone-100 data-[highlighted]:text-slate-900 data-[highlighted]:bg-stone-100"
+                          className="text-slate-700 hover:text-[#7a3030] hover:bg-[#7a3030]/10 focus:text-[#7a3030] focus:bg-[#7a3030]/10 data-[highlighted]:text-[#7a3030] data-[highlighted]:bg-[#7a3030]/10"
                         >
                           <div className="flex items-center gap-2">
                             <Users className="h-4 w-4" />
@@ -471,7 +471,7 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
                         </SelectItem>
                         <SelectItem
                           value="writer"
-                          className="text-slate-700 hover:text-slate-900 hover:bg-stone-100 focus:text-slate-900 focus:bg-stone-100 data-[highlighted]:text-slate-900 data-[highlighted]:bg-stone-100"
+                          className="text-slate-700 hover:text-[#7a3030] hover:bg-[#7a3030]/10 focus:text-[#7a3030] focus:bg-[#7a3030]/10 data-[highlighted]:text-[#7a3030] data-[highlighted]:bg-[#7a3030]/10"
                         >
                           <div className="flex items-center gap-2">
                             <PenTool className="h-4 w-4" />
@@ -490,7 +490,7 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
 
                   <Button
                     type="submit"
-                    className="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium"
+                    className="w-full bg-[#7a3030] hover:bg-[#632626] text-white font-medium focus-visible:ring-[#7a3030]/40"
                     disabled={regLoading}
                   >
                     {regLoading ? "Creating Account..." : "Create Account"}
@@ -528,7 +528,7 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
                       )}
                       <Button
                         type="button"
-                        className="w-full mt-2 bg-slate-900 hover:bg-slate-800 text-white font-medium"
+                        className="w-full mt-2 bg-slate-900 hover:bg-slate-800 text-white font-medium focus-visible:ring-slate-400"
                         disabled={forgotLoading || showSuccessSpinner}
                         onClick={async () => {
                           if (!forgotEmail) return;
@@ -581,14 +581,14 @@ export function UserAuthForm({ onSuccess, redirectTo }: LoginFormProps) {
                         value={forgotEmail}
                         onChange={(e) => setForgotEmail(e.target.value)}
                         required
-                        className="pl-10 bg-white border-stone-300 text-slate-900 placeholder:text-slate-400"
+                        className="pl-10 bg-white border-stone-300 text-slate-900 placeholder:text-slate-400 focus-visible:border-[#7a3030] focus-visible:ring-[#7a3030]/30"
                       />
                     </div>
                   </div>
 
                   <Button
                     type="submit"
-                    className="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium"
+                    className="w-full bg-[#7a3030] hover:bg-[#632626] text-white font-medium focus-visible:ring-[#7a3030]/40"
                     disabled={forgotLoading}
                   >
                     {forgotLoading ? "Sending..." : "Send Reset Link"}

@@ -148,7 +148,7 @@ export default function ResetPasswordPage() {
                 <div className="flex gap-2 mt-2">
                   <Button
                     variant="outline"
-                    className="border-stone-300 text-slate-800 hover:bg-stone-100"
+                    className="border-[#7a3030]/30 text-[#7a3030] hover:bg-[#7a3030]/10 hover:text-[#632626]"
                     onClick={() =>
                       (window.location.href = "/auth/forgot-password")
                     }
@@ -157,7 +157,7 @@ export default function ResetPasswordPage() {
                   </Button>
                   <Button
                     variant="secondary"
-                    className="bg-stone-100 text-slate-800 hover:bg-stone-200"
+                    className="bg-[#7a3030] text-white hover:bg-[#632626]"
                     onClick={() =>
                       (window.location.href = "/auth/forgot-password")
                     }
@@ -196,13 +196,13 @@ export default function ResetPasswordPage() {
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
-                      className="pl-10 pr-10 bg-white border-stone-300 text-slate-900 placeholder:text-slate-400 focus-visible:ring-slate-300"
+                      className="pl-10 pr-10 bg-white border-stone-300 text-slate-900 placeholder:text-slate-400 focus-visible:border-[#7a3030] focus-visible:ring-[#7a3030]/30"
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0 text-slate-500 hover:text-slate-700 hover:bg-stone-100"
+                      className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0 text-slate-500 hover:text-[#7a3030] hover:bg-[#7a3030]/10"
                       onClick={() => setShowPassword(!showPassword)}
                       aria-label={
                         showPassword ? "Hide password" : "Show password"
@@ -227,13 +227,13 @@ export default function ResetPasswordPage() {
                       value={confirmPassword}
                       onChange={(e) => setConfirmPassword(e.target.value)}
                       required
-                      className="pl-10 pr-10 bg-white border-stone-300 text-slate-900 placeholder:text-slate-400 focus-visible:ring-slate-300"
+                      className="pl-10 pr-10 bg-white border-stone-300 text-slate-900 placeholder:text-slate-400 focus-visible:border-[#7a3030] focus-visible:ring-[#7a3030]/30"
                     />
                     <Button
                       type="button"
                       variant="ghost"
                       size="sm"
-                      className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0 text-slate-500 hover:text-slate-700 hover:bg-stone-100"
+                      className="absolute right-1 top-1/2 -translate-y-1/2 h-8 w-8 p-0 text-slate-500 hover:text-[#7a3030] hover:bg-[#7a3030]/10"
                       onClick={() =>
                         setShowConfirmPassword(!showConfirmPassword)
                       }
@@ -249,7 +249,7 @@ export default function ResetPasswordPage() {
 
                 <Button
                   type="submit"
-                  className="w-full bg-slate-900 hover:bg-slate-800 text-white font-medium"
+                  className="w-full bg-[#7a3030] hover:bg-[#632626] text-white font-medium focus-visible:ring-[#7a3030]/40"
                   disabled={loading || !token}
                 >
                   {loading ? "Resetting Password..." : "Reset Password"}
