@@ -1,4 +1,4 @@
-import { unstable_cache, revalidateTag } from "next/cache";
+import { unstable_cache } from "next/cache";
 import { Types } from "mongoose";
 import { dbConnect } from "@/lib/db/connection";
 import { convertDoc, convertDocArray } from "@/lib/db/serialization";
@@ -214,14 +214,15 @@ export async function reorderCategories(orderedIds: string[]): Promise<void> {
   }
 
   try {
-    revalidateTag("categories", "max");
+    const { revalidateTag } = await import("next/cache");
+    try {
+      revalidateTag("categories", "max");
+    } catch {}
+    try {
+      revalidateTag("categories" as never);
+    } catch {}
   } catch {
     // revalidateTag may be unavailable in some execution contexts
-  }
-  try {
-    revalidateTag("categories" as never);
-  } catch {
-    // Compatibility with Next.js versions that expect a single argument
   }
 }
 

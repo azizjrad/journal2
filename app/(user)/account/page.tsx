@@ -7,14 +7,28 @@ import { Footer } from "@/components/layout/footer";
 import Link from "next/link";
 import { User, Settings, Key, Mail } from "lucide-react";
 import { useLanguage } from "@/lib/context/language-context";
-import { getCategoriesCached, type CategoryInterface } from "@/lib/services/category-service";
+
+interface CategoryInterface {
+  _id?: string;
+  id?: string;
+  name_en: string;
+  name_ar: string;
+  slug: string;
+  created_at?: string;
+  meta_description_en?: string;
+  meta_description_ar?: string;
+  order?: number;
+}
 
 export default function AccountPage() {
   const { t } = useLanguage();
   const [categories, setCategories] = useState<CategoryInterface[]>([]);
 
   useEffect(() => {
-    getCategoriesCached().then(setCategories).catch(() => setCategories([]));
+    fetch("/api/categories", { cache: "no-store" })
+      .then((res) => (res.ok ? res.json() : []))
+      .then((data) => setCategories(Array.isArray(data) ? data : []))
+      .catch(() => setCategories([]));
   }, []);
 
   const breadcrumbItems = [
