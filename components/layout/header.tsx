@@ -336,7 +336,7 @@ export default function Header({
               href="/"
               className={`${navBase} ${isHomeActive ? navActive : navInactive}`}
             >
-              {t("home", "Home", "الرئيسية")}
+              {t("the_brief", "The Brief", "الموجز")}
             </Link>
             <Link
               href="/news"

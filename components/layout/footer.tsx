@@ -33,15 +33,24 @@ export function Footer({ categories }: FooterProps) {
               href="/"
               className="text-2xl md:text-[2rem] font-semibold tracking-tight text-slate-900 inline-block"
             >
-              {t("site_title", "The Maghreb Corridor", "نشرة الممر المغاربي")}
+              {t("site_title", "THE MAGHREB ORBIT", "مدار المغرب")}
             </Link>
-            <p className="text-slate-700 text-sm md:text-base leading-relaxed max-w-xl">
-              {t(
-                "footer_description_long",
-                "Independent, reader-supported situational awareness covering migration, local governance, and economics in Libya and North Africa.",
-                "منصة مستقلة مدعومة من القراء لرصد وتحليل قضايا الهجرة، الحوكمة المحلية، والاقتصاد في ليبيا وشمال أفريقيا.",
-              )}
-            </p>
+            <div className="space-y-3 max-w-xl">
+              <p className="text-slate-700 text-sm md:text-base leading-relaxed">
+                {t(
+                  "footer_description_long",
+                  "An independent tri-weekly intelligence and news aggregation platform tracking borderlands, migration, mobility, local governance, labor and trade indicators across Libya and the Maghreb.",
+                  "منصة مستقلة للتحليل الإخباري والاستخباري تصدر ثلاث مرات أسبوعياً، ترصد المناطق الحدودية والهجرة والتنقل والحوكمة المحلية والعمل ومؤشرات التجارة عبر ليبيا والمغرب العربي.",
+                )}
+              </p>
+              <p className="text-[#7a3030] text-sm md:text-base">
+                {t(
+                  "footer_publishing_schedule",
+                  "Published Mondays, Wednesdays & Fridays at 07:00 EET",
+                  "يُنشر كل إثنين وأربعاء وجمعة الساعة 07:00 بتوقيت شرق أوروبا",
+                )}
+              </p>
+            </div>
             <div className="flex gap-2 pt-1">
               <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook" className="p-2 rounded-md border border-stone-300 text-slate-600 hover:text-slate-900 hover:bg-white transition-colors">
                 <svg fill="currentColor" viewBox="0 0 24 24" className="w-4 h-4"><path d="M22.675 0h-21.35C.595 0 0 .592 0 1.326v21.348C0 23.406.595 24 1.325 24h11.495v-9.294H9.692v-3.622h3.128V8.413c0-3.1 1.893-4.788 4.659-4.788 1.325 0 2.463.099 2.797.143v3.24l-1.918.001c-1.504 0-1.797.715-1.797 1.763v2.313h3.587l-.467 3.622h-3.12V24h6.116C23.406 24 24 23.406 24 22.674V1.326C24 .592 23.406 0 22.675 0" /></svg>
@@ -60,7 +69,7 @@ export function Footer({ categories }: FooterProps) {
 
           <div className="lg:col-span-3 space-y-4">
             <h3 className="text-sm font-semibold uppercase tracking-wide text-slate-800">
-              {t("categories", "Categories", "الفئات")}
+              {t("coverage_desks", "Coverage Desks", "مكاتب التغطية")}
             </h3>
             <nav className="space-y-2">
               {categories.map((category, index) => (
@@ -99,7 +108,7 @@ export function Footer({ categories }: FooterProps) {
                 <button
                   type="submit"
                   disabled={isSubscribing}
-                  className="px-3 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium rounded-md transition-colors disabled:opacity-50 flex items-center justify-center min-w-[2.75rem]"
+                  className="px-3 py-2.5 bg-[#7a3030] hover:bg-[#632626] text-white text-sm font-medium rounded-md transition-colors disabled:opacity-50 flex items-center justify-center min-w-[2.75rem]"
                 >
                   {isSubscribing ? (
                     <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
@@ -108,6 +117,13 @@ export function Footer({ categories }: FooterProps) {
                   )}
                 </button>
               </div>
+              <p className="text-xs text-slate-500">
+                {t(
+                  "low_bandwidth_note",
+                  "Low-Bandwidth Ready • Built for Field & Policy Readers",
+                  "جاهز للنطاق الترددي المنخفض • مصمم لقراء الميدان وصنّاع السياسات",
+                )}
+              </p>
             </form>
           </div>
         </div>
@@ -117,7 +133,7 @@ export function Footer({ categories }: FooterProps) {
         <div className="container mx-auto px-4 lg:px-6 py-5">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-600">
             <div>
-              &copy; {new Date().getFullYear()} {t("site_title", "The Maghreb Corridor", "نشرة الممر المغاربي")}. {t("rights", "All rights reserved.", "جميع الحقوق محفوظة.")}
+              &copy; {new Date().getFullYear()} {t("site_title_copyright", "The Maghreb Orbit", "مدار المغرب")}. {t("rights", "All rights reserved.", "جميع الحقوق محفوظة.")}
             </div>
             <div className="flex flex-wrap justify-center items-center gap-x-5 gap-y-2">
               <Link href="/about" className="hover:text-slate-900 transition-colors">{t("about", "About", "من نحن")}</Link>
