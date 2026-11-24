@@ -119,7 +119,9 @@ export function Footer({ categories }: FooterProps) {
             <div>
               &copy; {new Date().getFullYear()} {t("site_title", "The Maghreb Corridor", "نشرة الممر المغاربي")}. {t("rights", "All rights reserved.", "جميع الحقوق محفوظة.")}
             </div>
-            <div className="flex flex-wrap justify-center gap-x-5 gap-y-2">
+            <div className="flex flex-wrap justify-center items-center gap-x-5 gap-y-2">
+              <Link href="/about" className="hover:text-slate-900 transition-colors">{t("about", "About", "من نحن")}</Link>
+              <Link href="/contact" className="hover:text-slate-900 transition-colors">{t("contact_us", "Contact Us", "تواصل معنا")}</Link>
               <a href="/advertise" className="hover:text-slate-900 transition-colors">{t("advertise", "Advertise", "أعلن معنا")}</a>
               <a href="/privacy" className="hover:text-slate-900 transition-colors">{t("privacy", "Privacy", "الخصوصية")}</a>
               <a href="/terms" className="hover:text-slate-900 transition-colors">{t("terms", "Terms", "الشروط")}</a>

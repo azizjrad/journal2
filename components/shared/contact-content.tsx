@@ -52,28 +52,27 @@ export function ContactContent() {
     }
   };
 
-  const contactItems = [
-    {
-      icon: <Mail className="h-4 w-4" />,
-      title: t("contact_email", "Email", "البريد الإلكتروني"),
-      value: "contact@digitaljournal.com",
-    },
-  ];
-
   return (
     <div className="space-y-10 md:space-y-12">
       <section className="max-w-3xl">
         <p className="text-[11px] md:text-xs tracking-[0.18em] uppercase text-[#7a3030] font-semibold mb-3">
-          {t("contact_kicker", "Contact", "تواصل معنا")}
+          {t("contact_us_page", "Contact Us: The Maghreb Orbit", "تواصل معنا: مدار المغرب")}
         </p>
         <h1 className="text-3xl md:text-4xl font-semibold tracking-tight text-slate-950 mb-4">
-          {t("contact_title", "Get in touch", "تواصل معنا")}
+          {t("contact_title", "Get in Touch", "تواصل معنا")}
         </h1>
-        <p className="text-slate-600 leading-relaxed">
+        <p className="text-slate-600 leading-relaxed text-base md:text-lg">
           {t(
             "contact_intro",
-            "Questions, corrections, partnerships, or general inquiries — send us a message and we’ll respond as soon as possible.",
-            "للأسئلة أو التصحيحات أو الشراكات أو الاستفسارات العامة، أرسل لنا رسالة وسنرد عليك في أقرب وقت ممكن.",
+            "Have a local news tip, a correction to our regional indicators, or a partnership inquiry? Reach out to The Maghreb Orbit desk directly.",
+            "هل لديك معلومة محلية، أو تصحيح لمؤشراتنا الإقليمية، أو استفسار حول شراكة؟ تواصل مباشرة مع مكتب مدار المغرب.",
+          )}
+        </p>
+        <p className="text-slate-500 text-sm mt-3 leading-relaxed">
+          {t(
+            "contact_sub_intro",
+            "A clean, low-friction Contact page designed for both institutional inquiries and quick tips from the ground across Libya and the Maghreb.",
+            "صفحة تواصل بسيطة وسهلة مصممة للاستفسارات المؤسسية والمعلومات السريعة من الميدان عبر ليبيا والمغرب العربي.",
           )}
         </p>
       </section>
@@ -188,31 +187,54 @@ export function ContactContent() {
         <aside className="space-y-4">
           <div className="bg-white/80 border border-stone-200 rounded-md p-5 md:p-6">
             <h2 className="text-lg font-semibold text-slate-950 mb-4">
-              {t("contact_details", "Contact details", "معلومات التواصل")}
+              {t("direct_contact", "Direct Email & Tip Line", "البريد المباشر وخط الإبلاغ")}
             </h2>
-            <div className="space-y-4">
-              {contactItems.map((item) => (
-                <div key={item.title} className="flex items-start gap-3">
-                  <div className="mt-0.5 text-[#7a3030]">{item.icon}</div>
-                  <div>
-                    <div className="text-sm font-medium text-slate-900">{item.title}</div>
-                    <div className="text-sm text-slate-600 break-all">{item.value}</div>
-                  </div>
-                </div>
-              ))}
+            <div className="space-y-4 text-sm">
+              <div>
+                <div className="font-medium text-slate-900">{t("editorial_desk", "General & Editorial Desk", "المكتب العام والتحريري")}</div>
+                <a href="mailto:desk@maghreborbit.com" className="text-[#7a3030] hover:text-[#632626] underline underline-offset-2 break-all">desk@maghreborbit.com</a>
+              </div>
+              <div>
+                <div className="font-medium text-slate-900">{t("partnerships_data", "Partnerships & Data Inquiries", "الشراكات واستفسارات البيانات")}</div>
+                <a href="mailto:partnerships@maghreborbit.com" className="text-[#7a3030] hover:text-[#632626] underline underline-offset-2 break-all">partnerships@maghreborbit.com</a>
+              </div>
+              <div>
+                <div className="font-medium text-slate-900">{t("secure_tip_line", "Secure Tip Line (WhatsApp / Signal)", "خط الإبلاغ الآمن (واتساب / سيجنال)")}</div>
+                <div className="text-slate-700 break-all">+218 [Insert Number]</div>
+              </div>
+              <div>
+                <div className="font-medium text-slate-900">{t("encrypted_email", "Encrypted Email (ProtonMail)", "البريد المشفّر (ProtonMail)")}</div>
+                <a href="mailto:orbit.tips@proton.me" className="text-[#7a3030] hover:text-[#632626] underline underline-offset-2 break-all">orbit.tips@proton.me</a>
+              </div>
+            </div>
+            <div className="mt-5 pt-4 border-t border-stone-200">
+              <p className="text-xs md:text-sm text-slate-600 leading-relaxed">
+                <strong className="font-semibold text-slate-900">{t("privacy_note_label", "Privacy Note:", "ملاحظة الخصوصية:")}</strong>{" "}
+                <em>
+                  {t(
+                    "privacy_note_body",
+                    "To remain anonymous, leave your name and email blank below or message us directly via WhatsApp, Signal/ProtonMail.",
+                    "للحفاظ على عدم الكشف عن هويتك، اترك اسمك وبريدك الإلكتروني فارغين أدناه أو راسلنا مباشرة عبر واتساب أو سيجنال/ProtonMail.",
+                  )}
+                </em>
+              </p>
             </div>
           </div>
+
           <div className="bg-white/60 border border-stone-200 rounded-md p-5 md:p-6">
-            <h3 className="text-sm font-semibold text-slate-900 mb-2">
-              {t("editorial_note", "Editorial note", "ملاحظة تحريرية")}
+            <h3 className="text-sm font-semibold text-slate-900 mb-3">
+              {t("official_channels_schedule", "Official Channels & Schedule", "القنوات الرسمية وجدول النشر")}
             </h3>
-            <p className="text-sm text-slate-600 leading-relaxed">
-              {t(
-                "editorial_note_body",
-                "For corrections or clarifications, please include the article title, URL, and the relevant details so our team can review it promptly.",
-                "للتصحيحات أو التوضيحات، يرجى تضمين عنوان المقال والرابط والتفاصيل ذات الصلة حتى يتمكن فريقنا من مراجعتها بسرعة.",
-              )}
-            </p>
+            <ul className="space-y-2 text-sm text-slate-600 leading-relaxed">
+              <li>
+                <span className="font-medium text-slate-900">{t("follow_updates", "Follow Updates:", "تابع التحديثات:")}</span>{" "}
+                X (<code className="text-slate-700">@MaghrebOrbit</code>) | Telegram (<code className="text-slate-700">t.me/MaghrebOrbit</code>) | LinkedIn (<span className="text-slate-700">The Maghreb Orbit</span>)
+              </li>
+              <li>
+                <span className="font-medium text-slate-900">{t("publishing_schedule", "Publishing Schedule:", "جدول النشر:")}</span>{" "}
+                {t("publishing_schedule_value", "Every Monday, Wednesday, and Friday at 07:00 EET.", "كل إثنين وأربعاء وجمعة الساعة 07:00 بتوقيت شرق أوروبا.")}
+              </li>
+            </ul>
           </div>
         </aside>
       </section>

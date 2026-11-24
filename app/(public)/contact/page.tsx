@@ -18,8 +18,8 @@ export default function ContactPage() {
   }, []);
 
   const breadcrumbItems = [
-    { label: t("home", "Home", "Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠة"), href: "/" },
-    { label: t("contact", "Contact", "ØªÙˆØ§ØµÙ„ Ù…Ø¹Ù†ا") },
+    { label: t("home", "Home", "الرئيسية"), href: "/" },
+    { label: t("contact", "Contact", "تواصل معنا") },
   ];
 
   return (

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Mail, Bell, Star, Gift } from "lucide-react";
+import { Mail } from "lucide-react";
 
 import { useLanguage } from "@/lib/context/language-context";
 import { Card, CardContent } from "@/components/ui/card";
@@ -18,21 +18,6 @@ export function NewsletterSection() {
     }
   };
 
-  const benefits = [
-    {
-      icon: <Bell className="h-4 w-4" />,
-      label: t("dispatch_alerts", "Dispatch alerts", "تنبيهات الإحاطات"),
-    },
-    {
-      icon: <Star className="h-4 w-4" />,
-      label: t("subscriber_briefings", "Subscriber briefings", "إحاطات للمشتركين"),
-    },
-    {
-      icon: <Gift className="h-4 w-4" />,
-      label: t("weekly_digest", "Weekly digest", "ملخص أسبوعي"),
-    },
-  ];
-
   return (
     <div className="container mx-auto px-4 lg:px-6 py-12 md:py-16">
       <Card className="border border-stone-300/80 bg-[#fbfaf7] shadow-none rounded-md">
@@ -43,31 +28,28 @@ export function NewsletterSection() {
                 <Mail className="h-5 w-5" aria-hidden="true" />
               </div>
               <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[#7a3030]">
-                {t("newsletter", "Newsletter", "النشرة")}
+                {t(
+                  "triweekly_briefing_schedule",
+                  "Tri-Weekly Briefing • Mon / Wed / Fri at 07:00 EET",
+                  "إحاطة ثلاثية أسبوعيًا • الإثنين / الأربعاء / الجمعة الساعة 07:00 بتوقيت شرق أوروبا",
+                )}
               </p>
             </div>
 
             <h3 className="mb-3 text-2xl font-semibold tracking-tight text-slate-950 md:text-3xl">
-              {t("stay_informed", "Stay informed", "ابقَ على اطلاع")}
+              {t(
+                "ground_truth_intel_title",
+                "Get Ground-Truth Maghreb Intelligence in Your Inbox",
+                "احصل على استخبارات ميدانية موثوقة عن المغرب العربي في بريدك الوارد",
+              )}
             </h3>
             <p className="mb-8 max-w-2xl text-sm leading-relaxed text-slate-600 md:text-base">
               {t(
-                "newsletter_description",
-                "Receive editorial briefings and updates from The Maghreb Corridor directly in your inbox.",
-                "استقبل الإحاطات التحريرية والتحديثات من نشرة الممر المغاربي مباشرة في بريدك الوارد.",
+                "ground_truth_intel_description",
+                "Join diplomats, economists, researchers, and regional operators receiving our concise Monday, Wednesday, and Friday briefing.",
+                "انضم إلى الدبلوماسيين والاقتصاديين والباحثين والفاعلين الإقليميين الذين يتلقون إحاطتنا الموجزة أيام الإثنين والأربعاء والجمعة.",
               )}
             </p>
-
-            <div className="mb-8 flex flex-wrap gap-x-6 gap-y-3 text-sm text-slate-700">
-              {benefits.map((benefit) => (
-                <div key={benefit.label} className="inline-flex items-center gap-2">
-                  <span className="text-[#7a3030]" aria-hidden="true">
-                    {benefit.icon}
-                  </span>
-                  <span>{benefit.label}</span>
-                </div>
-              ))}
-            </div>
 
             <form onSubmit={handleSubscribe} className="max-w-2xl">
               <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
@@ -76,9 +58,9 @@ export function NewsletterSection() {
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   placeholder={t(
-                    "enter_email",
-                    "Enter your email address",
-                    "أدخل عنوان بريدك الإلكتروني",
+                    "enter_work_or_personal_email",
+                    "Enter your work or personal email...",
+                    "أدخل بريدك الإلكتروني العملي أو الشخصي...",
                   )}
                   className="h-11 flex-1 rounded-md border border-stone-300 bg-white px-4 text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-[#7a3030]/25 focus:border-[#7a3030]/40"
                   required
@@ -87,7 +69,7 @@ export function NewsletterSection() {
                   type="submit"
                   className="h-11 bg-[#7a3030] px-6 text-white hover:bg-[#632626] shadow-none rounded-md"
                 >
-                  {t("subscribe_now", "Subscribe", "اشترك")}
+                  {t("subscribe_free", "Subscribe Free", "اشترك مجانًا")}
                 </Button>
               </div>
               <p className="mt-3 text-xs text-slate-500">

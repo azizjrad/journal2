@@ -158,16 +158,19 @@ export default async function HomePage() {
     .map(toMinimalCategory)
     .filter((c): c is Category => c !== null);
 
+  const latestArticles = recentArticles.slice(0, 6);
+
   return (
     <MainLayout>
       <div className="min-h-screen bg-[#f8f7f4] text-slate-900">
         <FixedHeaderWrapper categories={categoriesRaw} />
-        <div className="pt-[188px] md:pt-[208px]">
+        <div className="pt-[208px] md:pt-[232px] lg:pt-[240px]">
           <HomeBreadcrumb />
           <HomeContent
             featuredArticles={featuredArticles}
             otherArticles={otherArticles}
             recentArticles={recentArticles}
+            latestArticles={latestArticles}
             categories={categories}
             featuredCategoryArticles={featuredCategoryArticles}
             bigStoryArticle={bigStoryArticle}
