@@ -72,7 +72,7 @@ export function Footer({ categories }: FooterProps) {
               {t("coverage_desks", "Coverage Desks", "مكاتب التغطية")}
             </h3>
             <nav className="space-y-2">
-              {categories.map((category, index) => (
+              {categories.slice(0, 10).map((category, index) => (
                 <Link
                   key={`footer-category-${category.id || index}`}
                   href={`/category/${category.slug}`}

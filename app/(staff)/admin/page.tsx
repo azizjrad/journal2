@@ -1,5 +1,5 @@
 import { AdminDashboard } from "@/components/admin/admin-dashboard";
-import { getCategoriesCached } from "@/lib/services/category-service";
+import { getCategories } from "@/lib/services/category-service";
 import {
   getAllArticlesAdmin,
   getAnalyticsData,
@@ -18,7 +18,7 @@ export default async function AdminPage() {
 
   const [articles, categories] = await Promise.all([
     getAllArticlesAdmin(),
-    getCategoriesCached(),
+    getCategories(),
   ]);
 
   return (

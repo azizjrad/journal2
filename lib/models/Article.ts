@@ -31,6 +31,10 @@ const categorySchema = new mongoose.Schema(
       type: String,
       maxlength: 160,
     },
+    order: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: { createdAt: "created_at", updatedAt: "updated_at" },

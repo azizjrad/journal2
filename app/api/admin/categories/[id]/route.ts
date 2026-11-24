@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import {
   deleteCategory,
   updateCategory,
@@ -34,6 +35,9 @@ export function PUT(
       };
 
       const updatedCategory = await updateCategory(id, categoryData);
+      try {
+        revalidateTag("categories", "max");
+      } catch {}
       return NextResponse.json(updatedCategory);
     } catch (error) {
       console.error("Error updating category:", error);
@@ -53,6 +57,9 @@ export function DELETE(
     try {
       const { id } = await params;
       await deleteCategory(id);
+      try {
+        revalidateTag("categories", "max");
+      } catch {}
       return NextResponse.json({ success: true });
     } catch (error) {
       console.error("Error deleting category:", error);

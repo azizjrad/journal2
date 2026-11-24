@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { createCategory, getCategories } from "@/lib/services/category-service";
 
 export function GET() {
@@ -44,6 +45,9 @@ export function POST(request: NextRequest) {
       };
 
       const newCategory = await createCategory(categoryData);
+      try {
+        revalidateTag("categories", "max");
+      } catch {}
       return NextResponse.json(newCategory);
     } catch (error) {
       console.error("Error creating category:", error);

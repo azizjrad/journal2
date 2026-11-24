@@ -1,4 +1,4 @@
-import { unstable_cache } from "next/cache";
+import { unstable_cache, revalidateTag } from "next/cache";
 import { Types } from "mongoose";
 import { dbConnect } from "@/lib/db/connection";
 import { convertDoc, convertDocArray } from "@/lib/db/serialization";
@@ -14,6 +14,7 @@ export interface CategoryInterface {
   created_at: string;
   meta_description_en?: string;
   meta_description_ar?: string;
+  order?: number;
 }
 
 export interface TagInterface {
@@ -30,8 +31,22 @@ export interface TagInterface {
 export async function getCategories(): Promise<CategoryInterface[]> {
   await dbConnect();
 
-  const categories = await Category.find({}).sort({ name_en: 1 }).lean();
-  return convertDocArray<CategoryInterface>(categories);
+  const categories = await Category.find({}).lean();
+  const converted = convertDocArray<CategoryInterface>(categories);
+
+  return converted.sort((a, b) => {
+    const orderA =
+      typeof a.order === "number" && Number.isFinite(a.order)
+        ? a.order
+        : Number.MAX_SAFE_INTEGER;
+    const orderB =
+      typeof b.order === "number" && Number.isFinite(b.order)
+        ? b.order
+        : Number.MAX_SAFE_INTEGER;
+
+    if (orderA !== orderB) return orderA - orderB;
+    return (a.name_en || "").localeCompare(b.name_en || "", "en");
+  });
 }
 
 export async function getCategoryBySlug(
@@ -60,6 +75,16 @@ export async function createCategory(
     throw new Error("Invalid input detected");
   }
 
+  const last = await Category.findOne({})
+    .sort({ order: -1, created_at: -1 })
+    .select("order")
+    .lean<{ order?: number }>();
+
+  const nextOrder =
+    last && typeof last.order === "number" && Number.isFinite(last.order)
+      ? last.order + 1
+      : 0;
+
   const sanitizedCategory = {
     name_en: sanitizeInput(category.name_en),
     name_ar: sanitizeInput(category.name_ar),
@@ -70,6 +95,7 @@ export async function createCategory(
     meta_description_ar: category.meta_description_ar
       ? sanitizeInput(category.meta_description_ar)
       : undefined,
+    order: nextOrder,
   };
 
   const result = await Category.create(sanitizedCategory);
@@ -116,6 +142,9 @@ export async function updateCategory(
     sanitizedUpdates.meta_description_ar = sanitizeInput(
       updates.meta_description_ar,
     );
+  if (typeof updates.order === "number" && Number.isFinite(updates.order)) {
+    sanitizedUpdates.order = updates.order;
+  }
 
   const result = await Category.findByIdAndUpdate(id, sanitizedUpdates, {
     new: true,
@@ -146,6 +175,54 @@ export async function deleteCategory(id: string): Promise<boolean> {
   }
 
   return true;
+}
+
+export async function reorderCategories(orderedIds: string[]): Promise<void> {
+  await dbConnect();
+
+  if (!Array.isArray(orderedIds) || orderedIds.length === 0) {
+    throw new Error("orderedIds must be a non-empty array");
+  }
+
+  const uniqueIds = Array.from(new Set(orderedIds));
+  if (uniqueIds.length !== orderedIds.length) {
+    throw new Error("orderedIds must not contain duplicates");
+  }
+
+  for (const id of orderedIds) {
+    if (!Types.ObjectId.isValid(id)) {
+      throw new Error("Invalid category ID");
+    }
+  }
+
+  const ops = orderedIds.map((id, index) => ({
+    updateOne: {
+      filter: { _id: new Types.ObjectId(id) },
+      update: { $set: { order: index } },
+    },
+  }));
+
+  // Use native collection to avoid Mongoose strict/casting issues with newly added fields in dev/hot reload
+  const collection = (Category as any).collection || (Category as any).db?.collection?.("categories");
+  if (!collection || typeof collection.bulkWrite !== "function") {
+    throw new Error("Category collection is not available");
+  }
+
+  const result = await collection.bulkWrite(ops, { ordered: true });
+  if ((result.matchedCount ?? 0) !== orderedIds.length) {
+    throw new Error("Some categories were not found");
+  }
+
+  try {
+    revalidateTag("categories", "max");
+  } catch {
+    // revalidateTag may be unavailable in some execution contexts
+  }
+  try {
+    revalidateTag("categories" as never);
+  } catch {
+    // Compatibility with Next.js versions that expect a single argument
+  }
 }
 
 export const getCategoriesCached = unstable_cache(
