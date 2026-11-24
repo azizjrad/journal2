@@ -40,7 +40,7 @@ export function Footer({ categories }: FooterProps) {
                 {t(
                   "footer_description_long",
                   "An independent tri-weekly intelligence and news aggregation platform tracking borderlands, migration, mobility, local governance, labor and trade indicators across Libya and the Maghreb.",
-                  "منصة مستقلة لرصد وتجميع الأخبار والتحليلات",
+                  "منصة مستقلة لرصد وتجميع الأخبار والتحليلات، تصدر ثلاث مرات أسبوعياً، وتركز على المناطق الحدودية والهجرة والتنقل والحوكمة المحلية والعمل ومؤشرات التجارة عبر ليبيا والمغرب العربي",
                 )}
               </p>
               <p className="text-[#7a3030] text-sm md:text-base">
