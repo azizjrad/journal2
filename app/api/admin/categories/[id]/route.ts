@@ -4,6 +4,7 @@ import {
   deleteCategory,
   updateCategory,
 } from "@/lib/services/category-service";
+import { ensureAdmin } from "@/lib/auth/ensure-admin";
 
 export function PUT(
   request: NextRequest,
@@ -11,6 +12,10 @@ export function PUT(
 ) {
   return (async () => {
     try {
+      const { isAdmin } = await ensureAdmin(request);
+      if (!isAdmin) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
       const body = await request.json();
       const { name_en, name_ar } = body;
       const { id } = await params;
@@ -55,6 +60,10 @@ export function DELETE(
 ) {
   return (async () => {
     try {
+      const { isAdmin } = await ensureAdmin(request);
+      if (!isAdmin) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
       const { id } = await params;
       await deleteCategory(id);
       try {

@@ -1,27 +1,21 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getTags } from "@/lib/services/category-service";
+import { ensureAdminOrWriter } from "@/lib/auth/ensure-admin";
 
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
-    // Require admin authentication
-    const { ensureAdmin } = await import("@/lib/auth/ensure-admin");
-    // Fake request for GET (Next.js API routes don't pass request to GET by default)
-    // So, we can't check cookies/headers. Instead, recommend switching to POST or using middleware for real protection.
-    // For now, just return 401 to block public access.
-    return NextResponse.json(
-      { error: "Unauthorized. Admin access required." },
-      { status: 401 },
-    );
-    // If you want to allow GET with admin check, refactor to POST or use middleware.
-    // const adminCheck = await ensureAdmin(request);
-    // if (!adminCheck.isAdmin) {
-    //   return NextResponse.json(
-    //     { error: "Unauthorized. Admin access required." },
-    //     { status: 401 }
-    //   );
-    // }
-    // const tags = await getTags();
-    // return NextResponse.json(tags);
+    const authCheck = await ensureAdminOrWriter(request);
+    if (!authCheck.isAdmin && !authCheck.isWriter) {
+      return NextResponse.json(
+        { error: "Unauthorized. Admin or writer access required." },
+        { status: 401 },
+      );
+    }
+
+    const tags = await getTags();
+    return NextResponse.json(tags, {
+      headers: { "Cache-Control": "no-store" },
+    });
   } catch (error) {
     console.error("Error fetching tags:", error);
     return NextResponse.json(

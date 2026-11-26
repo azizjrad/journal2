@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { revalidateTag } from "next/cache";
 import { createCategory, getCategories } from "@/lib/services/category-service";
+import { ensureAdmin } from "@/lib/auth/ensure-admin";
 
 export function GET() {
   return (async () => {
@@ -20,6 +21,10 @@ export function GET() {
 export function POST(request: NextRequest) {
   return (async () => {
     try {
+      const { isAdmin } = await ensureAdmin(request);
+      if (!isAdmin) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
       const body = await request.json();
       const { name_en, name_ar } = body;
 

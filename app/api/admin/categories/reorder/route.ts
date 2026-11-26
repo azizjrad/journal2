@@ -1,9 +1,14 @@
 ﻿import { NextRequest, NextResponse } from "next/server";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { reorderCategories } from "@/lib/services/category-service";
+import { ensureAdmin } from "@/lib/auth/ensure-admin";
 
 export async function PUT(request: NextRequest) {
   try {
+    const { isAdmin } = await ensureAdmin(request);
+    if (!isAdmin) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
     const body = await request.json();
     const { orderedIds } = body || {};
 
